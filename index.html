@@ -82,6 +82,87 @@
             </div>
         </div>
 
+        <!-- Modal Checkout Options -->
+        <div id="checkout-modal" class="hidden absolute inset-0 bg-black/60 z-[105] flex items-end justify-center backdrop-blur-sm transition-opacity pb-safe">
+            <div class="bg-white rounded-t-[2rem] p-6 w-full shadow-2xl transform translate-y-full transition-transform duration-300" id="checkout-modal-content">
+                <div class="flex justify-between items-center mb-5">
+                    <h3 class="text-lg font-black text-gray-900 flex items-center gap-2"><i data-lucide="truck" class="w-5 h-5 text-[#009669]"></i> Detail Pengiriman</h3>
+                    <button onclick="window.closeCheckoutModal()" class="text-gray-400 hover:text-gray-800 bg-gray-100 p-2 rounded-full"><i data-lucide="x" class="w-4 h-4"></i></button>
+                </div>
+                
+                <div class="space-y-4 mb-6">
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Pilih Metode Pengiriman</label>
+                        <select id="checkout-delivery" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-bold text-gray-800 focus:ring-2 focus:ring-[#009669]/50 outline-none">
+                            <option value="Ambil Sendiri di Toko">Ambil Sendiri di Toko</option>
+                            <option value="Kurir Lokal / Ojol">Kurir Lokal / Ojol</option>
+                            <option value="Ekspedisi (JNE/J&T dll)">Ekspedisi (JNE/J&T dll)</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Catatan Pesanan (Opsional)</label>
+                        <textarea id="checkout-notes" rows="2" placeholder="Cth: Tolong dibungkus kado, warna merah..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-medium text-gray-800 text-sm focus:ring-2 focus:ring-[#009669]/50 outline-none transition-all"></textarea>
+                    </div>
+                </div>
+
+                <button onclick="window.confirmCheckout()" class="w-full bg-[#009669] text-white font-extrabold text-lg py-4 rounded-2xl shadow-lg shadow-emerald-200 active:scale-95 transition-transform flex justify-center items-center gap-2">
+                    <i data-lucide="message-circle" class="w-5 h-5"></i> Lanjut Pesan via WA
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Konfirmasi Admin -->
+        <div id="confirm-modal" class="hidden absolute inset-0 bg-black/60 z-[110] flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+            <div class="bg-white rounded-[2rem] p-7 max-w-[85%] w-full text-center shadow-2xl transform scale-100 transition-transform slide-up">
+                <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-5">
+                    <i data-lucide="alert-triangle" class="w-8 h-8"></i>
+                </div>
+                <h3 id="confirm-title" class="text-xl font-black text-gray-900 mb-2">Konfirmasi Admin</h3>
+                <p id="confirm-desc" class="text-sm text-gray-500 font-medium mb-6 leading-relaxed">Anda yakin ingin menghapus ini?</p>
+                
+                <div class="flex gap-3">
+                    <button onclick="window.closeConfirmModal()" class="w-1/2 bg-gray-100 text-gray-700 font-extrabold py-3.5 rounded-2xl hover:bg-gray-200 transition-colors">Batal</button>
+                    <button id="confirm-action-btn" class="w-1/2 bg-red-500 text-white font-extrabold py-3.5 rounded-2xl shadow-lg shadow-red-200 transition-transform active:scale-95">Ya, Hapus</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Filter Pencarian -->
+        <div id="filter-modal" class="hidden absolute inset-0 bg-black/60 z-[100] flex items-end justify-center backdrop-blur-sm transition-opacity pb-safe">
+            <div class="bg-white rounded-t-[2rem] p-6 w-full shadow-2xl transform translate-y-full transition-transform duration-300" id="filter-modal-content">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-black text-gray-900 flex items-center gap-2"><i data-lucide="sliders-horizontal" class="w-5 h-5 text-[#009669]"></i> Filter & Urutkan</h3>
+                    <button onclick="window.closeFilterModal()" class="text-gray-400 hover:text-gray-800 bg-gray-100 p-2 rounded-full"><i data-lucide="x" class="w-4 h-4"></i></button>
+                </div>
+                
+                <h4 class="font-bold text-xs text-gray-500 uppercase tracking-wider mb-3">Urutkan Berdasarkan</h4>
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <button onclick="window.setSort('terbaru')" id="sort-terbaru" class="sort-btn bg-emerald-50 border-2 border-[#009669] text-[#009669] font-bold py-2.5 rounded-xl text-xs transition-all shadow-sm">Paling Baru</button>
+                    <button onclick="window.setSort('termurah')" id="sort-termurah" class="sort-btn bg-gray-50 border-2 border-transparent text-gray-600 font-bold py-2.5 rounded-xl text-xs transition-all shadow-sm hover:bg-gray-100">Harga Termurah</button>
+                    <button onclick="window.setSort('termahal')" id="sort-termahal" class="sort-btn bg-gray-50 border-2 border-transparent text-gray-600 font-bold py-2.5 rounded-xl text-xs transition-all shadow-sm hover:bg-gray-100">Harga Termahal</button>
+                    <button onclick="window.setSort('terlaris')" id="sort-terlaris" class="sort-btn bg-gray-50 border-2 border-transparent text-gray-600 font-bold py-2.5 rounded-xl text-xs transition-all shadow-sm hover:bg-gray-100">Rating Tertinggi</button>
+                </div>
+
+                <h4 class="font-bold text-xs text-gray-500 uppercase tracking-wider mb-3">Rentang Harga (Rp)</h4>
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="relative w-full">
+                        <span class="absolute left-3 top-3 text-gray-400 font-bold text-xs">Rp</span>
+                        <input type="number" id="filter-min-price" placeholder="Min" class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-9 pr-3 py-3 font-bold text-gray-800 text-sm focus:ring-2 focus:ring-[#009669]/50 outline-none transition-all">
+                    </div>
+                    <span class="text-gray-400 font-bold">-</span>
+                    <div class="relative w-full">
+                        <span class="absolute left-3 top-3 text-gray-400 font-bold text-xs">Rp</span>
+                        <input type="number" id="filter-max-price" placeholder="Maks" class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-9 pr-3 py-3 font-bold text-gray-800 text-sm focus:ring-2 focus:ring-[#009669]/50 outline-none transition-all">
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button onclick="window.resetFilters()" class="w-1/3 bg-gray-100 text-gray-700 font-extrabold py-4 rounded-2xl hover:bg-gray-200 transition-colors shadow-sm">Reset</button>
+                    <button onclick="window.applyFilters()" class="w-2/3 bg-[#009669] text-white font-extrabold py-4 rounded-2xl shadow-lg shadow-emerald-200 active:scale-95 transition-transform">Terapkan Filter</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Main Content Area -->
         <main id="content" class="flex-1 overflow-y-auto overflow-x-hidden relative bg-white pb-28 transition-all duration-300 hide-scroll">
         </main>
@@ -138,7 +219,7 @@
 
         const app = initializeApp(firebaseConfig);
         
-        // Memaksa Firebase menggunakan Long Polling agar tidak diblokir oleh iFrame / Jaringan Ketat
+        // Memaksa Firebase menggunakan Long Polling agar lancar
         const db = initializeFirestore(app, {
             experimentalForceLongPolling: true
         });
@@ -155,15 +236,71 @@
         window.isEditingProfile = false; 
         window.isEditingBuyerProfile = false; 
         window.currentProductDetail = null;
+        window.currentStoreId = null; 
         window.isStoreUnlocked = false; 
         window.editingProductData = null;
         window.pendingRoute = true; 
+        
+        window.tempVariants = [];
+        window.selectedVariantIndex = 0;
+
+        window.renderVariantListDOM = function() {
+            const container = document.getElementById('variant-list-container');
+            if(!container) return;
+            if(window.tempVariants.length === 0) {
+                container.innerHTML = '<p class="text-[10px] text-gray-400 text-center py-2 font-bold bg-gray-50 rounded-xl border border-dashed border-gray-200">Belum ada varian ditambahkan.</p>';
+                return;
+            }
+            container.innerHTML = window.tempVariants.map((v, i) => `
+                <div class="flex gap-2 items-center mb-2 bg-gray-50 p-2.5 rounded-xl border border-gray-200 shadow-sm slide-up">
+                    <input type="text" placeholder="Nama Varian (Cth: 0.5 Gram)" value="${v.name}" oninput="window.tempVariants[${i}].name = this.value" class="w-[35%] text-[11px] font-bold p-2.5 rounded-lg bg-white border outline-none focus:ring-1 focus:ring-emerald-500">
+                    <input type="number" placeholder="Harga (Rp)" value="${v.price || ''}" oninput="window.tempVariants[${i}].price = parseInt(this.value)||0" class="w-[35%] text-[11px] font-black p-2.5 rounded-lg bg-white border outline-none focus:ring-1 focus:ring-emerald-500">
+                    <input type="number" placeholder="Stok" value="${v.stock !== undefined ? v.stock : 1}" oninput="window.tempVariants[${i}].stock = parseInt(this.value)||0" class="w-[20%] text-[11px] font-black p-2.5 rounded-lg bg-white border outline-none focus:ring-1 focus:ring-emerald-500 text-center">
+                    <button onclick="window.removeVariantItem(${i})" class="w-[10%] text-red-500 flex justify-center items-center hover:bg-red-50 p-2 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </div>
+            `).join('');
+            if(window.lucide) window.lucide.createIcons();
+        }
+
+        window.addVariantItem = function() {
+            window.tempVariants.push({name: '', price: 0, stock: 1});
+            window.renderVariantListDOM();
+        }
+
+        window.removeVariantItem = function(idx) {
+            window.tempVariants.splice(idx, 1);
+            window.renderVariantListDOM();
+        }
+
+        window.toggleVariantMode = function(checked) {
+            const norm = document.getElementById('normal-price-stock');
+            const vars = document.getElementById('variant-section');
+            if(checked) {
+                norm.classList.add('hidden'); vars.classList.remove('hidden');
+                if(window.tempVariants.length === 0) window.addVariantItem();
+                else window.renderVariantListDOM();
+            } else {
+                norm.classList.remove('hidden'); vars.classList.add('hidden');
+            }
+        }
+
+        // Filter & Sort State
+        window.currentSearchQuery = '';
+        window.currentCategoryFilter = 'Semua';
+        window.currentSortBy = 'terbaru';
+        window.minPriceFilter = '';
+        window.maxPriceFilter = '';
+        window.authMode = 'login';
         
         // Modal Ulasan
         window.currentReviewOrderId = null;
         window.currentReviewProductId = null;
         window.selectedRating = 0;
         
+        // Checkout & Admin Confirm
+        window.currentCheckoutStoreId = null;
+        window.confirmActionCallback = null;
+
         // Profiles
         window.storeProfile = { name: "Toko Baru", phone: "", avatar: "" };
         window.userProfile = { name: "", address: "", avatar: "" }; 
@@ -171,10 +308,6 @@
         window.tempUploadedAvatar = '';
         window.tempProductImg = '';
         window.tempBannerImg = ''; 
-        
-        window.currentSearchQuery = '';
-        window.currentCategoryFilter = 'Semua';
-        window.authMode = 'login';
 
         // Data Storage
         window.products = [];
@@ -185,7 +318,7 @@
         window.firestoreBanners = [];
         window.toastTimeout = null;
         
-        // KITA MENGUNCI APLIKASI DI SUQNA-V2 DEMI KEAMANAN TOTAL
+        // MENGUNCI DATABASE KE VERSI BERSIH (v2)
         const appId = 'suqna-v2'; 
 
         window.sanitizeHTML = function(str) {
@@ -193,11 +326,12 @@
             return str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&lt;br&gt;/gi, '<br>');
         };
 
+        // 5 Banner Default (Termasuk Permohonan Maaf)
         window.defaultBanners = [
-            { tag: "INFO PENTING", tagColor: "text-rose-500", title: "Alhamdulillah, Pembaruan Berhasil!<br>SUQNA Kini Lebih Cepat & Aman.", img: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&q=80&w=800" },
+            { tag: "INFO UPDATE SISTEM", tagColor: "text-blue-400", title: "Keamanan SUQNA Telah Ditingkatkan.<br>Mohon Berkenan Mendaftar Ulang Toko Anda 🙏", img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800" },
             { tag: "PASAR SYARIAH", tagColor: "text-[#00c98f]", title: "Belanja Nyaman, Aman, & Berkah<br>100% Produk Halal.", img: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800" },
             { tag: "SUPER HEMAT", tagColor: "text-amber-400", title: "Penuhi Kebutuhan Harian Anda<br>Harga Jujur Ala Tetangga.", img: "https://images.unsplash.com/photo-1589539148230-0a5b707bc77c?auto=format&fit=crop&q=80&w=800" },
-            { tag: "MITRA SUQNA", tagColor: "text-blue-400", title: "Punya Usaha? Ayo Buka Toko Gratis!<br>Jangkau Ribuan Pembeli Sekarang.", img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800" },
+            { tag: "MITRA SUQNA", tagColor: "text-rose-500", title: "Punya Usaha? Ayo Buka Toko Gratis!<br>Jangkau Ribuan Pembeli Sekarang.", img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=800" },
             { tag: "SERBA ADA", tagColor: "text-emerald-400", title: "Cari Kuliner, Pakaian, Hingga Jasa<br>Semua Berkumpul di Sini.", img: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&q=80&w=800" }
         ];
         
@@ -331,19 +465,150 @@
 
             if (view === 'home' && window.history.pushState) {
                 const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                window.history.pushState({path: cleanUrl}, '', cleanUrl);
+                try {
+                    window.history.pushState({path: cleanUrl}, '', cleanUrl);
+                } catch(e) {
+                    // Ignore pushState errors in blob/iframe environments
+                    console.warn("Could not push state to history:", e);
+                }
             }
             window.render(); 
         }
 
+        // --- FILTER MODAL FUNCTIONS ---
+        window.openFilterModal = function() {
+            document.getElementById('filter-modal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('filter-modal-content').classList.remove('translate-y-full'), 50);
+            
+            document.getElementById('filter-min-price').value = window.minPriceFilter;
+            document.getElementById('filter-max-price').value = window.maxPriceFilter;
+            window.setSort(window.currentSortBy);
+        }
+        
+        window.closeFilterModal = function() {
+            document.getElementById('filter-modal-content').classList.add('translate-y-full');
+            setTimeout(() => document.getElementById('filter-modal').classList.add('hidden'), 300);
+        }
+        
+        window.setSort = function(type) {
+            window.currentSortBy = type;
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-50', 'border-[#009669]', 'text-[#009669]');
+                btn.classList.add('bg-gray-50', 'border-transparent', 'text-gray-600');
+            });
+            const activeBtn = document.getElementById('sort-' + type);
+            if(activeBtn) {
+                activeBtn.classList.remove('bg-gray-50', 'border-transparent', 'text-gray-600');
+                activeBtn.classList.add('bg-emerald-50', 'border-[#009669]', 'text-[#009669]');
+            }
+        }
+        
+        window.applyFilters = function() {
+            window.minPriceFilter = document.getElementById('filter-min-price').value;
+            window.maxPriceFilter = document.getElementById('filter-max-price').value;
+            window.closeFilterModal();
+            window.render();
+        }
+        
+        window.resetFilters = function() {
+            window.currentSortBy = 'terbaru';
+            window.minPriceFilter = '';
+            window.maxPriceFilter = '';
+            document.getElementById('filter-min-price').value = '';
+            document.getElementById('filter-max-price').value = '';
+            window.setSort('terbaru');
+            window.closeFilterModal();
+            window.render();
+        }
+        // --- END FILTER FUNCTIONS ---
+
+        // --- NEW CHECKOUT & ADMIN MODAL FUNCTIONS ---
+        window.openCheckoutModal = function(storeOwnerId) {
+            window.currentCheckoutStoreId = storeOwnerId;
+            document.getElementById('checkout-notes').value = '';
+            document.getElementById('checkout-delivery').value = 'Ambil Sendiri di Toko';
+            document.getElementById('checkout-modal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('checkout-modal-content').classList.remove('translate-y-full'), 50);
+        }
+
+        window.closeCheckoutModal = function() {
+            document.getElementById('checkout-modal-content').classList.add('translate-y-full');
+            setTimeout(() => document.getElementById('checkout-modal').classList.add('hidden'), 300);
+        }
+        
+        window.showConfirmModal = function(title, desc, callback) {
+            document.getElementById('confirm-title').innerText = title;
+            document.getElementById('confirm-desc').innerText = desc;
+            window.confirmActionCallback = callback;
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        }
+        
+        window.closeConfirmModal = function() {
+            document.getElementById('confirm-modal').classList.add('hidden');
+            window.confirmActionCallback = null;
+        }
+        
+        document.getElementById('confirm-action-btn').addEventListener('click', () => {
+            if (typeof window.confirmActionCallback === 'function') {
+                window.confirmActionCallback();
+            }
+            window.closeConfirmModal();
+        });
+
+        window.deleteProductAdmin = function(id) {
+            window.showConfirmModal(
+                'Hapus Produk (Admin)', 
+                'Apakah Anda yakin ingin menghapus produk ini dari pasar secara permanen?',
+                async () => {
+                    try { 
+                        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id)); 
+                        window.showToastMessage('Produk dihapus oleh Admin'); 
+                        if(window.currentView === 'detail') window.navigate('home');
+                    } catch (e) { console.error(e); }
+                }
+            );
+        }
+        // --- END NEW MODALS ---
+
+        window.openStore = function(ownerId) {
+            window.currentStoreId = ownerId;
+            window.navigate('store');
+        }
+
         window.addToCart = function(id) {
             let p = window.products.find(x => x.id === id);
-            if(p) { window.cart.push({ ...p }); window.showToastMessage('Ditambahkan ke keranjang!'); window.render(); }
+            if(p) { 
+                let cartItem = { ...p, cartItemId: Date.now().toString() + '-' + Math.floor(Math.random()*1000).toString() };
+                
+                if (p.hasVariants && p.variants && p.variants.length > 0) {
+                    let selectedVar = p.variants[window.selectedVariantIndex || 0];
+                    if (selectedVar.stock === 0) return window.showToastMessage('Maaf, stok varian ini sedang habis.');
+                    cartItem.price = selectedVar.price;
+                    cartItem.variantName = selectedVar.name;
+                    cartItem.variantIndex = window.selectedVariantIndex || 0;
+                } else {
+                    if(p.stock === 0) return window.showToastMessage('Maaf, stok barang sedang habis.');
+                }
+                
+                window.cart.push(cartItem); 
+                window.showToastMessage('Ditambahkan ke keranjang!'); 
+                window.render(); 
+            }
+        }
+
+        window.removeFromCart = function(cartItemId) {
+            window.cart = window.cart.filter(item => item.cartItemId !== cartItemId);
+            window.render();
         }
 
         window.openProductDetail = function(id) {
             let p = window.products.find(x => x.id === id);
-            if(p) { window.currentProductDetail = p; window.currentView = 'detail'; window.render(); }
+            if(p) { 
+                window.currentProductDetail = p; 
+                window.selectedVariantIndex = 0; // Reset varian ke pilihan pertama
+                window.currentView = 'detail'; 
+                window.render(); 
+            }
         }
 
         window.buildHorizontalProductCard = function(p) {
@@ -351,21 +616,27 @@
             const prodReviews = window.reviews.filter(r => r.productId === p.id);
             const avgRating = prodReviews.length > 0 ? (prodReviews.reduce((sum, r) => sum + r.rating, 0) / prodReviews.length).toFixed(1) : 0;
             const ratingHtml = prodReviews.length > 0 ? `<div class="flex items-center gap-1 bg-amber-50 px-1.5 py-0.5 rounded text-[9px] font-bold text-amber-600 border border-amber-100 shadow-sm"><i data-lucide="star" class="w-2.5 h-2.5 fill-amber-500 text-amber-500"></i> ${avgRating}</div>` : '';
+            const isOutOfStock = p.stock === 0;
+            
+            // Tombol Hapus Khusus Super Admin
+            const adminDeleteBtn = window.isAdmin ? `<button onclick="event.stopPropagation(); window.deleteProductAdmin('${p.id}')" class="absolute top-2 right-2 bg-red-500 text-white w-7 h-7 rounded-full flex items-center justify-center shadow-lg border-2 border-white hover:bg-red-600 transition-colors z-20 tooltip" title="Admin Hapus"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>` : '';
 
             return `
                 <div onclick="window.openProductDetail('${p.id}')" class="min-w-[150px] w-[150px] bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col relative cursor-pointer snap-start hover:shadow-md transition-shadow">
+                    ${adminDeleteBtn}
+                    ${isOutOfStock ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center"><div class="bg-red-500/90 text-white font-black text-xs px-3 py-1 rounded-full shadow-lg transform -rotate-12">STOK HABIS</div></div>` : ''}
                     <div class="h-32 bg-gray-50 relative w-full overflow-hidden group">
                         <img src="${p.imgUrl}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
                         <div class="absolute top-2 left-2 bg-white/90 backdrop-blur-sm text-[#009669] text-[8px] font-extrabold px-2 py-1 rounded-full uppercase shadow-sm max-w-[80%] truncate border border-emerald-50">${p.category || 'Lainnya'}</div>
                     </div>
-                    <div class="p-3 flex flex-col flex-1">
+                    <div class="p-3 flex flex-col flex-1 relative z-0">
                         <div class="flex justify-between items-start mb-1.5">
                             <h3 class="font-bold text-[13px] text-gray-800 leading-[1.3] line-clamp-2">${p.name}</h3>
                         </div>
                         <div class="flex items-center justify-between mb-2 mt-auto">
-                            <div class="flex items-center gap-1.5">
-                                <i data-lucide="store" class="w-3 h-3 text-gray-400"></i>
-                                <span class="text-[9px] font-medium text-gray-500 truncate max-w-[60px]">${p.storeName || 'Online'}</span>
+                            <div onclick="event.stopPropagation(); window.openStore('${p.ownerId}')" class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 px-1 py-0.5 -ml-1 rounded transition-colors group">
+                                <i data-lucide="store" class="w-3 h-3 text-gray-400 group-hover:text-[#009669]"></i>
+                                <span class="text-[9px] font-medium text-gray-500 group-hover:text-gray-700 truncate max-w-[60px]">${p.storeName || 'Online'}</span>
                             </div>
                             ${ratingHtml}
                         </div>
@@ -398,8 +669,9 @@
                 bottomNav.style.transform = 'translateY(150%)'; 
                 content.classList.replace('pb-28', 'pb-0');
                 window.stopBannerSlide();
-            } else if (['detail', 'seller_center', 'admin_dashboard'].includes(window.currentView)) {
+            } else if (['detail', 'seller_center', 'admin_dashboard', 'store'].includes(window.currentView)) {
                 if (window.currentView === 'detail') content.innerHTML = window.renderProductDetail();
+                if (window.currentView === 'store') content.innerHTML = window.renderStore();
                 if (window.currentView === 'seller_center') content.innerHTML = window.renderSellerCenter();
                 if (window.currentView === 'admin_dashboard') content.innerHTML = window.renderAdminDashboard();
                 bottomNav.style.transform = 'translateY(150%)'; 
@@ -437,11 +709,64 @@
             if(window.lucide) window.lucide.createIcons();
         }
 
-        window.renderHomeSections = function() {
-            let filteredProducts = window.products;
+        window.renderStore = function() {
+            if (!window.currentStoreId) return '';
+            const storeProducts = window.products.filter(p => p.ownerId === window.currentStoreId);
             
-            if (window.currentSearchQuery !== '' || window.currentCategoryFilter !== 'Semua') {
-                filteredProducts = window.products.filter(p => {
+            if (storeProducts.length === 0) return `
+                <div class="flex flex-col items-center justify-center min-h-screen px-5 bg-gray-50 text-center relative">
+                     <button onclick="window.navigate('home')" class="absolute top-6 left-5 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-200">
+                        <i data-lucide="arrow-left" class="w-5 h-5 text-gray-500"></i>
+                     </button>
+                     <i data-lucide="store" class="w-16 h-16 text-gray-300 mb-4"></i>
+                     <h3 class="font-bold text-gray-500">Etalase Toko Tidak Ditemukan</h3>
+                </div>
+            `;
+            
+            const firstP = storeProducts[0];
+            const storeName = firstP.storeName || 'Toko SUQNA';
+            
+            // Kalkulasi Rating Toko Keseluruhan
+            const storeReviews = window.reviews.filter(r => storeProducts.some(p => p.id === r.productId));
+            const storeAvgRating = storeReviews.length > 0 ? (storeReviews.reduce((sum, r) => sum + r.rating, 0) / storeReviews.length).toFixed(1) : 'Belum Ada';
+
+            return `
+                <div class="bg-gradient-to-b from-gray-900 to-gray-800 pt-8 pb-10 px-5 rounded-b-[2.5rem] shadow-xl relative z-10">
+                    <button onclick="window.navigate('home')" class="absolute top-6 left-5 w-10 h-10 bg-white/10 backdrop-blur rounded-full flex items-center justify-center text-white hover:bg-white/20 transition-colors z-20">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    </button>
+                    <div class="flex flex-col items-center mt-6 text-center">
+                        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg border-4 border-gray-700 overflow-hidden mb-3">
+                            <span class="text-gray-900 text-3xl font-black uppercase">${storeName.charAt(0)}</span>
+                        </div>
+                        <h1 class="font-black text-white text-2xl leading-tight mb-2">${storeName}</h1>
+                        <div class="flex items-center justify-center gap-4 bg-gray-800/50 backdrop-blur px-5 py-2.5 rounded-full border border-gray-700/50">
+                            <div class="text-center">
+                                <span class="block text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">Produk</span>
+                                <span class="block text-sm text-white font-black">${storeProducts.length}</span>
+                            </div>
+                            <div class="w-px h-6 bg-gray-600"></div>
+                            <div class="text-center">
+                                <span class="block text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-0.5">Rating</span>
+                                <span class="block text-sm text-amber-400 font-black flex items-center justify-center gap-1"><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-400"></i> ${storeAvgRating}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-5 mt-8 pb-28 relative z-0">
+                    <h2 class="font-extrabold text-gray-900 text-base mb-5 flex items-center gap-2"><i data-lucide="layout-grid" class="w-5 h-5 text-[#009669]"></i> Semua Produk Toko</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        ${storeProducts.map(p => window.buildHorizontalProductCard(p)).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        window.renderHomeSections = function() {
+            let isFiltering = window.currentSearchQuery !== '' || window.currentCategoryFilter !== 'Semua' || window.currentSortBy !== 'terbaru' || window.minPriceFilter !== '' || window.maxPriceFilter !== '';
+            
+            if (isFiltering) {
+                let filteredProducts = window.products.filter(p => {
                     let matchCategory = true;
                     if (window.currentCategoryFilter !== 'Semua') {
                         const parentCategoryArray = window.categoryData[window.currentCategoryFilter] || [];
@@ -451,17 +776,51 @@
                     if (window.currentSearchQuery.trim() !== '') {
                         matchSearch = p.name.toLowerCase().includes(window.currentSearchQuery.toLowerCase());
                     }
-                    return matchCategory && matchSearch;
+                    let matchMinPrice = true;
+                    if (window.minPriceFilter !== '') {
+                        matchMinPrice = (p.price || 0) >= parseInt(window.minPriceFilter);
+                    }
+                    let matchMaxPrice = true;
+                    if (window.maxPriceFilter !== '') {
+                        matchMaxPrice = (p.price || 0) <= parseInt(window.maxPriceFilter);
+                    }
+                    return matchCategory && matchSearch && matchMinPrice && matchMaxPrice;
                 });
+
+                // Proses Pengurutan (Sorting)
+                if (window.currentSortBy === 'termurah') {
+                    filteredProducts.sort((a, b) => (a.price || 0) - (b.price || 0));
+                } else if (window.currentSortBy === 'termahal') {
+                    filteredProducts.sort((a, b) => (b.price || 0) - (a.price || 0));
+                } else if (window.currentSortBy === 'terlaris') {
+                    filteredProducts.sort((a, b) => {
+                        const revA = window.reviews.filter(r => r.productId === a.id);
+                        const avgA = revA.length > 0 ? revA.reduce((sum, r) => sum + r.rating, 0) / revA.length : 0;
+                        const revB = window.reviews.filter(r => r.productId === b.id);
+                        const avgB = revB.length > 0 ? revB.reduce((sum, r) => sum + r.rating, 0) / revB.length : 0;
+                        return avgB - avgA; // Descending
+                    });
+                } else {
+                    // terbaru
+                    filteredProducts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                }
                 
                 return `
                     <div class="px-5 mt-6 pb-4">
-                        <h2 class="font-extrabold text-gray-800 text-[17px] mb-4 flex items-center gap-2">
-                            <i data-lucide="search" class="w-5 h-5 text-[#009669]"></i>
-                            Hasil untuk: ${window.currentSearchQuery || window.currentCategoryFilter}
-                        </h2>
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="font-extrabold text-gray-800 text-[15px] flex items-center gap-2">
+                                <i data-lucide="filter" class="w-4 h-4 text-[#009669]"></i>
+                                Hasil Pencarian (${filteredProducts.length})
+                            </h2>
+                            <button onclick="window.currentSearchQuery=''; window.resetFilters();" class="text-[10px] text-red-500 font-bold bg-red-50 px-2 py-1.5 rounded-md hover:bg-red-100 transition-colors">Hapus Filter</button>
+                        </div>
                         <div class="grid grid-cols-2 gap-4">
-                            ${filteredProducts.map(p => window.buildHorizontalProductCard(p)).join('') || '<p class="text-sm text-gray-400 col-span-2 text-center py-10">Barang tidak ditemukan.</p>'}
+                            ${filteredProducts.map(p => window.buildHorizontalProductCard(p)).join('') || `
+                                <div class="col-span-2 py-10 flex flex-col items-center justify-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                                    <i data-lucide="search-x" class="w-10 h-10 text-gray-300 mb-3"></i>
+                                    <p class="text-sm text-gray-400 font-bold">Barang tidak ditemukan.</p>
+                                </div>
+                            `}
                         </div>
                     </div>
                 `;
@@ -480,7 +839,6 @@
                 `;
             }
 
-            // MENGHITUNG PRODUK DENGAN RATING TERTINGGI (Bintang 4.0 ke atas)
             const topRatedProducts = realProducts.filter(p => {
                 const prodReviews = window.reviews.filter(r => r.productId === p.id);
                 if (prodReviews.length === 0) return false;
@@ -501,7 +859,6 @@
 
             let html = '';
             
-            // SEKSI BARU: RATING TERTINGGI
             if (topRatedProducts.length > 0) {
                 html += `
                     <div class="mt-6 pt-6 border-t-8 border-gray-50 bg-gradient-to-b from-amber-50/30 to-transparent">
@@ -529,21 +886,6 @@
                     </div>
                     <div class="flex gap-4 overflow-x-auto hide-scroll pb-5 px-5 snap-x snap-mandatory">
                         ${popProducts.map(p => window.buildHorizontalProductCard(p)).join('')}
-                    </div>
-                </div>
-            `;
-
-            html += `
-                <div class="mt-2 pt-6 border-t-8 border-gray-50">
-                    <div class="px-5 flex justify-between items-end mb-4">
-                        <div>
-                            <h2 class="font-black text-gray-900 text-lg flex items-center gap-1.5"><i data-lucide="map-pin" class="w-5 h-5 text-blue-500 fill-blue-100"></i> Terdekat dari Anda</h2>
-                            <p class="text-[11px] text-gray-500 font-medium mt-0.5">Temukan di sekitar lokasi Anda</p>
-                        </div>
-                        <span class="text-[#009669] text-[10px] font-bold flex items-center">Atur <i data-lucide="chevron-right" class="w-3 h-3"></i></span>
-                    </div>
-                    <div class="flex gap-4 overflow-x-auto hide-scroll pb-5 px-5 snap-x snap-mandatory">
-                        ${popProducts.slice().reverse().map(p => window.buildHorizontalProductCard(p)).join('')}
                     </div>
                 </div>
             `;
@@ -595,9 +937,15 @@
                         </span>
                     </div>
 
-                    <div class="mt-6 bg-white rounded-2xl flex items-center px-4 py-3.5 shadow-xl shadow-emerald-900/10 focus-within:ring-4 ring-white/30 transition-all">
-                        <i data-lucide="search" class="w-5 h-5 text-gray-400 flex-shrink-0"></i>
-                        <input type="text" value="${window.currentSearchQuery}" onkeyup="window.handleSearch(this.value)" placeholder="Cari produk, jasa, properti..." class="flex-1 bg-transparent border-none outline-none text-sm px-3 text-gray-800 placeholder-gray-400 font-bold">
+                    <div class="mt-6 flex items-center gap-2">
+                        <div class="flex-1 bg-white rounded-2xl flex items-center px-4 py-3.5 shadow-xl shadow-emerald-900/10 focus-within:ring-4 ring-white/30 transition-all">
+                            <i data-lucide="search" class="w-5 h-5 text-gray-400 flex-shrink-0"></i>
+                            <input type="text" value="${window.currentSearchQuery}" onkeyup="window.handleSearch(this.value)" placeholder="Cari produk, jasa..." class="flex-1 bg-transparent border-none outline-none text-sm px-3 text-gray-800 placeholder-gray-400 font-bold">
+                        </div>
+                        <button onclick="window.openFilterModal()" class="w-12 h-12 bg-white/20 backdrop-blur border border-white/40 rounded-2xl flex flex-shrink-0 items-center justify-center text-white hover:bg-white/30 transition-all shadow-lg active:scale-95 relative">
+                            ${window.currentSortBy !== 'terbaru' || window.minPriceFilter !== '' ? '<span class="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full animate-pulse border border-white"></span>' : ''}
+                            <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+                        </button>
                     </div>
 
                     <div class="mt-6 relative h-[140px] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer border-2 border-white/10" id="banner-container">
@@ -774,7 +1122,8 @@
                                         <span class="text-[9px] font-black uppercase px-2 py-1 rounded-md ${o.status === 'Dikemas' ? 'bg-amber-100 text-amber-600' : o.status === 'Dikirim' ? 'bg-blue-100 text-blue-600' : o.status === 'Selesai' ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-200 text-gray-500'}">${o.status}</span>
                                         <span class="text-[10px] text-gray-500 font-bold">${new Date(o.timestamp).toLocaleDateString('id-ID')}</span>
                                     </div>
-                                    <p class="text-xs font-bold text-gray-800 mb-3 leading-snug">${o.items.map(i => `${i.name} (x1)`).join(', ')}</p>
+                                    <p class="text-xs font-bold text-gray-800 mb-2 leading-snug">${o.items.map(i => `${i.name} (x1)`).join(', ')}</p>
+                                    ${o.delivery ? `<p class="text-[10px] font-medium text-gray-600 mb-3 flex items-center gap-1"><i data-lucide="truck" class="w-3 h-3"></i> ${o.delivery}</p>` : ''}
                                     <div class="flex justify-between items-end pt-3 border-t border-gray-200">
                                         <div>
                                             <p class="text-[9px] text-gray-500 font-bold mb-0.5">Total</p>
@@ -894,7 +1243,6 @@
                     </div>`;
             }
 
-            // PERHITUNGAN RATING TOKO
             const myProductIds = window.products.filter(p => p.ownerId === window.userId).map(p => p.id);
             const myStoreReviews = window.reviews.filter(r => myProductIds.includes(r.productId));
             const storeAvgRating = myStoreReviews.length > 0 ? (myStoreReviews.reduce((sum, r) => sum + r.rating, 0) / myStoreReviews.length).toFixed(1) : 0;
@@ -969,7 +1317,9 @@
                                             <span class="text-[9px] font-black uppercase px-2 py-1 rounded-md ${o.status === 'Dikemas' ? 'bg-emerald-100/50 text-[#009669]' : 'bg-gray-200 text-gray-500'}">${o.status}</span>
                                             <span class="text-[10px] text-gray-500 font-bold">${new Date(o.timestamp).toLocaleDateString('id-ID')}</span>
                                         </div>
-                                        <p class="text-xs font-bold text-gray-800 mb-3 leading-snug">${o.items.map(i => `${i.name} (x1)`).join(', ')}</p>
+                                        <p class="text-xs font-bold text-gray-800 mb-2 leading-snug">${o.items.map(i => `${i.name} (x1)`).join(', ')}</p>
+                                        ${o.delivery ? `<p class="text-[10px] font-medium text-gray-600 mb-1 flex items-center gap-1"><i data-lucide="truck" class="w-3 h-3"></i> Kirim via: ${o.delivery}</p>` : ''}
+                                        ${o.notes ? `<p class="text-[10px] font-medium text-gray-600 mb-3 flex items-start gap-1 bg-gray-100 p-2 rounded"><i data-lucide="file-text" class="w-3 h-3 mt-0.5 shrink-0"></i> ${o.notes}</p>` : ''}
                                         <div class="flex justify-between items-end pt-3 border-t border-gray-200">
                                             <div>
                                                 <p class="text-[9px] text-gray-500 font-bold mb-0.5">Total</p>
@@ -992,10 +1342,14 @@
                                             <button onclick="window.deleteProduct('${p.id}')" class="bg-white/90 backdrop-blur text-red-500 p-2 rounded-full shadow-sm hover:bg-red-50 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                                         </div>
                                         <div class="h-32 bg-gray-50 w-full relative">
+                                            ${p.stock === 0 ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center"><span class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded shadow-sm">HABIS</span></div>` : ''}
                                             <img src="${p.imgUrl}" class="h-full w-full object-cover">
                                         </div>
-                                        <div class="p-3 flex-1 flex flex-col">
-                                            <div class="text-[8px] font-bold text-gray-600 bg-gray-100 inline-block px-2 py-0.5 rounded-md mb-2 truncate max-w-full">${p.category}</div>
+                                        <div class="p-3 flex-1 flex flex-col relative z-0">
+                                            <div class="flex justify-between items-start mb-2">
+                                                <div class="text-[8px] font-bold text-gray-600 bg-gray-100 inline-block px-2 py-0.5 rounded-md truncate max-w-[70%]">${p.category}</div>
+                                                <span class="text-[9px] font-bold ${p.stock > 0 || p.stock === undefined ? 'text-emerald-600' : 'text-red-500'}">Stok: ${p.stock !== undefined ? p.stock : 'Tersedia'}</span>
+                                            </div>
                                             <h3 class="font-bold text-xs leading-[1.3] mb-2 line-clamp-2 text-gray-800">${p.name}</h3>
                                             <div class="mt-auto pt-2 border-t border-gray-50">
                                                 <p class="text-gray-900 font-black text-[13px]">Rp ${p.price.toLocaleString('id-ID')}</p>
@@ -1022,11 +1376,25 @@
                                 <input type="text" id="new-prod-name" value="${window.editingProductData ? window.editingProductData.name : ''}" placeholder="Cth: Baju Koko Premium" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 font-bold text-gray-800 focus:ring-2 focus:ring-gray-900/20 outline-none transition-all">
                             </div>
                             
-                            <div class="space-y-1">
-                                <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Harga Barang</label>
-                                <div class="relative">
-                                    <span class="absolute left-4 top-3.5 text-gray-500 font-black text-sm">Rp</span>
-                                    <input type="number" id="new-prod-price" value="${window.editingProductData ? window.editingProductData.price : ''}" placeholder="0" class="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-12 pr-4 py-3.5 font-black text-gray-900 focus:ring-2 focus:ring-gray-900/20 outline-none transition-all">
+                            <div class="flex items-center gap-2 px-4 py-3 bg-emerald-50/50 rounded-2xl border border-emerald-100/50">
+                                <input type="checkbox" id="use-variants" onchange="window.toggleVariantMode(this.checked)" class="w-4 h-4 text-[#009669] rounded border-gray-300 focus:ring-[#009669]" ${window.editingProductData && window.editingProductData.hasVariants ? 'checked' : ''}>
+                                <label for="use-variants" class="text-xs font-black text-gray-700">Aktifkan Varian (Ukuran/Gram/Warna)</label>
+                            </div>
+
+                            <div id="variant-section" class="${window.editingProductData && window.editingProductData.hasVariants ? '' : 'hidden'} space-y-3 border border-gray-200 rounded-2xl p-4 bg-white shadow-sm">
+                                <label class="text-[10px] text-gray-500 font-bold uppercase tracking-wide block">Kelola Varian Harga & Stok</label>
+                                <div id="variant-list-container" class="space-y-2"></div>
+                                <button onclick="window.addVariantItem()" class="w-full bg-emerald-50 text-emerald-700 font-extrabold text-xs py-3 rounded-xl border border-emerald-100 hover:bg-emerald-100 transition-colors shadow-sm">+ Tambah Varian Lain</button>
+                            </div>
+
+                            <div id="normal-price-stock" class="grid grid-cols-2 gap-4 ${window.editingProductData && window.editingProductData.hasVariants ? 'hidden' : ''}">
+                                <div class="space-y-1">
+                                    <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Harga Barang (Rp)</label>
+                                    <input type="number" id="new-prod-price" value="${window.editingProductData ? window.editingProductData.price : ''}" placeholder="0" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 font-black text-gray-900 focus:ring-2 focus:ring-gray-900/20 outline-none transition-all">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Stok Barang (Jumlah)</label>
+                                    <input type="number" id="new-prod-stock" value="${window.editingProductData && window.editingProductData.stock !== undefined ? window.editingProductData.stock : 1}" placeholder="Cth: 10" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 font-black text-gray-900 focus:ring-2 focus:ring-gray-900/20 outline-none transition-all">
                                 </div>
                             </div>
 
@@ -1062,6 +1430,35 @@
             const p = window.currentProductDetail;
             if(!p) return '';
             const price = p.price || 0;
+            const isOutOfStock = p.stock === 0;
+
+            let displayPrice = price;
+            let displayStock = p.stock;
+            let variantHtml = '';
+            let variantOutOfStock = isOutOfStock;
+
+            if (p.hasVariants && p.variants && p.variants.length > 0) {
+                let selectedIdx = window.selectedVariantIndex || 0;
+                let activeVar = p.variants[selectedIdx];
+                if(activeVar) {
+                    displayPrice = activeVar.price;
+                    displayStock = activeVar.stock;
+                    variantOutOfStock = displayStock === 0;
+                }
+                
+                variantHtml = `
+                    <div class="mb-5 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                        <h4 class="text-[10px] font-black text-gray-500 mb-2.5 uppercase tracking-widest">Pilih Varian:</h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${p.variants.map((v, idx) => `
+                                <button onclick="window.selectedVariantIndex = ${idx}; window.render();" class="px-4 py-2.5 rounded-xl text-xs font-bold border-2 transition-all active:scale-95 ${idx === selectedIdx ? 'border-[#009669] bg-emerald-50/50 text-[#009669] shadow-sm' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'} ${v.stock === 0 ? 'opacity-40 line-through' : ''}">
+                                    ${v.name}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
 
             const prodReviews = window.reviews.filter(r => r.productId === p.id);
             const avgRating = prodReviews.length > 0 ? (prodReviews.reduce((sum, r) => sum + r.rating, 0) / prodReviews.length).toFixed(1) : 0;
@@ -1094,6 +1491,7 @@
                     <button onclick="window.navigate('home')" class="absolute top-6 left-4 z-20 w-10 h-10 bg-white/90 backdrop-blur rounded-full shadow-md flex items-center justify-center text-gray-800 hover:bg-white transition-colors">
                         <i data-lucide="arrow-left" class="w-5 h-5"></i>
                     </button>
+                    ${window.isAdmin ? `<button onclick="window.deleteProductAdmin('${p.id}')" class="absolute top-6 right-16 z-20 w-10 h-10 bg-red-500/90 backdrop-blur rounded-full shadow-md flex items-center justify-center text-white hover:bg-red-600 transition-all active:scale-95 tooltip" title="Hapus Produk"><i data-lucide="trash-2" class="w-5 h-5"></i></button>` : ''}
                     <button onclick="window.shareProduct('${p.id}')" class="absolute top-6 right-4 z-20 w-10 h-10 bg-white/90 backdrop-blur rounded-full shadow-md flex items-center justify-center text-[#009669] hover:bg-[#009669] hover:text-white transition-all active:scale-95 group">
                         <i data-lucide="share-2" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
                     </button>
@@ -1105,17 +1503,24 @@
                         ${prodReviews.length > 0 && avgRating >= 4.5 ? `<span class="bg-amber-50 text-amber-600 border border-amber-100 text-[10px] font-black px-2.5 py-1 rounded-full flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3"></i> Terpercaya</span>` : ''}
                     </div>
                     <h1 class="text-2xl font-black text-gray-900 leading-tight mb-3">${p.name}</h1>
-                    <p class="text-[#009669] font-black text-3xl mb-5">Rp ${price.toLocaleString('id-ID')}</p>
+                    <p class="text-[#009669] font-black text-3xl mb-4">Rp ${displayPrice.toLocaleString('id-ID')}</p>
+                    
+                    ${variantHtml}
+
+                    <div class="bg-gray-50 border border-gray-100 rounded-xl px-4 py-2.5 inline-flex items-center gap-2 mb-6">
+                        <i data-lucide="package" class="w-4 h-4 text-gray-500"></i>
+                        <span class="text-xs font-bold text-gray-700">Sisa Stok: <span class="${displayStock > 0 || displayStock === undefined ? 'text-emerald-600' : 'text-red-500'}">${displayStock !== undefined ? displayStock : 'Tersedia'}</span></span>
+                    </div>
                     
                     <div class="w-full h-[1px] bg-gray-100 mb-6"></div>
                     
-                    <div class="flex items-center gap-4 mb-6 p-4 rounded-2xl bg-gray-50 border border-gray-100">
-                        <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-sm overflow-hidden border-2 border-emerald-50">
+                    <div onclick="window.openStore('${p.ownerId}')" class="flex items-center gap-4 mb-6 p-4 rounded-2xl bg-gray-50 border border-gray-100 cursor-pointer hover:bg-gray-100 transition-colors group">
+                        <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-sm overflow-hidden border-2 border-emerald-50 group-hover:border-emerald-200 transition-colors">
                             <span class="text-[#009669] font-black text-xl uppercase">${p.storeName ? p.storeName.charAt(0) : 'T'}</span>
                         </div>
                         <div class="flex-1">
                             <h3 class="font-extrabold text-gray-900 text-sm mb-0.5">${p.storeName || 'Toko SUQNA'}</h3>
-                            <p class="text-[11px] text-gray-500 font-medium flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Online</p>
+                            <p class="text-[11px] text-[#009669] font-bold flex items-center gap-1">Kunjungi Toko <i data-lucide="chevron-right" class="w-3 h-3"></i></p>
                         </div>
                     </div>
                     
@@ -1124,12 +1529,12 @@
                     
                     ${reviewsHtml}
                 </div>
-                <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white p-4 shadow-[0_-10px_30px_rgba(0,0,0,0.08)] z-50 rounded-t-[2rem] flex gap-3 border-t border-gray-50">
+                <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white p-4 shadow-[0_-10px_30px_rgba(0,0,0,0.08)] z-50 rounded-t-[2rem] flex gap-3 border-t border-gray-50 pb-safe">
                     <button class="w-14 h-14 bg-gray-50 border border-gray-200 text-gray-600 rounded-2xl flex items-center justify-center flex-shrink-0 hover:bg-gray-100 transition-colors">
                         <i data-lucide="message-square" class="w-6 h-6"></i>
                     </button>
-                    <button onclick="window.addToCart('${p.id}'); window.navigate('cart');" class="flex-1 bg-[#009669] text-white font-extrabold text-lg py-4 rounded-2xl flex justify-center items-center shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-colors">
-                        Beli Sekarang
+                    <button onclick="window.addToCart('${p.id}'); if(!${variantOutOfStock}) window.navigate('cart');" class="flex-1 ${variantOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none' : 'bg-[#009669] text-white shadow-lg shadow-emerald-200 hover:bg-emerald-700'} font-extrabold text-lg py-4 rounded-2xl flex justify-center items-center transition-colors active:scale-95">
+                        ${variantOutOfStock ? 'Stok Habis' : 'Beli Sekarang'}
                     </button>
                 </div>
             `;
@@ -1149,38 +1554,64 @@
                         <button onclick="window.navigate('home')" class="mt-4 bg-emerald-50 text-emerald-600 font-bold px-6 py-2.5 rounded-full text-sm">Mulai Belanja</button>
                     </div>`;
             }
-            let total = window.cart.reduce((s, i) => s + i.price, 0);
-            return `
-                <div class="bg-gradient-to-b from-[#009669] to-emerald-800 pt-10 pb-6 px-5 rounded-b-[2rem] shadow-sm relative z-10 text-center">
-                    <h2 class="text-white font-extrabold text-2xl">Keranjang (${window.cart.length})</h2>
-                </div>
-                <div class="px-5 mt-6 pb-40 space-y-4 relative z-0">
-                    ${window.cart.map((item, index) => `
-                        <div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                            <div class="flex items-center gap-4">
-                                <img src="${item.imgUrl}" class="w-16 h-16 rounded-xl object-cover border border-gray-50"/>
-                                <div>
-                                    <h4 class="font-bold text-sm text-gray-900 leading-tight mb-1 line-clamp-1">${item.name}</h4>
-                                    <p class="text-[10px] text-gray-500 mb-1"><i data-lucide="store" class="w-3 h-3 inline"></i> ${item.storeName || 'SUQNA'}</p>
-                                    <p class="text-[#009669] text-sm font-black">Rp ${item.price.toLocaleString('id-ID')}</p>
-                                </div>
-                            </div>
-                            <button onclick="window.removeFromCart(${index})" class="text-red-400 p-2 bg-red-50 rounded-full hover:bg-red-100 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="fixed sm:absolute bottom-[5.5rem] w-full bg-white p-5 shadow-[0_-10px_30px_rgba(0,0,0,0.06)] z-10 rounded-t-[2rem] border-t border-gray-50">
-                    <div class="flex justify-between items-end mb-4">
-                        <span class="font-bold text-gray-500 text-sm">Total Belanja</span>
-                        <span class="text-[#009669] text-2xl font-black leading-none">Rp ${total.toLocaleString('id-ID')}</span>
-                    </div>
-                    <button onclick="window.processCheckout()" class="w-full bg-[#009669] text-white font-extrabold text-lg py-4 rounded-2xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-colors active:scale-95">Checkout Sekarang</button>
-                </div>`;
-        }
 
-        window.removeFromCart = function(index) {
-            window.cart.splice(index, 1);
-            window.render();
+            const cartByStore = {};
+            window.cart.forEach(item => {
+                if (!cartByStore[item.ownerId]) {
+                    cartByStore[item.ownerId] = {
+                        storeName: item.storeName || 'SUQNA Seller',
+                        items: [], total: 0
+                    };
+                }
+                cartByStore[item.ownerId].items.push(item);
+                cartByStore[item.ownerId].total += item.price;
+            });
+
+            let html = `
+                <div class="bg-gradient-to-b from-[#009669] to-emerald-800 pt-10 pb-6 px-5 rounded-b-[2rem] shadow-sm relative z-10 text-center">
+                    <h2 class="text-white font-extrabold text-2xl">Keranjang Belanja</h2>
+                </div>
+                <div class="px-5 mt-6 pb-28 space-y-6 relative z-0">
+            `;
+
+            Object.keys(cartByStore).forEach(ownerId => {
+                const store = cartByStore[ownerId];
+                html += `
+                    <div class="bg-white rounded-[1.5rem] shadow-[0_5px_15px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
+                        <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                            <div class="flex items-center gap-2 cursor-pointer" onclick="window.openStore('${ownerId}')">
+                                <i data-lucide="store" class="w-4 h-4 text-[#009669]"></i>
+                                <span class="font-black text-gray-900 text-sm">${store.storeName}</span>
+                                <i data-lucide="chevron-right" class="w-3 h-3 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 space-y-4">
+                            ${store.items.map(item => `
+                                <div class="flex justify-between items-center group">
+                                    <div class="flex items-center gap-3">
+                                        <img src="${item.imgUrl}" class="w-14 h-14 rounded-xl object-cover border border-gray-100 shadow-sm"/>
+                                        <div>
+                                            <h4 class="font-bold text-xs text-gray-800 leading-tight mb-1 line-clamp-2">${item.name} ${item.variantName ? `<br><span class="inline-block mt-1 text-[#009669] bg-emerald-50 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider border border-emerald-100">${item.variantName}</span>` : ''}</h4>
+                                            <p class="text-[#009669] text-sm font-black">Rp ${item.price.toLocaleString('id-ID')}</p>
+                                        </div>
+                                    </div>
+                                    <button onclick="window.removeFromCart('${item.cartItemId}')" class="text-gray-300 p-2 rounded-full hover:bg-red-50 hover:text-red-500 transition-colors active:scale-95 flex-shrink-0"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="bg-gray-50 px-4 py-4 border-t border-gray-100 flex justify-between items-center">
+                            <div>
+                                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Subtotal Toko</p>
+                                <span class="text-gray-900 font-black text-base">Rp ${store.total.toLocaleString('id-ID')}</span>
+                            </div>
+                            <button onclick="window.openCheckoutModal('${ownerId}')" class="bg-[#009669] text-white text-xs font-extrabold px-5 py-2.5 rounded-xl shadow-lg shadow-emerald-200 hover:bg-emerald-700 transition-transform active:scale-95">Checkout</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            return html;
         }
 
         window.shareProduct = async function(id) {
@@ -1215,45 +1646,77 @@
             window.render();
         }
 
-        window.processCheckout = async function() {
-            if(window.cart.length > 0) {
-                if(!window.userId) {
-                    window.showToastMessage('Silakan masuk/daftar terlebih dahulu!');
-                    window.navigate('login'); return;
-                }
-                const totalAmount = window.cart.reduce((s,i)=>s+i.price,0);
-                const firstItem = window.cart[0];
-                const orderId = 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-                
-                const order = { 
-                    items: window.cart, totalAmount: totalAmount, status: 'Dikemas', 
-                    timestamp: Date.now(), storeOwnerId: firstItem.ownerId || 'mock'
-                };
-                
-                await setDoc(doc(db, 'artifacts', appId, 'users', window.userId, 'orders', orderId), order);
-                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'orders', orderId), order);
-                
-                let waLink = null;
-                const phone = firstItem.storePhone || '';
-                if(phone) {
-                    let text = `Halo *${firstItem.storeName || 'SUQNA Seller'}*,\nSaya tertarik memesan dari SUQNA:\n\n`;
-                    window.cart.forEach(item => { text += `- ${item.name} (Rp ${item.price.toLocaleString('id-ID')})\n`; });
-                    text += `\n*Total: Rp ${totalAmount.toLocaleString('id-ID')}*\n`;
-                    
-                    const buyerName = window.userProfile.name || (window.userEmail ? window.userEmail.split('@')[0] : 'Pembeli');
-                    const buyerAddress = window.userProfile.address || '(Pembeli belum mengisi alamat lengkap)';
-                    text += `\n📦 *Kirim ke alamat berikut:*\nNama: ${buyerName}\nAlamat: ${buyerAddress}\n`;
-                    
-                    text += `\nMohon informasi pembayarannya ya. Terima kasih!`;
-                    let cleanPhone = phone.replace(/\D/g, '');
-                    if(cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.substring(1); 
-                    waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
-                }
+        window.confirmCheckout = async function() {
+            if(!window.currentCheckoutStoreId) return;
+            const storeOwnerId = window.currentCheckoutStoreId;
+            const deliveryMethod = document.getElementById('checkout-delivery').value;
+            const notes = document.getElementById('checkout-notes').value.trim();
 
-                window.cart = [];
-                window.showModal('Pesanan Berhasil Dibuat', 'Silakan lanjutkan chat dengan penjual via WhatsApp.', waLink);
-                window.navigate('account');
+            if(!window.userId) {
+                window.closeCheckoutModal();
+                window.showToastMessage('Silakan masuk/daftar terlebih dahulu!');
+                window.navigate('login'); return;
             }
+
+            const storeItems = window.cart.filter(i => i.ownerId === storeOwnerId);
+            if(storeItems.length === 0) return;
+            
+            const totalAmount = storeItems.reduce((s,i) => s + i.price, 0);
+            const firstItem = storeItems[0];
+            const orderId = 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            
+            const order = { 
+                items: storeItems, totalAmount: totalAmount, status: 'Dikemas', 
+                timestamp: Date.now(), storeOwnerId: storeOwnerId,
+                delivery: deliveryMethod, notes: notes
+            };
+            
+            await setDoc(doc(db, 'artifacts', appId, 'users', window.userId, 'orders', orderId), order);
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'orders', orderId), order);
+            
+            // Proses pemotongan stok otomatis di Database
+            for(let item of storeItems) {
+                let currentProduct = window.products.find(x => x.id === item.id);
+                if(currentProduct) {
+                    try {
+                        if (item.variantIndex !== undefined && currentProduct.hasVariants && currentProduct.variants) {
+                            let updatedVariants = [...currentProduct.variants];
+                            if (updatedVariants[item.variantIndex] && updatedVariants[item.variantIndex].stock > 0) {
+                                updatedVariants[item.variantIndex].stock -= 1;
+                                let newTotalStock = currentProduct.stock > 0 ? currentProduct.stock - 1 : 0;
+                                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', item.id), { variants: updatedVariants, stock: newTotalStock });
+                            }
+                        } else if(currentProduct.stock !== undefined && currentProduct.stock > 0) {
+                            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', item.id), { stock: currentProduct.stock - 1 });
+                        }
+                    } catch(e) { console.error('Gagal update stok', e); }
+                }
+            }
+            
+            let waLink = null;
+            const phone = firstItem.storePhone || '';
+            if(phone) {
+                let text = `Halo *${firstItem.storeName || 'SUQNA Seller'}*,\nSaya ingin memesan dari etalase Anda:\n\n`;
+                storeItems.forEach(item => { text += `- ${item.name} ${item.variantName ? `(${item.variantName})` : ''} (Rp ${item.price.toLocaleString('id-ID')})\n`; });
+                text += `\n*Total Belanja: Rp ${totalAmount.toLocaleString('id-ID')}*\n`;
+                text += `\n🚚 *Metode Pengiriman:* ${deliveryMethod}`;
+                if(notes) text += `\n📝 *Catatan:* ${notes}`;
+                
+                const buyerName = window.userProfile.name || (window.userEmail ? window.userEmail.split('@')[0] : 'Pembeli');
+                const buyerAddress = window.userProfile.address || '(Pembeli belum mengisi alamat lengkap)';
+                text += `\n\n📦 *Data Pembeli:*\nNama: ${buyerName}\nAlamat: ${buyerAddress}\n`;
+                
+                text += `\nMohon informasi ketersediaannya ya. Terima kasih!`;
+                let cleanPhone = phone.replace(/\D/g, '');
+                if(cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.substring(1); 
+                waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
+            }
+
+            window.cart = window.cart.filter(i => i.ownerId !== storeOwnerId);
+            
+            window.closeCheckoutModal();
+            window.showModal('Pesanan Dibuat', `Pesanan untuk ${firstItem.storeName} berhasil dibuat. Silakan lanjut chat ke WhatsApp penjual.`, waLink);
+            window.navigate('account');
         }
 
         window.updateOrderStatus = async function(orderId, newStatus) {
@@ -1263,6 +1726,59 @@
             } catch(e) { console.error(e); }
         }
 
+        window.saveProduct = async function() {
+            const name = document.getElementById('new-prod-name').value;
+            const subcat = document.getElementById('subcat-select').value;
+            const desc = document.getElementById('new-prod-desc').value;
+            
+            const useVariants = document.getElementById('use-variants') ? document.getElementById('use-variants').checked : false;
+            let price = 0, stock = 0;
+            let finalVariants = [];
+
+            if (useVariants) {
+                finalVariants = window.tempVariants.filter(v => v.name.trim() !== '');
+                if (finalVariants.length === 0) return window.showToastMessage('Isi minimal 1 varian!');
+                price = Math.min(...finalVariants.map(v => v.price)); // harga terendah untuk display
+                stock = finalVariants.reduce((sum, v) => sum + v.stock, 0);
+            } else {
+                price = parseInt(document.getElementById('new-prod-price').value) || 0;
+                let stockInput = parseInt(document.getElementById('new-prod-stock').value);
+                stock = isNaN(stockInput) ? 1 : stockInput;
+            }
+            
+            if(name && price > 0 && subcat) {
+                const finalImgUrl = window.tempProductImg || (window.editingProductData ? window.editingProductData.imgUrl : `https://placehold.co/400x400/009669/ffffff?text=${name.substring(0,2).toUpperCase()}`);
+                const p = {
+                    name: name, price: price, stock: stock, category: subcat, description: desc,
+                    storeName: window.storeProfile.name, storePhone: window.storeProfile.phone || '',
+                    ownerId: window.userId, imgUrl: finalImgUrl,
+                    hasVariants: useVariants, variants: finalVariants,
+                    timestamp: window.editingProductData ? window.editingProductData.timestamp : Date.now()
+                };
+                
+                if (window.editingProductData) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', window.editingProductData.id), p);
+                    window.showToastMessage('Barang Diperbarui');
+                } else {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), p);
+                    window.showToastMessage('Barang Ditambahkan');
+                }
+                
+                window.isAddingProduct = false; window.editingProductData = null; window.tempProductImg = ''; window.tempVariants = []; window.render();
+            } else { window.showToastMessage('Gagal: Isi Nama, Harga & Kategori!'); }
+        }
+
+        window.deleteProduct = async function(id) {
+            try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id)); window.showToastMessage('Barang Dihapus'); } 
+            catch (e) { console.error(e); }
+        }
+
+        window.toggleAddProduct = function() { 
+            window.isAddingProduct = !window.isAddingProduct; 
+            if(!window.isAddingProduct) { window.editingProductData = null; window.tempVariants = []; }
+            window.render(); 
+        }
+        
         window.saveBuyerProfile = async function() {
             const name = document.getElementById('buyer-name').value;
             const address = document.getElementById('buyer-address').value;
@@ -1299,48 +1815,7 @@
         }
 
         window.deleteBanner = async function(id) {
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'banners', id));
-                window.showToastMessage('Banner berhasil dihapus!');
-            } catch(e) { console.error(e); window.showToastMessage('Gagal menghapus banner.'); }
-        }
-
-        window.saveProduct = async function() {
-            const name = document.getElementById('new-prod-name').value;
-            const price = parseInt(document.getElementById('new-prod-price').value) || 0;
-            const subcat = document.getElementById('subcat-select').value;
-            const desc = document.getElementById('new-prod-desc').value;
-            
-            if(name && price && subcat) {
-                const finalImgUrl = window.tempProductImg || (window.editingProductData ? window.editingProductData.imgUrl : `https://placehold.co/400x400/009669/ffffff?text=${name.substring(0,2).toUpperCase()}`);
-                const p = {
-                    name: name, price: price, category: subcat, description: desc,
-                    storeName: window.storeProfile.name, storePhone: window.storeProfile.phone || '',
-                    ownerId: window.userId, imgUrl: finalImgUrl,
-                    timestamp: window.editingProductData ? window.editingProductData.timestamp : Date.now()
-                };
-                
-                if (window.editingProductData) {
-                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', window.editingProductData.id), p);
-                    window.showToastMessage('Barang Diperbarui');
-                } else {
-                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), p);
-                    window.showToastMessage('Barang Ditambahkan');
-                }
-                
-                window.isAddingProduct = false; window.editingProductData = null; window.tempProductImg = ''; window.render();
-            } else { window.showToastMessage('Gagal: Isi Nama, Harga & Kategori!'); }
-        }
-
-        window.deleteProduct = async function(id) {
-            try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id)); window.showToastMessage('Barang Dihapus'); } 
-            catch (e) { console.error(e); }
-        }
-
-        window.toggleAddProduct = function() { 
-            window.isAddingProduct = !window.isAddingProduct; 
-            if(!window.isAddingProduct) window.editingProductData = null;
-            window.render(); 
+            try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'banners', id)); window.showToastMessage('Banner berhasil dihapus!'); } catch(e) { console.error(e); }
         }
 
         window.toggleEditProfile = function() { window.isEditingProfile = !window.isEditingProfile; window.render(); }
@@ -1348,7 +1823,9 @@
         window.editProduct = function(id) {
             const p = window.products.find(x => x.id === id);
             if(p) {
-                window.editingProductData = p; window.tempProductImg = p.imgUrl; window.isAddingProduct = true; window.render();
+                window.editingProductData = p; window.tempProductImg = p.imgUrl; window.isAddingProduct = true; 
+                window.tempVariants = p.hasVariants && p.variants ? JSON.parse(JSON.stringify(p.variants)) : [];
+                window.render();
                 setTimeout(() => {
                     let parentCat = "";
                     for (const [main, subs] of Object.entries(window.categoryData)) {
@@ -1361,6 +1838,7 @@
                             setTimeout(() => { const subSelect = document.getElementById('subcat-select'); if(subSelect) subSelect.value = p.category; }, 10);
                         }
                     }
+                    if (p.hasVariants) window.renderVariantListDOM();
                 }, 50);
             }
         }
@@ -1401,7 +1879,6 @@
             if(main && window.categoryData[main]) { sub.innerHTML = window.categoryData[main].map(c => `<option value="${c}">${c}</option>`).join(''); }
         }
 
-        // Image Compressor Otomatis
         window.handleImageBase64 = function(event, callback) {
             const file = event.target.files[0];
             if(!file) return;
@@ -1510,7 +1987,7 @@
         
         window.stopBannerSlide = function() { clearInterval(window.bannerInterval); }
         
-        // Render Awal
+        // Render Awal Aplikasi
         window.render();
     </script>
 </body>
