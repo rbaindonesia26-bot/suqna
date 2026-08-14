@@ -117,12 +117,12 @@
                 <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-5">
                     <i data-lucide="alert-triangle" class="w-8 h-8"></i>
                 </div>
-                <h3 id="confirm-title" class="text-xl font-black text-gray-900 mb-2">Konfirmasi Admin</h3>
-                <p id="confirm-desc" class="text-sm text-gray-500 font-medium mb-6 leading-relaxed">Anda yakin ingin menghapus ini?</p>
+                <h3 id="confirm-title" class="text-xl font-black text-gray-900 mb-2">Konfirmasi</h3>
+                <p id="confirm-desc" class="text-sm text-gray-500 font-medium mb-6 leading-relaxed">Anda yakin ingin melakukan tindakan ini?</p>
                 
                 <div class="flex gap-3">
                     <button onclick="window.closeConfirmModal()" class="w-1/2 bg-gray-100 text-gray-700 font-extrabold py-3.5 rounded-2xl hover:bg-gray-200 transition-colors">Batal</button>
-                    <button id="confirm-action-btn" class="w-1/2 bg-red-500 text-white font-extrabold py-3.5 rounded-2xl shadow-lg shadow-red-200 transition-transform active:scale-95">Ya, Hapus</button>
+                    <button id="confirm-action-btn" class="w-1/2 bg-red-500 text-white font-extrabold py-3.5 rounded-2xl shadow-lg shadow-red-200 transition-transform active:scale-95">Ya, Yakin</button>
                 </div>
             </div>
         </div>
@@ -963,8 +963,9 @@
             
             let html = `
                 <div class="bg-gradient-to-b from-[#4c1d95] to-[#5b21b6] pt-6 pb-8 px-5 rounded-b-[2.5rem] shadow-md relative z-10">
+                    
                     <div class="flex items-center justify-center mx-auto mt-2 mb-2 h-24 relative z-10 w-full overflow-hidden">
-                        <img src="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png" alt="SUQNA Logo" class="h-full w-auto max-w-[85%] object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-300">
+                        <img src="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png" alt="SUQNA Logo" class="h-full w-auto max-w-[85%] object-contain scale-105 transition-transform duration-300" style="filter: drop-shadow(0px 4px 12px rgba(255, 255, 255, 0.4));">
                     </div>
 
                     <div class="mt-6 flex items-center gap-2">
@@ -1243,7 +1244,7 @@
                                     </div>
                                     <div class="flex gap-2">
                                         <!-- Tombol Edit (Pena) -->
-                                        <button onclick="window.editBanner('${b.id}', '${b.tag}', '${b.tagColor}', '${b.title.replace(/'/g, "\\'")}', '${b.img}')" class="p-2 text-blue-500 bg-blue-50 hover:bg-blue-100 rounded-full transition-colors flex items-center justify-center border border-blue-100 mr-2" title="Edit Banner">
+                                        <button onclick="window.editBanner('${b.id}')" class="p-2 text-blue-500 bg-blue-50 hover:bg-blue-100 rounded-full transition-colors flex items-center justify-center border border-blue-100 mr-2" title="Edit Banner">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
@@ -1654,27 +1655,22 @@
 
         // Fungsi "Lihat Semua"
         window.lihatKategori = function(tipe) {
-            // 1. Pastikan pengguna berada di halaman Beranda
             if (window.currentView !== 'home') {
                 window.navigate('home');
             }
 
-            // 2. Beri jeda sejenak agar halaman siap, lalu lakukan filter
             setTimeout(() => {
                 const selectUrutkan = document.getElementById('sort-produk');
                 const bagianProduk = document.getElementById('daftar-produk-container') || document.body;
                 
-                // Gulir layar otomatis ke bagian produk
                 bagianProduk.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 
-                // Ubah filter sesuai tombol yang diklik
                 if (selectUrutkan) {
                     if (tipe === 'populer') {
-                        selectUrutkan.value = 'rating'; // Urutkan rating tertinggi
+                        selectUrutkan.value = 'rating';
                     } else if (tipe === 'terbaru') {
-                        selectUrutkan.value = 'terbaru'; // Urutkan paling baru
+                        selectUrutkan.value = 'terbaru'; 
                     }
-                    // Jalankan ulang tampilan produk
                     selectUrutkan.dispatchEvent(new Event('change'));
                 }
             }, 100);
@@ -1860,7 +1856,7 @@
             }
         }
 
-        // LOGIKA ADMIN BANNER (CREATE & UPDATE)
+        // LOGIKA ADMIN BANNER YANG SUDAH DIPERBAIKI (TIDAK ADA ERROR)
         window.editingBannerId = null;
 
         window.saveNewBanner = async function() {
@@ -1876,33 +1872,61 @@
                 if (window.editingBannerId) {
                     await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'banners', window.editingBannerId), b);
                     window.showToastMessage('Banner Berhasil Diperbarui!');
-                    window.editingBannerId = null;
+                    window.editingBannerId = null; 
                 } else {
                     await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'banners'), b);
                     window.showToastMessage('Banner Berhasil Ditambahkan!');
                 }
                 
-                document.getElementById('new-banner-tag').value = '';
-                document.getElementById('new-banner-title').value = '';
+                if(document.getElementById('new-banner-tag')) document.getElementById('new-banner-tag').value = '';
+                if(document.getElementById('new-banner-title')) document.getElementById('new-banner-title').value = '';
                 window.tempBannerImg = ''; 
-                window.render();
-            } catch(e) { console.error(e); window.showToastMessage('Gagal menyimpan banner.'); }
+                window.render(); 
+            } catch(e) { 
+                console.error(e); 
+                window.showToastMessage('Gagal menyimpan banner.'); 
+            }
         }
 
-        window.editBanner = function(id, tag, color, title, img) {
-            window.editingBannerId = id;
+        window.editBanner = function(id) {
+            const b = window.firestoreBanners.find(x => x.id === id);
+            if (!b) return;
+
+            window.editingBannerId = id; 
+            window.tempBannerImg = b.img;
             
-            document.getElementById('new-banner-tag').value = tag;
-            document.getElementById('new-banner-color').value = color;
-            document.getElementById('new-banner-title').value = title;
-            window.tempBannerImg = img;
+            window.render();
             
-            window.showToastMessage('Mode Edit. Silakan ubah data, lalu tekan Update.');
-            document.getElementById('form-tambah-banner').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setTimeout(() => {
+                const tagInput = document.getElementById('new-banner-tag');
+                if (tagInput) tagInput.value = b.tag;
+                
+                const colorInput = document.getElementById('new-banner-color');
+                if (colorInput) colorInput.value = b.tagColor;
+                
+                const titleInput = document.getElementById('new-banner-title');
+                if (titleInput) titleInput.value = b.title;
+
+                window.showToastMessage('Mode Edit Aktif.');
+                
+                const formElement = document.getElementById('form-tambah-banner');
+                if (formElement) formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         }
 
         window.deleteBanner = async function(id) {
-            try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'banners', id)); window.showToastMessage('Banner dihapus!'); } catch(e) { }
+            window.showConfirmModal(
+                'Hapus Banner',
+                'Anda yakin ingin menghapus banner ini?',
+                async () => {
+                    try { 
+                        await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'banners', id)); 
+                        window.showToastMessage('Banner berhasil dihapus!'); 
+                    } catch(e) { 
+                        console.error(e); 
+                    }
+                }
+            );
         }
 
         window.toggleEditProfile = function() { window.isEditingProfile = !window.isEditingProfile; window.render(); }
