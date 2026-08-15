@@ -1,0 +1,22 @@
+{
+"name": "SUQNA - Pasar Kita",
+"short_name": "SUQNA",
+"description": "Pasar Digital Syariah & Multi-Vendor Lokal",
+"start_url": "./",
+"display": "standalone",
+"background_color": "#ffffff",
+"theme_color": "#5b21b6",
+"orientation": "portrait",
+"icons": [
+{
+"src": "https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png",
+"sizes": "192x192",
+"type": "image/png"
+},
+{
+"src": "https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png",
+"sizes": "512x512",
+"type": "image/png"
+}
+]
+}
