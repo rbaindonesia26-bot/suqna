@@ -1207,6 +1207,10 @@
                         </div>
                     </div>
                     
+                    <button onclick="window.installPWA()" class="w-full bg-blue-50 text-blue-600 border border-blue-100 font-extrabold py-4 rounded-2xl flex justify-center items-center gap-2 shadow-sm transition-transform active:scale-95 mt-2">
+                        <i data-lucide="download" class="w-5 h-5"></i> Install Aplikasi SUQNA
+                    </button>
+
                     <button onclick="window.processLogout()" class="w-full bg-red-50 text-red-600 border border-red-100 font-extrabold py-4 rounded-2xl flex justify-center items-center gap-2 shadow-sm transition-transform active:scale-95 mt-2">
                         <i data-lucide="log-out" class="w-5 h-5"></i> Keluar Akun
                     </button>
@@ -2148,7 +2152,7 @@
         window.stopBannerSlide = function() { clearInterval(window.bannerInterval); }
         
         // PWA Registration & Install Logic
-        let deferredPrompt;
+        window.deferredPrompt = null;
         
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -2164,7 +2168,7 @@
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
-            deferredPrompt = e;
+            window.deferredPrompt = e;
             const promptEl = document.getElementById('install-prompt');
             promptEl.classList.remove('hidden');
             setTimeout(() => promptEl.classList.remove('translate-y-full'), 100);
@@ -2175,17 +2179,27 @@
             promptEl.classList.add('translate-y-full');
             setTimeout(() => promptEl.classList.add('hidden'), 300);
 
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
+            if (window.deferredPrompt) {
+                window.deferredPrompt.prompt();
+                const { outcome } = await window.deferredPrompt.userChoice;
                 console.log(`Pengguna memilih ${outcome} pada prompt instalasi`);
-                deferredPrompt = null;
+                window.deferredPrompt = null;
             }
         });
 
+        window.installPWA = async function() {
+            if (window.deferredPrompt) {
+                window.deferredPrompt.prompt();
+                const { outcome } = await window.deferredPrompt.userChoice;
+                window.deferredPrompt = null;
+            } else {
+                window.showToastMessage('SUQNA sudah ter-install, atau coba buka di Google Chrome/Safari.');
+            }
+        }
+
         window.addEventListener('appinstalled', () => {
             console.log('Aplikasi SUQNA berhasil di-install');
-            deferredPrompt = null;
+            window.deferredPrompt = null;
         });
 
         // Memulai Aplikasi
