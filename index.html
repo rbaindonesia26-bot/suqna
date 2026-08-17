@@ -32,7 +32,7 @@
         .logo-glow { filter: drop-shadow(0px 4px 12px rgba(255, 255, 255, 0.4)); }
     </style>
 </head>
-<body class="text-gray-800 font-sans flex justify-center min-h-[100dvh] bg-gray-50 overflow-hidden">
+<body class="text-gray-800 font-sans flex justify-center min-h-[100dvh] bg-white overflow-hidden">
 
     <div id="app" class="w-full h-[100dvh] mx-auto bg-white relative overflow-hidden flex flex-col">
         
@@ -1002,7 +1002,7 @@
                         <!-- Desktop Header Navigation Bar style -->
                         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-8 mt-2 mb-6 w-full">
                             <div class="flex items-center justify-center md:justify-start h-20 md:h-24 relative z-10 shrink-0">
-                                <img src="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png" alt="SUQNA Logo" class="h-full w-auto max-w-[85%] md:max-w-[300px] object-contain scale-105 transition-transform duration-300 logo-glow">
+                                <img src="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png" alt="SUQNA Logo" class="h-full w-auto max-w-[85%] md:max-w-[300px] object-contain scale-105 transition-transform duration-300" style="filter: drop-shadow(0px 4px 12px rgba(255, 255, 255, 0.4));">
                             </div>
 
                             <div class="flex-1 flex items-center gap-2 w-full max-w-3xl mx-auto md:mx-0">
@@ -1240,6 +1240,16 @@
                 </div>
 
                 <div class="px-5 -mt-6 relative z-10 pb-24 space-y-6 max-w-4xl mx-auto w-full">
+                    
+                    <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-xl text-center">
+                        <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i data-lucide="zap" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-black text-gray-900 text-sm mb-1">Mode Cepat: Suntik Konten</h3>
+                        <p class="text-[11px] text-gray-500 font-medium mb-4">Tambahkan 3 produk contoh (Emas, Fashion, Kopi) beserta ulasan bintang 5 agar pasar tidak kosong.</p>
+                        <button onclick="window.generateDummyData()" class="w-full bg-amber-500 text-white font-extrabold py-3 rounded-2xl shadow-lg shadow-amber-200 active:scale-95 transition-transform">Suntik Konten Dummy</button>
+                    </div>
+
                     <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-xl space-y-5" id="form-tambah-banner">
                         <h3 class="font-black text-gray-900 text-sm mb-2 flex items-center gap-2"><i data-lucide="image" class="w-4 h-4 text-purple-500"></i> ${window.editingBannerId ? 'Edit Banner Utama' : 'Pengaturan Banner Utama'}</h3>
                         
@@ -2173,6 +2183,26 @@
         
         window.stopBannerSlide = function() { clearInterval(window.bannerInterval); }
         
+        window.generateDummyData = async function() {
+            if(!window.isAdmin) return;
+            window.showToastMessage('Menyuntikkan data...');
+            try {
+                const arr = [
+                    { name: "Mini Gold 0.1 Gram", price: 145000, originalPrice: 155000, stock: 50, category: "Logam Mulia & Emas", description: "Emas batangan murni 24 Karat.", imgUrl: "https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&q=80&w=800" },
+                    { name: "Kopi Susu Gula Aren Premium", price: 75000, originalPrice: 85000, stock: 20, category: "Minuman Segar", description: "Kopi literan segar, simpan di kulkas.", imgUrl: "https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&q=80&w=800" },
+                    { name: "Baju Koko Kurta Modern", price: 120000, originalPrice: 150000, stock: 30, category: "Fashion & Busana", description: "Bahan Katun Toyobo asli, adem.", imgUrl: "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?auto=format&fit=crop&q=80&w=800" }
+                ];
+                for(let i=0; i<arr.length; i++) {
+                    let d = arr[i];
+                    let p = { ...d, storeName: window.storeProfile.name || "Toko SUQNA", storePhone: window.storeProfile.phone || "", ownerId: window.userId, hasVariants: false, variants: [], timestamp: Date.now() - (i*1000) };
+                    let ref = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'products'), p);
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'reviews'), { productId: ref.id, rating: 5, comment: "Kualitas mantap, sangat direkomendasikan!", reviewerName: "Pembeli Setia", reviewerAvatar: "", timestamp: Date.now() });
+                }
+                window.showToastMessage('Data berhasil disuntik!');
+                window.navigate('home');
+            } catch(e) { window.showToastMessage('Gagal menyuntik data.'); }
+        }
+
         // PWA Registration & Install Logic
         window.deferredPrompt = null;
         
