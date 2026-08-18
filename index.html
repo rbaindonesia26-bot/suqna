@@ -19,6 +19,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png">
     <title>SUQNA - Pasar Kita, Untuk Semua</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -588,73 +589,129 @@
 
         // --- FILTER MODAL FUNCTIONS ---
         window.openFilterModal = function() {
-            document.getElementById('filter-modal').classList.remove('hidden');
-            setTimeout(() => document.getElementById('filter-modal-content').classList.remove('translate-y-full'), 50);
-            
-            document.getElementById('filter-min-price').value = window.minPriceFilter;
-            document.getElementById('filter-max-price').value = window.maxPriceFilter;
-            window.setSort(window.currentSortBy);
+            try {
+                document.getElementById('filter-modal').classList.remove('hidden');
+                setTimeout(() => document.getElementById('filter-modal-content').classList.remove('translate-y-full'), 50);
+                
+                document.getElementById('filter-min-price').value = window.minPriceFilter;
+                document.getElementById('filter-max-price').value = window.maxPriceFilter;
+                window.setSort(window.currentSortBy);
+            } catch(e) { console.error("Error Open Filter:", e); }
         }
         
         window.closeFilterModal = function() {
-            document.getElementById('filter-modal-content').classList.add('translate-y-full');
-            setTimeout(() => document.getElementById('filter-modal').classList.add('hidden'), 300);
+            try {
+                const content = document.getElementById('filter-modal-content');
+                if(content) content.classList.add('translate-y-full');
+                setTimeout(() => {
+                    const modal = document.getElementById('filter-modal');
+                    if(modal) modal.classList.add('hidden');
+                }, 300);
+            } catch(e) { console.error("Error Close Filter:", e); }
         }
         
         window.setSort = function(type) {
-            window.currentSortBy = type;
-            const sortSelect = document.getElementById('sort-produk');
-            if (sortSelect) sortSelect.value = type;
+            try {
+                window.currentSortBy = type;
+                const sortSelect = document.getElementById('sort-produk');
+                if (sortSelect) sortSelect.value = type;
 
-            document.querySelectorAll('.sort-btn').forEach(btn => {
-                btn.classList.remove('bg-purple-50', 'border-purple-600', 'text-purple-600');
-                btn.classList.add('bg-gray-50', 'border-transparent', 'text-gray-600');
-            });
-            const activeBtn = document.getElementById('sort-' + type);
-            if(activeBtn) {
-                activeBtn.classList.remove('bg-gray-50', 'border-transparent', 'text-gray-600');
-                activeBtn.classList.add('bg-purple-50', 'border-purple-600', 'text-purple-600');
-            }
+                document.querySelectorAll('.sort-btn').forEach(btn => {
+                    btn.classList.remove('bg-purple-50', 'border-purple-600', 'text-purple-600');
+                    btn.classList.add('bg-gray-50', 'border-transparent', 'text-gray-600');
+                });
+                const activeBtn = document.getElementById('sort-' + type);
+                if(activeBtn) {
+                    activeBtn.classList.remove('bg-gray-50', 'border-transparent', 'text-gray-600');
+                    activeBtn.classList.add('bg-purple-50', 'border-purple-600', 'text-purple-600');
+                }
+            } catch(e) { console.error("Error Set Sort:", e); }
         }
         
         window.applyFilters = function() {
-            window.minPriceFilter = document.getElementById('filter-min-price') ? document.getElementById('filter-min-price').value : '';
-            window.maxPriceFilter = document.getElementById('filter-max-price') ? document.getElementById('filter-max-price').value : '';
-            window.closeFilterModal();
-            
-            if (window.currentView === 'home') {
-                const bodyWrapper = document.getElementById('home-body-wrapper');
-                if (bodyWrapper) {
-                    bodyWrapper.innerHTML = window.renderHomeBody();
-                    if(window.lucide) window.lucide.createIcons();
-                    return;
+            try {
+                window.minPriceFilter = document.getElementById('filter-min-price') ? document.getElementById('filter-min-price').value : '';
+                window.maxPriceFilter = document.getElementById('filter-max-price') ? document.getElementById('filter-max-price').value : '';
+                window.closeFilterModal();
+                
+                if (window.currentView === 'home') {
+                    const bodyWrapper = document.getElementById('home-body-wrapper');
+                    if (bodyWrapper) {
+                        bodyWrapper.innerHTML = window.renderHomeBody();
+                        if(window.lucide) window.lucide.createIcons();
+                        return; // Anti-Kedip
+                    }
                 }
+                window.render();
+            } catch(e) { 
+                console.error("Error Apply Filter:", e);
+                window.render();
             }
-            window.render();
         }
         
         window.resetFilters = function() {
-            window.currentSortBy = 'terbaru';
-            window.minPriceFilter = '';
-            window.maxPriceFilter = '';
-            window.currentSearchQuery = '';
-            const searchInput = document.getElementById('main-search-input');
-            if(searchInput) searchInput.value = '';
-            if(document.getElementById('filter-min-price')) document.getElementById('filter-min-price').value = '';
-            if(document.getElementById('filter-max-price')) document.getElementById('filter-max-price').value = '';
-            window.setSort('terbaru');
-            window.closeFilterModal();
-            
-            if (window.currentView === 'home') {
-                const bodyWrapper = document.getElementById('home-body-wrapper');
-                if (bodyWrapper) {
-                    bodyWrapper.innerHTML = window.renderHomeBody();
-                    if(window.lucide) window.lucide.createIcons();
-                    window.startBannerSlide(); 
-                    return;
+            try {
+                window.currentCategoryFilter = 'Semua';
+                window.currentSortBy = 'terbaru';
+                window.minPriceFilter = '';
+                window.maxPriceFilter = '';
+                window.currentSearchQuery = '';
+                
+                const searchInput = document.getElementById('main-search-input');
+                if(searchInput) searchInput.value = '';
+                
+                if(document.getElementById('filter-min-price')) document.getElementById('filter-min-price').value = '';
+                if(document.getElementById('filter-max-price')) document.getElementById('filter-max-price').value = '';
+                
+                window.setSort('terbaru');
+                window.closeFilterModal();
+                
+                if (window.currentView === 'home') {
+                    const bodyWrapper = document.getElementById('home-body-wrapper');
+                    if (bodyWrapper) {
+                        bodyWrapper.innerHTML = window.renderHomeBody();
+                        if(window.lucide) window.lucide.createIcons();
+                        window.startBannerSlide(); 
+                        
+                        // Sistem Naik Ke Atas Perlahan (Anti Mental Kasar)
+                        setTimeout(() => {
+                            const contentArea = document.getElementById('content');
+                            if (contentArea) contentArea.scrollTo({top: 0, behavior: 'smooth'});
+                        }, 50);
+                        return; // Berhenti agar tidak kedip seluruh layar
+                    }
                 }
+                window.render();
+            } catch(e) { 
+                console.error("Error Reset Filter:", e);
+                window.render(); 
             }
-            window.render();
+        }
+
+        window.filterCategory = function(catName) {
+            try {
+                window.currentCategoryFilter = catName;
+                
+                // SISTEM ANTI-KEDIP DAN ANTI-MOGOK
+                if (window.currentView === 'home') {
+                    const bodyWrapper = document.getElementById('home-body-wrapper');
+                    if (bodyWrapper) {
+                        bodyWrapper.innerHTML = window.renderHomeBody();
+                        if(window.lucide) window.lucide.createIcons();
+                        
+                        // Naik ke atas perlahan
+                        setTimeout(() => {
+                            const contentArea = document.getElementById('content');
+                            if(contentArea) contentArea.scrollTo({top: 0, behavior: 'smooth'});
+                        }, 50);
+                        return; 
+                    }
+                }
+                window.render();
+            } catch (e) { 
+                console.error("Error Filter Category:", e); 
+                window.render(); // Fallback jika gagal
+            }
         }
 
         window.openCheckoutModal = function(storeOwnerId) {
@@ -883,7 +940,9 @@
                 if (window.cart.length > 0) { badge.textContent = window.cart.length; badge.classList.remove('hidden'); } 
                 else { badge.classList.add('hidden'); }
             }
-            if(window.lucide) window.lucide.createIcons();
+            if(window.lucide) {
+                try { window.lucide.createIcons(); } catch(e) {}
+            }
         }
 
         window.renderStore = function() {
@@ -1345,7 +1404,7 @@
                         </div>
                     </div>
                     
-                    <!-- CATEGORIES ZONE -->
+                    <!-- CATEGORIES ZONE (3D FAUX CSS) -->
                     <div id="kategori-section" class="px-5 mt-8 mb-4 relative z-0 max-w-7xl mx-auto w-full">
                         <div class="flex justify-between items-end mb-5">
                             <h2 class="font-extrabold text-gray-900 text-lg sm:text-xl">Kategori Pilihan</h2>
@@ -1355,7 +1414,6 @@
                 
                 window.categories.forEach(cat => {
                     const isActive = window.currentCategoryFilter === cat.name;
-                    // Logika 3D: Cincin luar jika aktif, efek bayangan 3D tebal, efek tekan amblas ke dalam (active:translate-y-1)
                     const ringStyle = isActive ? 'ring-4 ring-purple-600/30 scale-105' : 'hover:scale-105 hover:-translate-y-1';
                     
                     html += `
@@ -1372,7 +1430,6 @@
                 html += window.renderHomeSections();
             }
             
-            // Footer (Sembunyikan saat filtering)
             if (!isFiltering && window.products.length > 0) {
                 html += `
                 <div class="mt-8 pb-32 pt-10 bg-gray-50 border-t border-gray-200 w-full flex flex-col items-center justify-center text-center px-5">
@@ -1384,14 +1441,13 @@
         }
 
         window.renderHome = function() {
-            // GENERATE DYNAMIC SEARCH TAGS
+            // GENERATE 10 DYNAMIC SEARCH TAGS
             let dynamicTags = [];
             let seenQueries = new Set();
             
-            // Ambil 10 produk terbaru secara real-time
             if (window.products && window.products.length > 0) {
                 for (let p of window.products) {
-                    if (dynamicTags.length >= 10) break; // Maksimal 10 tag pencarian (Bisa di-scroll)
+                    if (dynamicTags.length >= 10) break; // MAKSIMAL 10 TAG DINAMIS (Bisa digeser)
                     let shortName = p.name.split(' ').slice(0, 2).join(' '); 
                     if (!seenQueries.has(shortName.toLowerCase())) {
                         seenQueries.add(shortName.toLowerCase());
@@ -1400,13 +1456,17 @@
                 }
             }
             
-            // Fallback (cadangan) jika toko masih kosong
             const fallbackTags = [
+                { query: 'Logam Mulia', display: 'Logam Mulia' },
+                { query: 'Madu Khasafa', display: 'Madu Khasafa' },
                 { query: 'Mini Gold', display: 'Mini Gold' },
-                { query: 'Baju', display: 'Baju' },
-                { query: 'Kopi', display: 'Kopi Susu' },
-                { query: 'Jasa', display: 'Jasa Service' },
-                { query: 'Emas', display: 'Emas Murni' }
+                { query: 'Kopi Susu', display: 'Kopi Susu' },
+                { query: 'Baju Koko', display: 'Baju Koko' },
+                { query: 'Nike Dunk', display: 'Nike Dunk' },
+                { query: 'Canva Pro', display: 'Canva Pro' },
+                { query: 'YouTube Premium', display: 'YouTube Premium' },
+                { query: 'Laptop Dell', display: 'Laptop Dell' },
+                { query: 'Kasur busa', display: 'Kasur busa' }
             ];
             
             for(let ft of fallbackTags) {
@@ -1422,7 +1482,7 @@
             ).join('');
 
             return `
-                <!-- STICKY HEADER ZONE (Anti Tenggelam) -->
+                <!-- STICKY HEADER ZONE -->
                 <div class="sticky top-0 z-[70] w-full bg-gradient-to-b from-[#4c1d95] to-[#541ea8] shadow-md transition-all">
                     
                     <!-- TOP BAR (Khusus Desktop) -->
@@ -1454,14 +1514,14 @@
                                     <input type="text" id="main-search-input" value="${window.currentSearchQuery}" onkeyup="window.handleSearch(this.value)" placeholder="Cari produk, jasa..." class="flex-1 bg-transparent border-none outline-none text-sm px-3 text-gray-800 placeholder-gray-400 font-bold">
                                 </div>
                                 
-                                <!-- TOMBOL FILTER (Warna Putih Solid agar Jelas) -->
+                                <!-- TOMBOL FILTER PUTIH (ANTI HILANG) -->
                                 <button onclick="window.openFilterModal()" class="w-12 h-12 bg-white rounded-2xl flex flex-shrink-0 items-center justify-center text-purple-600 hover:bg-gray-50 transition-all shadow-xl shadow-purple-900/10 active:scale-95 relative">
                                     ${window.currentSortBy !== 'terbaru' || window.minPriceFilter !== '' ? '<span class="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 rounded-full animate-pulse border-2 border-white"></span>' : ''}
                                     <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
                                 </button>
                             </div>
                             
-                            <!-- SEARCH TAGS (Bisa di-scroll ke samping) -->
+                            <!-- SEARCH TAGS (Muncul di HP dan Laptop, Bisa di-scroll 10 Tag) -->
                             <div class="flex items-center gap-3 mt-3 px-1 overflow-x-auto hide-scroll">
                                 ${tagsHtml}
                             </div>
@@ -1469,7 +1529,7 @@
                     </div>
                 </div>
                 
-                <!-- DYNAMIC BODY (Anti Berkedip) -->
+                <!-- DYNAMIC BODY -->
                 <div id="home-body-wrapper" class="w-full relative z-0">
                     ${window.renderHomeBody()}
                 </div>
@@ -1969,25 +2029,27 @@
         }
 
         window.lihatKategori = function(tipe) {
-            if (window.currentView !== 'home') {
-                window.navigate('home');
-            }
-
-            setTimeout(() => {
-                const selectUrutkan = document.getElementById('sort-produk');
-                const bagianProduk = document.getElementById('daftar-produk-container') || document.body;
-                
-                bagianProduk.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                
-                if (selectUrutkan) {
-                    if (tipe === 'populer') {
-                        selectUrutkan.value = 'rating';
-                    } else if (tipe === 'terbaru') {
-                        selectUrutkan.value = 'terbaru'; 
-                    }
-                    selectUrutkan.dispatchEvent(new Event('change'));
+            try {
+                if (window.currentView !== 'home') {
+                    window.navigate('home');
                 }
-            }, 100);
+
+                setTimeout(() => {
+                    const selectUrutkan = document.getElementById('sort-produk');
+                    const bagianProduk = document.getElementById('daftar-produk-container') || document.body;
+                    
+                    if(bagianProduk) bagianProduk.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    if (selectUrutkan) {
+                        if (tipe === 'populer') {
+                            selectUrutkan.value = 'rating';
+                        } else if (tipe === 'terbaru') {
+                            selectUrutkan.value = 'terbaru'; 
+                        }
+                        selectUrutkan.dispatchEvent(new Event('change'));
+                    }
+                }, 100);
+            } catch(e) { console.error("Error Lihat Kategori:", e); }
         };
 
         window.shareProduct = async function(id) {
@@ -2030,35 +2092,25 @@
             } catch (err) {}
         }
 
-        window.filterCategory = function(catName) {
-            window.currentCategoryFilter = catName;
-            
-            if (window.currentView === 'home') {
-                const bodyWrapper = document.getElementById('home-body-wrapper');
-                if (bodyWrapper) {
-                    bodyWrapper.innerHTML = window.renderHomeBody();
-                    if(window.lucide) window.lucide.createIcons();
-                    bodyWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    return;
-                }
-            }
-            window.render();
-        }
-
         window.handleSearch = function(val) {
-            window.currentSearchQuery = val;
-            
-            if (window.currentView === 'home') {
-                const bodyWrapper = document.getElementById('home-body-wrapper');
-                if (bodyWrapper) {
-                    bodyWrapper.innerHTML = window.renderHomeBody();
-                    if(window.lucide) window.lucide.createIcons();
-                    
-                    if (val === '') window.startBannerSlide(); 
-                    return;
+            try {
+                window.currentSearchQuery = val;
+                
+                if (window.currentView === 'home') {
+                    const bodyWrapper = document.getElementById('home-body-wrapper');
+                    if (bodyWrapper) {
+                        bodyWrapper.innerHTML = window.renderHomeBody();
+                        if(window.lucide) window.lucide.createIcons();
+                        
+                        if (val === '') window.startBannerSlide(); 
+                        return; // Sistem anti-kedip
+                    }
                 }
+                window.render(); 
+            } catch(e) {
+                console.error("Error handleSearch:", e);
+                window.render();
             }
-            window.render(); 
         }
 
         window.confirmCheckout = async function() {
@@ -2194,7 +2246,7 @@
             if(!window.isAddingProduct) { window.editingProductData = null; window.tempVariants = []; }
             window.render(); 
         }
-        
+
         window.saveBuyerProfile = async function() {
             const name = document.getElementById('buyer-name').value;
             const address = document.getElementById('buyer-address').value;
@@ -2312,7 +2364,6 @@
             }
         }
 
-        // Auth
         window.processLogin = async function() {
             const e = document.getElementById('auth-email').value; const p = document.getElementById('auth-password').value;
             if(!e || !p) return window.showToastMessage('Email dan Sandi wajib diisi!');
