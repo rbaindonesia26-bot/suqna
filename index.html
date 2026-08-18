@@ -440,20 +440,21 @@
         window.currentBannerIndex = 0;
         window.bannerInterval = null;
 
+        // EFEK TOMBOL 3D GRADIENT
         window.categories = [
-            { name: "Semua", icon: "layout-grid", bg: "bg-purple-600", textColor: "text-purple-600 font-bold", iconColor: "text-white" },
-            { name: "Belanja & Retail", icon: "shopping-bag", bg: "bg-orange-50", textColor: "text-gray-600 font-medium", iconColor: "text-orange-500" },
-            { name: "Kendaraan", icon: "car", bg: "bg-blue-50", textColor: "text-gray-600 font-medium", iconColor: "text-blue-500" },
-            { name: "Properti", icon: "building-2", bg: "bg-indigo-50", textColor: "text-gray-600 font-medium", iconColor: "text-indigo-500" },
-            { name: "Pendidikan", icon: "book-open", bg: "bg-yellow-50", textColor: "text-gray-600 font-medium", iconColor: "text-yellow-600" },
-            { name: "Bisnis & Grosir", icon: "briefcase", bg: "bg-purple-50", textColor: "text-gray-600 font-medium", iconColor: "text-purple-500" },
-            { name: "Hobi & Gaya Hidup", icon: "heart", bg: "bg-pink-50", textColor: "text-gray-600 font-medium", iconColor: "text-pink-500" },
-            { name: "Produk Digital", icon: "monitor", bg: "bg-cyan-50", textColor: "text-gray-600 font-medium", iconColor: "text-cyan-500" },
-            { name: "Jasa & Layanan", icon: "wrench", bg: "bg-green-50", textColor: "text-gray-600 font-medium", iconColor: "text-green-500" },
-            { name: "Perjalanan & Wisata", icon: "plane", bg: "bg-teal-50", textColor: "text-gray-600 font-medium", iconColor: "text-teal-500" },
-            { name: "Kuliner & Makanan", icon: "utensils", bg: "bg-red-50", textColor: "text-gray-600 font-medium", iconColor: "text-red-500" },
-            { name: "Barang Bekas", icon: "archive", bg: "bg-amber-50", textColor: "text-gray-600 font-medium", iconColor: "text-amber-600" },
-            { name: "Lainnya", icon: "more-horizontal", bg: "bg-gray-100", textColor: "text-gray-600 font-medium", iconColor: "text-gray-500" }
+            { name: "Semua", icon: "layout-grid", bg: "bg-gradient-to-br from-purple-400 to-indigo-600", textColor: "text-purple-600 font-black", iconColor: "text-white drop-shadow-md" },
+            { name: "Belanja & Retail", icon: "shopping-bag", bg: "bg-gradient-to-br from-orange-400 to-red-500", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Kendaraan", icon: "car", bg: "bg-gradient-to-br from-blue-400 to-blue-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Properti", icon: "building-2", bg: "bg-gradient-to-br from-indigo-400 to-purple-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Pendidikan", icon: "book-open", bg: "bg-gradient-to-br from-yellow-400 to-amber-500", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Bisnis & Grosir", icon: "briefcase", bg: "bg-gradient-to-br from-fuchsia-400 to-pink-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Hobi & Gaya", icon: "heart", bg: "bg-gradient-to-br from-rose-400 to-pink-500", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Digital", icon: "monitor", bg: "bg-gradient-to-br from-cyan-400 to-blue-500", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Jasa Layanan", icon: "wrench", bg: "bg-gradient-to-br from-emerald-400 to-green-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Wisata", icon: "plane", bg: "bg-gradient-to-br from-teal-400 to-emerald-500", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Kuliner", icon: "utensils", bg: "bg-gradient-to-br from-red-400 to-rose-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Barang Bekas", icon: "archive", bg: "bg-gradient-to-br from-amber-500 to-orange-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Lainnya", icon: "more-horizontal", bg: "bg-gradient-to-br from-gray-400 to-gray-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" }
         ];
 
         window.categoryData = {
@@ -1354,13 +1355,15 @@
                 
                 window.categories.forEach(cat => {
                     const isActive = window.currentCategoryFilter === cat.name;
-                    const ringStyle = isActive ? 'ring-4 ring-purple-600/30 scale-110 shadow-md' : 'hover:scale-105';
+                    // Logika 3D: Cincin luar jika aktif, efek bayangan 3D tebal, efek tekan amblas ke dalam (active:translate-y-1)
+                    const ringStyle = isActive ? 'ring-4 ring-purple-600/30 scale-105' : 'hover:scale-105 hover:-translate-y-1';
+                    
                     html += `
                         <div onclick="window.filterCategory('${cat.name}')" class="flex flex-col items-center gap-2 cursor-pointer group">
-                            <div class="w-14 h-14 md:w-16 md:h-16 ${cat.bg} rounded-[1.25rem] flex items-center justify-center transition-all duration-300 ${ringStyle} group-active:scale-95 shadow-sm">
+                            <div class="w-14 h-14 md:w-16 md:h-16 ${cat.bg} rounded-[1.25rem] flex items-center justify-center transition-all duration-300 ${ringStyle} active:scale-95 active:translate-y-1 active:shadow-inner shadow-[0_8px_15px_-5px_rgba(0,0,0,0.3),inset_0_3px_5px_rgba(255,255,255,0.5),inset_0_-3px_5px_rgba(0,0,0,0.2)] border border-white/20">
                                 <i data-lucide="${cat.icon}" class="w-6 h-6 md:w-7 md:h-7 ${cat.iconColor}"></i>
                             </div>
-                            <span class="text-[9px] md:text-[11px] ${cat.textColor} text-center leading-tight">${cat.name}</span>
+                            <span class="text-[9px] md:text-[11px] ${cat.textColor} text-center leading-tight font-bold">${cat.name}</span>
                         </div>
                     `;
                 });
