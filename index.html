@@ -205,8 +205,8 @@
 
                 <!-- Keranjang -->
                 <button onclick="window.navigate('cart')" id="nav-cart" class="flex flex-col items-center gap-1 transition-colors w-[20%] relative group mb-1">
-                    <div id="cart-badge" class="hidden absolute -top-1.5 right-2 bg-red-500 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm border-2 border-white">0</div>
-                    <i data-lucide="shopping-cart" class="w-6 h-6 text-gray-400 group-hover:text-gray-600 group-active:scale-95 transition-all"></i>
+                    <div id="cart-badge" class="hidden absolute -top-1.5 right-2 bg-red-500 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm border-2 border-white transition-transform">0</div>
+                    <i id="cart-icon" data-lucide="shopping-cart" class="w-6 h-6 text-gray-400 group-hover:text-gray-600 transition-all"></i>
                     <span class="text-[10px] font-medium text-gray-400">Keranjang</span>
                 </button>
                 
@@ -651,6 +651,19 @@
                 
                 window.cart.push(cartItem); 
                 window.showToastMessage('Ditambahkan ke keranjang!'); 
+                
+                // Animasi Keranjang Melompat
+                const cartIcon = document.getElementById('cart-icon');
+                const cartBadge = document.getElementById('cart-badge');
+                if(cartIcon) {
+                    cartIcon.classList.add('scale-150', 'text-purple-600');
+                    if(cartBadge) cartBadge.classList.add('scale-150');
+                    setTimeout(() => {
+                        cartIcon.classList.remove('scale-150', 'text-purple-600');
+                        if(cartBadge) cartBadge.classList.remove('scale-150');
+                    }, 300);
+                }
+
                 window.render(); 
             }
         }
@@ -682,13 +695,14 @@
 
             const widthClass = isGrid ? 'w-full' : 'min-w-[160px] sm:min-w-[190px] w-[160px] sm:w-[190px] snap-start';
 
+            // Efek Hover Bayangan Lembut
             return `
-                <div onclick="window.openProductDetail('${p.id}')" class="${widthClass} bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col relative cursor-pointer hover:shadow-md transition-shadow">
+                <div onclick="window.openProductDetail('${p.id}')" class="${widthClass} bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col relative cursor-pointer hover:shadow-xl hover:border-purple-200 transition-all duration-300 group">
                     ${adminDeleteBtn}
                     ${isOutOfStock ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center"><div class="bg-red-500/90 text-white font-black text-xs px-3 py-1 rounded-full shadow-lg transform -rotate-12">STOK HABIS</div></div>` : ''}
-                    <div class="h-36 sm:h-44 bg-gray-50 relative w-full overflow-hidden group">
+                    <div class="h-36 sm:h-44 bg-gray-50 relative w-full overflow-hidden">
                         <img src="${p.imgUrl}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
-                        <div class="absolute top-2 left-2 bg-white/90 backdrop-blur-sm text-purple-600 text-[8px] font-extrabold px-2 py-1 rounded-full uppercase shadow-sm max-w-[80%] truncate border border-purple-50">${p.category || 'Lainnya'}</div>
+                        <div class="absolute top-2 left-2 bg-white/90 backdrop-blur-sm text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors text-[8px] font-extrabold px-2 py-1 rounded-full uppercase shadow-sm max-w-[80%] truncate border border-purple-50">${p.category || 'Lainnya'}</div>
                         ${originalPrice > price ? `<div class="absolute bottom-2 right-2 bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-md z-10">-${Math.round(((originalPrice - price) / originalPrice) * 100)}%</div>` : ''}
                     </div>
                     <div class="p-3.5 flex flex-col flex-1 relative z-0">
@@ -696,9 +710,9 @@
                             <h3 class="font-bold text-[13px] sm:text-sm text-gray-800 leading-[1.3] line-clamp-2">${p.name}</h3>
                         </div>
                         <div class="flex items-center justify-between mb-2 mt-auto">
-                            <div onclick="event.stopPropagation(); window.openStore('${p.ownerId}')" class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 px-1 py-0.5 -ml-1 rounded transition-colors group">
-                                <i data-lucide="store" class="w-3 h-3 text-gray-400 group-hover:text-purple-600"></i>
-                                <span class="text-[9px] font-medium text-gray-500 group-hover:text-gray-700 truncate max-w-[80px]">${p.storeName || 'Online'}</span>
+                            <div onclick="event.stopPropagation(); window.openStore('${p.ownerId}')" class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 px-1 py-0.5 -ml-1 rounded transition-colors sub-group">
+                                <i data-lucide="store" class="w-3 h-3 text-gray-400"></i>
+                                <span class="text-[9px] font-medium text-gray-500 truncate max-w-[80px]">${p.storeName || 'Online'}</span>
                             </div>
                             ${ratingHtml}
                         </div>
@@ -707,7 +721,7 @@
                                 ${originalPrice > price ? `<span class="text-[10px] text-gray-400 line-through font-bold mb-[1px]">Rp ${originalPrice.toLocaleString('id-ID')}</span>` : ''}
                                 <p class="text-orange-500 font-black text-sm sm:text-base leading-none">Rp ${price.toLocaleString('id-ID')}</p>
                             </div>
-                            <button onclick="event.stopPropagation(); window.addToCart('${p.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center hover:bg-orange-100 transition-colors flex-shrink-0">
+                            <button onclick="event.stopPropagation(); window.addToCart('${p.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center hover:bg-orange-500 hover:text-white transition-colors flex-shrink-0 shadow-sm">
                                 <i data-lucide="plus" class="w-4 h-4"></i>
                             </button>
                         </div>
@@ -721,10 +735,6 @@
             const bottomNav = document.getElementById('bottom-nav');
             if(!content) return;
             
-            // Only fade in on full renders (like page changes), not smooth partial renders
-            content.classList.add('fade-in');
-            setTimeout(() => content.classList.remove('fade-in'), 200);
-
             if (window.currentView === 'home') {
                 content.innerHTML = window.renderHome();
                 bottomNav.style.transform = 'translateY(0)';
@@ -837,6 +847,204 @@
             `;
         }
 
+        window.renderProductDetail = function() {
+            if(!window.currentProductDetail) return '';
+            const p = window.currentProductDetail;
+            const originalPrice = p.originalPrice || 0;
+            
+            let displayPrice = p.price;
+            let displayStock = p.stock !== undefined ? p.stock : 'Tersedia';
+            let variantHtml = '';
+            
+            if (p.hasVariants && p.variants && p.variants.length > 0) {
+                const selVar = p.variants[window.selectedVariantIndex || 0];
+                displayPrice = selVar.price;
+                displayStock = selVar.stock;
+                
+                variantHtml = `
+                    <div class="mb-6">
+                        <h4 class="text-[11px] text-gray-500 font-bold uppercase tracking-wider mb-3">Pilih Varian</h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${p.variants.map((v, idx) => `
+                                <button onclick="window.selectedVariantIndex=${idx}; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition-all border-2 ${idx === (window.selectedVariantIndex||0) ? 'border-purple-600 bg-purple-50 text-purple-700 shadow-sm' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'}">
+                                    ${v.name}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            const isOutOfStock = displayStock === 0;
+            const prodReviews = window.reviews.filter(r => r.productId === p.id);
+            const avgRating = prodReviews.length > 0 ? (prodReviews.reduce((sum, r) => sum + r.rating, 0) / prodReviews.length).toFixed(1) : 0;
+
+            let catIcon = "layout-grid"; let catColor = "text-purple-500"; let catBg = "bg-purple-50";
+            const foundCat = window.categories.find(c => {
+                for(let key in window.categoryData) { if(window.categoryData[key].includes(p.category) && c.name === key) return true; }
+                return false;
+            });
+            if(foundCat) { catIcon = foundCat.icon; catColor = foundCat.iconColor; catBg = foundCat.bg; }
+
+            return `
+                <div class="relative w-full h-[40vh] sm:h-[50vh] bg-gray-100 group">
+                    <button onclick="window.navigate('home')" class="absolute top-6 left-5 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-gray-800 shadow-md border border-white hover:bg-white transition-colors z-20">
+                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="window.shareProduct('${p.id}')" class="absolute top-6 right-5 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-gray-800 shadow-md border border-white hover:bg-white transition-colors z-20">
+                        <i data-lucide="share-2" class="w-5 h-5"></i>
+                    </button>
+                    <img src="${p.imgUrl}" class="w-full h-full object-cover">
+                    <div class="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-black/50 to-transparent"></div>
+                </div>
+
+                <div class="bg-white rounded-t-[2.5rem] -mt-8 relative z-10 px-6 pt-8 pb-32 min-h-[60vh] w-full max-w-4xl mx-auto shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="${catBg} ${catColor} text-[10px] font-extrabold px-3 py-1.5 rounded-lg uppercase tracking-wider flex items-center gap-1.5 border border-white/50 shadow-sm"><i data-lucide="${catIcon}" class="w-3.5 h-3.5"></i> ${p.category || 'Umum'}</div>
+                        ${prodReviews.length > 0 ? `<div class="flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg text-xs font-black text-amber-600 border border-amber-100"><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-500"></i> ${avgRating}</div>` : ''}
+                    </div>
+                    <h1 class="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-3">${p.name}</h1>
+                    ${originalPrice && originalPrice > displayPrice ? `<p class="text-sm font-bold text-gray-400 line-through mb-1">Rp ${originalPrice.toLocaleString('id-ID')}</p>` : ''}
+                    <div class="flex items-center gap-3 mb-4">
+                        <p class="text-orange-500 font-black text-3xl md:text-4xl">Rp ${displayPrice.toLocaleString('id-ID')}</p>
+                        ${originalPrice && originalPrice > displayPrice ? `<span class="bg-red-50 text-red-500 border border-red-100 text-sm font-black px-2.5 py-1 rounded-xl shadow-sm">-${Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}%</span>` : ''}
+                    </div>
+                    
+                    ${variantHtml}
+
+                    <div class="bg-gray-50 border border-gray-100 rounded-xl px-4 py-2.5 inline-flex items-center gap-2 mb-6">
+                        <span class="w-2 h-2 rounded-full ${isOutOfStock ? 'bg-red-500' : 'bg-green-500 animate-pulse'}"></span>
+                        <span class="text-xs font-bold ${isOutOfStock ? 'text-red-500' : 'text-gray-600'}">Stok Tersedia: ${displayStock}</span>
+                    </div>
+
+                    <div class="mb-8 bg-purple-50/50 border border-purple-100 rounded-2xl p-4 flex items-center justify-between cursor-pointer hover:bg-purple-50 transition-colors group" onclick="window.openStore('${p.ownerId}')">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-purple-100 text-purple-600 group-hover:scale-105 transition-transform">
+                                <i data-lucide="store" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Penjual</p>
+                                <h3 class="text-sm font-black text-gray-900">${p.storeName || 'Toko Online'}</h3>
+                            </div>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-purple-300 group-hover:text-purple-600 transition-colors"></i>
+                    </div>
+
+                    <h3 class="font-black text-gray-900 text-sm mb-3 flex items-center gap-2"><i data-lucide="align-left" class="w-4 h-4 text-purple-500"></i> Deskripsi Produk</h3>
+                    <div class="text-sm text-gray-600 font-medium leading-relaxed bg-white border border-gray-100 p-5 rounded-2xl shadow-sm whitespace-pre-wrap">${p.description || 'Tidak ada deskripsi.'}</div>
+                    
+                    ${prodReviews.length > 0 ? `
+                        <div class="mt-8">
+                            <h3 class="font-black text-gray-900 text-sm mb-4 flex items-center gap-2"><i data-lucide="message-square" class="w-4 h-4 text-purple-500"></i> Ulasan Pembeli (${prodReviews.length})</h3>
+                            <div class="space-y-4">
+                                ${prodReviews.map(r => `
+                                    <div class="bg-gray-50 border border-gray-100 p-4 rounded-2xl shadow-sm">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 text-[10px] font-black uppercase overflow-hidden">
+                                                    ${r.reviewerAvatar ? `<img src="${r.reviewerAvatar}" class="w-full h-full object-cover">` : r.reviewerName.charAt(0)}
+                                                </div>
+                                                <span class="text-xs font-bold text-gray-800">${r.reviewerName}</span>
+                                            </div>
+                                            <span class="text-[9px] text-gray-400 font-bold">${new Date(r.timestamp).toLocaleDateString('id-ID')}</span>
+                                        </div>
+                                        <div class="flex gap-0.5 mb-2">
+                                            ${[1,2,3,4,5].map(star => `<i data-lucide="star" class="w-3 h-3 ${star <= r.rating ? 'text-amber-400 fill-amber-400' : 'text-gray-300'}"></i>`).join('')}
+                                        </div>
+                                        <p class="text-[11px] text-gray-600 font-medium leading-relaxed">${window.sanitizeHTML(r.comment)}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+
+                <div class="fixed bottom-0 w-full bg-white border-t border-gray-100 p-4 pb-safe flex gap-3 z-[80] shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
+                    <button onclick="window.navigate('home')" class="w-14 h-14 bg-gray-50 rounded-2xl flex flex-shrink-0 items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors border border-gray-200">
+                        <i data-lucide="home" class="w-6 h-6"></i>
+                    </button>
+                    ${isOutOfStock ? 
+                        `<button class="flex-1 bg-gray-300 text-white font-extrabold text-lg rounded-2xl cursor-not-allowed flex items-center justify-center gap-2"><i data-lucide="x-circle" class="w-5 h-5"></i> Stok Habis</button>`
+                        : 
+                        `<button onclick="window.addToCart('${p.id}')" class="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-extrabold text-lg rounded-2xl shadow-lg shadow-orange-200 transition-transform active:scale-95 flex items-center justify-center gap-2"><i data-lucide="shopping-bag" class="w-5 h-5"></i> Tambah Keranjang</button>`
+                    }
+                </div>
+            `;
+        }
+
+        window.renderCart = function() {
+            if (window.cart.length === 0) {
+                return `
+                    <div class="flex flex-col items-center justify-center min-h-[100dvh] pt-6 px-5 pb-20 bg-gray-50 relative w-full">
+                        <button onclick="window.navigate('home')" class="absolute top-6 left-5 w-10 h-10 bg-white rounded-full flex items-center justify-center text-gray-500 shadow-sm border border-gray-200 z-20 hover:bg-gray-100 transition-colors">
+                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                        </button>
+                        <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-md border-4 border-gray-100 mb-6">
+                            <i data-lucide="shopping-cart" class="w-10 h-10 text-gray-300"></i>
+                        </div>
+                        <h3 class="font-black text-2xl text-gray-800 mb-2">Keranjang Kosong</h3>
+                        <p class="text-sm text-gray-500 font-medium mb-8 text-center">Yuk, cari barang menarik di pasar dan penuhi keranjangmu!</p>
+                        <button onclick="window.navigate('home')" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-extrabold px-8 py-4 rounded-2xl shadow-lg shadow-purple-200 transition-transform active:scale-95 text-lg">Mulai Belanja</button>
+                    </div>`;
+            }
+
+            const groupedCart = window.cart.reduce((acc, item) => {
+                if (!acc[item.ownerId]) acc[item.ownerId] = { storeName: item.storeName || 'Toko Online', items: [] };
+                acc[item.ownerId].items.push(item);
+                return acc;
+            }, {});
+
+            let html = `
+                <div class="bg-gradient-to-b from-[#4c1d95] to-[#5b21b6] pt-10 pb-12 px-5 rounded-b-[2.5rem] shadow-sm relative z-0 w-full">
+                    <div class="max-w-4xl mx-auto w-full flex items-center justify-between">
+                        <h2 class="text-2xl font-black text-white flex items-center gap-2"><i data-lucide="shopping-cart" class="w-6 h-6"></i> Keranjang</h2>
+                        <span class="bg-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur border border-white/30">${window.cart.length} Barang</span>
+                    </div>
+                </div>
+                <div class="px-5 -mt-6 relative z-10 pb-24 space-y-5 max-w-4xl mx-auto w-full">
+            `;
+
+            for (const storeId in groupedCart) {
+                const store = groupedCart[storeId];
+                const storeTotal = store.items.reduce((s, i) => s + i.price, 0);
+                
+                html += `
+                    <div class="bg-white rounded-3xl border border-gray-100 shadow-[0_5px_20px_rgba(0,0,0,0.03)] overflow-hidden">
+                        <div class="bg-gray-50/50 px-5 py-3 border-b border-gray-100 flex items-center gap-2" onclick="window.openStore('${storeId}')">
+                            <i data-lucide="store" class="w-4 h-4 text-purple-600"></i>
+                            <span class="text-xs font-black text-gray-800 uppercase tracking-wide cursor-pointer hover:text-purple-600 transition-colors">${store.storeName}</span>
+                        </div>
+                        <div class="p-5 space-y-4">
+                            ${store.items.map(item => `
+                                <div class="flex items-center gap-4 bg-white">
+                                    <img src="${item.imgUrl}" class="w-20 h-20 rounded-2xl object-cover shadow-sm border border-gray-100">
+                                    <div class="flex-1">
+                                        <h4 class="font-bold text-sm text-gray-800 leading-tight mb-1 line-clamp-1">${item.name}</h4>
+                                        ${item.variantName ? `<span class="inline-block bg-purple-50 text-purple-600 text-[9px] font-black px-2 py-0.5 rounded-md mb-1 border border-purple-100">${item.variantName}</span>` : ''}
+                                        <p class="text-orange-500 font-black text-base">Rp ${item.price.toLocaleString('id-ID')}</p>
+                                    </div>
+                                    <button onclick="window.removeFromCart('${item.cartItemId}')" class="w-10 h-10 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center hover:bg-red-100 transition-colors shadow-sm border border-red-100 shrink-0">
+                                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="bg-gray-50 px-5 py-4 border-t border-gray-100 flex justify-between items-center">
+                            <div>
+                                <p class="text-[10px] text-gray-500 font-bold mb-0.5 uppercase tracking-wide">Total Toko Ini</p>
+                                <p class="font-black text-gray-900 text-lg">Rp ${storeTotal.toLocaleString('id-ID')}</p>
+                            </div>
+                            <button onclick="window.openCheckoutModal('${storeId}')" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-extrabold px-6 py-3 rounded-xl shadow-lg shadow-purple-200 transition-transform active:scale-95 flex items-center gap-2">
+                                Pesan <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            html += `</div>`;
+            return html;
+        }
+
         window.renderHomeSections = function() {
             let isFiltering = window.currentSearchQuery !== '' || window.currentCategoryFilter !== 'Semua' || window.currentSortBy !== 'terbaru' || window.minPriceFilter !== '' || window.maxPriceFilter !== '';
             
@@ -909,7 +1117,8 @@
                             <i data-lucide="store" class="w-8 h-8 text-gray-300"></i>
                         </div>
                         <h3 class="text-base font-black text-gray-800 mb-2">Pasar Masih Kosong</h3>
-                        <p class="text-[13px] text-gray-500 font-medium px-4">Jadilah yang pertama membuka toko dan menjual barang Anda di SUQNA!</p>
+                        <p class="text-[13px] text-gray-500 font-medium px-4 mb-4">Jadilah yang pertama membuka toko dan menjual barang Anda di SUQNA!</p>
+                        ${window.isAdmin ? `<button onclick="window.generateDummyData()" class="bg-amber-500 text-white text-xs font-black px-6 py-3 rounded-xl shadow-lg">Suntik Data Dummy (Admin)</button>` : ''}
                     </div>
                 `;
             }
@@ -1011,10 +1220,8 @@
             let html = '';
             
             if (isFiltering) {
-                // If typing/searching, hide banner and show ONLY products
                 html += window.renderHomeSections(); 
             } else {
-                // Show Banner
                 if (window.currentBannerIndex >= window.banners.length) {
                     window.currentBannerIndex = 0;
                 }
@@ -1022,7 +1229,7 @@
                 
                 html += `
                     <!-- BANNER ZONE -->
-                    <div class="bg-gradient-to-b from-[#541ea8] to-[#5b21b6] pb-8 px-5 rounded-b-[2.5rem] shadow-md relative z-10 w-full -mt-1">
+                    <div class="bg-gradient-to-b from-[#541ea8] to-[#5b21b6] pb-8 px-5 rounded-b-[2.5rem] shadow-md relative z-10 w-full -mt-1 pt-4">
                         <div class="max-w-7xl mx-auto w-full">
                             <div class="relative h-[160px] sm:h-[240px] md:h-[320px] lg:h-[380px] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer border-2 border-white/10" id="banner-container">
                                 <img id="banner-img" src="${b.img}" class="w-full h-full object-cover transition-all duration-500" />
@@ -1056,8 +1263,6 @@
                 });
 
                 html += `</div></div>`;
-                
-                // Show Default Products
                 html += window.renderHomeSections();
             }
             
@@ -1067,24 +1272,50 @@
         window.renderHome = function() {
             return `
                 <!-- STICKY HEADER ZONE (Anti Tenggelam) -->
-                <div class="sticky top-0 z-[70] w-full bg-gradient-to-b from-[#4c1d95] to-[#541ea8] px-5 pt-6 pb-4 md:pt-4 shadow-md transition-all">
-                    <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-8">
+                <div class="sticky top-0 z-[70] w-full bg-gradient-to-b from-[#4c1d95] to-[#541ea8] shadow-md transition-all">
+                    
+                    <!-- TOP BAR (Khusus Desktop) -->
+                    <div class="hidden md:flex justify-between items-center py-1.5 px-5 border-b border-white/10 max-w-7xl mx-auto w-full text-[11px] text-purple-100 font-medium tracking-wide">
+                        <div class="flex gap-4">
+                            <span class="hover:text-white cursor-pointer transition-colors">Tentang SUQNA</span>
+                            <span class="hover:text-white cursor-pointer transition-colors">Pusat Bantuan</span>
+                        </div>
+                        <div class="flex gap-4 items-center">
+                            <span onclick="window.navigate('seller_center')" class="hover:text-white cursor-pointer transition-colors flex items-center gap-1.5"><i data-lucide="store" class="w-3.5 h-3.5"></i> Mulai Berjualan Gratis</span>
+                            <div class="w-px h-3 bg-purple-400/50"></div>
+                            <span onclick="window.installPWA()" class="hover:text-white cursor-pointer transition-colors flex items-center gap-1.5"><i data-lucide="download" class="w-3.5 h-3.5"></i> Download Aplikasi</span>
+                        </div>
+                    </div>
+
+                    <!-- MAIN HEADER (Logo & Search) -->
+                    <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row md:items-start md:justify-between gap-4 md:gap-8 px-5 pt-6 pb-4 md:pt-4">
                         
                         <!-- Logo -->
-                        <div class="flex items-center justify-center md:justify-start h-12 md:h-16 relative z-10 shrink-0">
+                        <div class="flex items-center justify-center md:justify-start h-12 md:h-14 relative z-10 shrink-0 md:mt-1">
                             <img src="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png" alt="SUQNA Logo" class="h-full w-auto max-w-[85%] md:max-w-[200px] object-contain scale-105 transition-transform duration-300 logo-glow">
                         </div>
 
-                        <!-- Search Bar -->
-                        <div class="flex-1 flex items-center gap-2 w-full max-w-3xl mx-auto md:mx-0">
-                            <div class="flex-1 bg-white rounded-2xl flex items-center px-4 py-3 shadow-xl shadow-purple-900/10 focus-within:ring-4 ring-white/30 transition-all">
-                                <i data-lucide="search" class="w-5 h-5 text-gray-400 flex-shrink-0"></i>
-                                <input type="text" id="main-search-input" value="${window.currentSearchQuery}" onkeyup="window.handleSearch(this.value)" placeholder="Cari produk, jasa..." class="flex-1 bg-transparent border-none outline-none text-sm px-3 text-gray-800 placeholder-gray-400 font-bold">
+                        <!-- Search Bar & Tags -->
+                        <div class="flex-1 flex flex-col w-full max-w-3xl mx-auto md:mx-0">
+                            <div class="flex items-center gap-2 w-full">
+                                <div class="flex-1 bg-white rounded-2xl flex items-center px-4 py-3 shadow-xl shadow-purple-900/10 focus-within:ring-4 ring-white/30 transition-all">
+                                    <i data-lucide="search" class="w-5 h-5 text-gray-400 flex-shrink-0"></i>
+                                    <input type="text" id="main-search-input" value="${window.currentSearchQuery}" onkeyup="window.handleSearch(this.value)" placeholder="Cari produk, jasa..." class="flex-1 bg-transparent border-none outline-none text-sm px-3 text-gray-800 placeholder-gray-400 font-bold">
+                                </div>
+                                <button onclick="window.openFilterModal()" class="w-12 h-12 bg-white/20 backdrop-blur border border-white/40 rounded-2xl flex flex-shrink-0 items-center justify-center text-white hover:bg-white/30 transition-all shadow-lg active:scale-95 relative">
+                                    ${window.currentSortBy !== 'terbaru' || window.minPriceFilter !== '' ? '<span class="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full animate-pulse border border-white"></span>' : ''}
+                                    <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+                                </button>
                             </div>
-                            <button onclick="window.openFilterModal()" class="w-12 h-12 bg-white/20 backdrop-blur border border-white/40 rounded-2xl flex flex-shrink-0 items-center justify-center text-white hover:bg-white/30 transition-all shadow-lg active:scale-95 relative">
-                                ${window.currentSortBy !== 'terbaru' || window.minPriceFilter !== '' ? '<span class="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full animate-pulse border border-white"></span>' : ''}
-                                <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
-                            </button>
+                            
+                            <!-- SEARCH TAGS (Khusus Desktop) -->
+                            <div class="hidden md:flex items-center gap-3 mt-2.5 px-1 overflow-x-auto hide-scroll">
+                                <button onclick="document.getElementById('main-search-input').value='Mini Gold'; window.handleSearch('Mini Gold')" class="text-[11px] font-bold text-purple-200 hover:text-white whitespace-nowrap transition-colors">Mini Gold</button>
+                                <button onclick="document.getElementById('main-search-input').value='Baju Koko'; window.handleSearch('Baju Koko')" class="text-[11px] font-bold text-purple-200 hover:text-white whitespace-nowrap transition-colors">Baju Koko</button>
+                                <button onclick="document.getElementById('main-search-input').value='Kopi'; window.handleSearch('Kopi')" class="text-[11px] font-bold text-purple-200 hover:text-white whitespace-nowrap transition-colors">Kopi Susu</button>
+                                <button onclick="document.getElementById('main-search-input').value='Jasa'; window.handleSearch('Jasa')" class="text-[11px] font-bold text-purple-200 hover:text-white whitespace-nowrap transition-colors">Jasa Service</button>
+                                <button onclick="document.getElementById('main-search-input').value='Emas'; window.handleSearch('Emas')" class="text-[11px] font-bold text-purple-200 hover:text-white whitespace-nowrap transition-colors">Emas Murni</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1092,6 +1323,12 @@
                 <!-- DYNAMIC BODY (Anti Berkedip) -->
                 <div id="home-body-wrapper" class="w-full">
                     ${window.renderHomeBody()}
+                </div>
+                
+                <!-- FOOTER BAWAH -->
+                <div class="mt-8 pb-32 pt-10 bg-gray-50 border-t border-gray-200 w-full flex flex-col items-center justify-center text-center px-5">
+                    <img src="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png" class="h-8 opacity-40 grayscale mb-3">
+                    <p class="text-[10px] font-bold text-gray-400">© 2026 SUQNA Marketplace.<br>Pasar Kita, Untuk Semua.</p>
                 </div>
             `;
         }
@@ -1627,7 +1864,6 @@
         window.filterCategory = function(catName) {
             window.currentCategoryFilter = catName;
             
-            // Smart Render: Only update the body, keep the search bar intact
             if (window.currentView === 'home') {
                 const bodyWrapper = document.getElementById('home-body-wrapper');
                 if (bodyWrapper) {
@@ -1643,18 +1879,17 @@
         window.handleSearch = function(val) {
             window.currentSearchQuery = val;
             
-            // Smart Render: Update products instantly without reloading the search bar
             if (window.currentView === 'home') {
                 const bodyWrapper = document.getElementById('home-body-wrapper');
                 if (bodyWrapper) {
                     bodyWrapper.innerHTML = window.renderHomeBody();
                     if(window.lucide) window.lucide.createIcons();
                     
-                    if (val === '') window.startBannerSlide(); // Restart banner if search is cleared
+                    if (val === '') window.startBannerSlide(); 
                     return;
                 }
             }
-            window.render(); // Fallback if somehow not on home
+            window.render(); 
         }
 
         window.confirmCheckout = async function() {
