@@ -177,6 +177,24 @@
             </div>
         </div>
 
+        <!-- Modal Tentang SUQNA -->
+        <div id="about-modal" class="hidden absolute inset-0 bg-black/60 z-[120] flex items-center justify-center p-4 backdrop-blur-sm transition-opacity">
+            <div class="bg-white rounded-[2rem] p-7 max-w-[85%] sm:max-w-md w-full text-center shadow-2xl transform scale-100 transition-transform slide-up relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-purple-600 to-indigo-600"></div>
+                <div class="w-16 h-16 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-purple-100 shadow-inner">
+                    <i data-lucide="heart-handshake" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-2xl font-black text-gray-900 mb-3 mt-2">Tentang SUQNA</h3>
+                <p class="text-sm text-gray-600 font-medium mb-6 leading-relaxed">
+                    SUQNA adalah ekosistem pasar digital syariah yang didedikasikan untuk memberdayakan UMKM lokal. 
+                    <br><br>Kami hadir untuk menciptakan ruang belanja yang aman, bebas biaya admin, dan 100% transparan agar uang langsung masuk ke penjual.<br><b>Pasar Kita, Untuk Semua.</b>
+                </p>
+                <button onclick="window.closeAboutModal()" class="w-full bg-gray-100 text-gray-800 font-extrabold py-3.5 rounded-2xl hover:bg-gray-200 transition-colors border border-gray-200">
+                    Tutup
+                </button>
+            </div>
+        </div>
+
         <!-- Main Content Area -->
         <main id="content" class="flex-1 overflow-y-auto overflow-x-hidden relative bg-white pb-28 transition-all duration-300 hide-scroll">
         </main>
@@ -190,7 +208,7 @@
                 </button>
                 
                 <!-- Kategori -->
-                <button onclick="window.navigate('home'); setTimeout(() => { const catSec = document.getElementById('kategori-section'); if(catSec) document.getElementById('content').scrollTo({top: catSec.offsetTop - 20, behavior: 'smooth'}); }, 50);" id="nav-kategori" class="flex flex-col items-center gap-1 transition-colors w-[20%] group mb-1">
+                <button onclick="window.navigate('home'); setTimeout(() => { const catSec = document.getElementById('kategori-section'); if(catSec) document.getElementById('content').scrollTo({top: catSec.offsetTop - 70, behavior: 'smooth'}); }, 50);" id="nav-kategori" class="flex flex-col items-center gap-1 transition-colors w-[20%] group mb-1">
                     <i data-lucide="layout-grid" class="w-6 h-6 text-gray-400 group-hover:text-gray-600 group-active:scale-95 transition-all"></i>
                     <span class="text-[10px] font-medium text-gray-400">Kategori</span>
                 </button>
@@ -206,7 +224,7 @@
                 <!-- Keranjang -->
                 <button onclick="window.navigate('cart')" id="nav-cart" class="flex flex-col items-center gap-1 transition-colors w-[20%] relative group mb-1">
                     <div id="cart-badge" class="hidden absolute -top-1.5 right-2 bg-red-500 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm border-2 border-white transition-transform">0</div>
-                    <i id="cart-icon" data-lucide="shopping-cart" class="w-6 h-6 text-gray-400 group-hover:text-gray-600 transition-all"></i>
+                    <i id="cart-icon" data-lucide="shopping-cart" class="w-6 h-6 text-gray-400 group-hover:text-gray-600 transition-all duration-200"></i>
                     <span class="text-[10px] font-medium text-gray-400">Keranjang</span>
                 </button>
                 
@@ -219,7 +237,7 @@
         </nav>
     </div>
 
-    <!-- PWA Installation Prompt (Optional, hidden by default) -->
+    <!-- PWA Installation Prompt -->
     <div id="install-prompt" class="hidden fixed bottom-24 left-1/2 transform -translate-x-1/2 w-11/12 max-w-sm bg-gray-900 text-white p-4 rounded-2xl shadow-2xl z-[150] flex items-center justify-between transition-transform translate-y-full">
         <div class="flex items-center gap-3">
             <img src="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png" class="w-10 h-10 object-contain bg-white rounded-lg p-1">
@@ -352,6 +370,21 @@
             return str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&lt;br&gt;/gi, '<br>');
         };
 
+        // Modal Top Bar Handlers
+        window.openAboutModal = function() {
+            document.getElementById('about-modal').classList.remove('hidden');
+        }
+
+        window.closeAboutModal = function() {
+            document.getElementById('about-modal').classList.add('hidden');
+        }
+
+        window.openHelpWA = function() {
+            const waNumber = "6281234040580"; // <-- GANTI DENGAN NOMOR WA ADMIN ANDA
+            const message = "Halo Admin SUQNA, saya butuh bantuan mengenai aplikasi.";
+            window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
         // Banner Default
         window.defaultBanners = [
             { tag: "INFO UPDATE SISTEM", tagColor: "text-blue-400", title: "Keamanan SUQNA Telah Ditingkatkan.<br>Mohon Berkenan Mendaftar Ulang Toko Anda 🙏", img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800" },
@@ -420,13 +453,18 @@
                 }
                 window.pendingRoute = false;
             }
-            if(window.render) window.render();
+            // Only re-render if NOT on home or if we are not actively typing
+            if (window.currentView !== 'home' || (document.getElementById('main-search-input') && document.activeElement !== document.getElementById('main-search-input'))) {
+                if(window.render) window.render();
+            }
         }, (e) => console.error(e));
 
         onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'reviews')), (snapshot) => {
             window.reviews = [];
             snapshot.forEach((doc) => { window.reviews.push({ id: doc.id, ...doc.data() }); });
-            if(window.render) window.render();
+            if (window.currentView !== 'home' || (document.getElementById('main-search-input') && document.activeElement !== document.getElementById('main-search-input'))) {
+                if(window.render) window.render();
+            }
         }, (e) => console.error(e));
 
         onAuthStateChanged(auth, (user) => {
@@ -527,7 +565,16 @@
             window.minPriceFilter = document.getElementById('filter-min-price') ? document.getElementById('filter-min-price').value : '';
             window.maxPriceFilter = document.getElementById('filter-max-price') ? document.getElementById('filter-max-price').value : '';
             window.closeFilterModal();
-            window.render(); // Full render is okay here because input focus is lost anyway
+            
+            if (window.currentView === 'home') {
+                const bodyWrapper = document.getElementById('home-body-wrapper');
+                if (bodyWrapper) {
+                    bodyWrapper.innerHTML = window.renderHomeBody();
+                    if(window.lucide) window.lucide.createIcons();
+                    return;
+                }
+            }
+            window.render();
         }
         
         window.resetFilters = function() {
@@ -542,7 +589,6 @@
             window.setSort('terbaru');
             window.closeFilterModal();
             
-            // Re-render smartly
             if (window.currentView === 'home') {
                 const bodyWrapper = document.getElementById('home-body-wrapper');
                 if (bodyWrapper) {
@@ -555,7 +601,6 @@
             window.render();
         }
 
-        // --- NEW CHECKOUT & ADMIN MODAL FUNCTIONS ---
         window.openCheckoutModal = function(storeOwnerId) {
             window.currentCheckoutStoreId = storeOwnerId;
             document.getElementById('checkout-notes').value = '';
@@ -588,9 +633,6 @@
             window.closeConfirmModal();
         });
 
-        // ---------------------------------------------------------
-        // FUNGSI ADMIN: HAPUS PRODUK
-        // ---------------------------------------------------------
         window.deleteProductAdmin = function(id) {
             window.showConfirmModal(
                 'Hapus Produk (Admin)', 
@@ -605,9 +647,6 @@
             );
         }
 
-        // ---------------------------------------------------------
-        // FUNGSI SUPER ADMIN: TUTUP PAKSA TOKO (BANNED)
-        // ---------------------------------------------------------
         window.forceCloseStoreAdmin = function(storeOwnerId) {
             window.showConfirmModal(
                 'TUTUP PAKSA TOKO (SUPER ADMIN)', 
@@ -695,9 +734,8 @@
 
             const widthClass = isGrid ? 'w-full' : 'min-w-[160px] sm:min-w-[190px] w-[160px] sm:w-[190px] snap-start';
 
-            // Efek Hover Bayangan Lembut
             return `
-                <div onclick="window.openProductDetail('${p.id}')" class="${widthClass} bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col relative cursor-pointer hover:shadow-xl hover:border-purple-200 transition-all duration-300 group">
+                <div onclick="window.openProductDetail('${p.id}')" class="${widthClass} bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col relative cursor-pointer hover:shadow-md transition-shadow group">
                     ${adminDeleteBtn}
                     ${isOutOfStock ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center"><div class="bg-red-500/90 text-white font-black text-xs px-3 py-1 rounded-full shadow-lg transform -rotate-12">STOK HABIS</div></div>` : ''}
                     <div class="h-36 sm:h-44 bg-gray-50 relative w-full overflow-hidden">
@@ -711,8 +749,8 @@
                         </div>
                         <div class="flex items-center justify-between mb-2 mt-auto">
                             <div onclick="event.stopPropagation(); window.openStore('${p.ownerId}')" class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 px-1 py-0.5 -ml-1 rounded transition-colors sub-group">
-                                <i data-lucide="store" class="w-3 h-3 text-gray-400"></i>
-                                <span class="text-[9px] font-medium text-gray-500 truncate max-w-[80px]">${p.storeName || 'Online'}</span>
+                                <i data-lucide="store" class="w-3 h-3 text-gray-400 sub-group-hover:text-purple-600"></i>
+                                <span class="text-[9px] font-medium text-gray-500 sub-group-hover:text-gray-700 truncate max-w-[80px]">${p.storeName || 'Online'}</span>
                             </div>
                             ${ratingHtml}
                         </div>
@@ -824,16 +862,21 @@
                                 <span class="text-gray-900 text-3xl font-black uppercase">${storeName.charAt(0)}</span>
                             </div>
                             <h1 class="font-black text-white text-2xl md:text-3xl leading-tight mb-2">${storeName}</h1>
-                            <div class="flex items-center justify-center gap-4 bg-purple-800/50 backdrop-blur px-5 py-2.5 rounded-full border border-purple-700/50">
-                                <div class="text-center">
-                                    <span class="block text-[10px] text-purple-300 font-bold uppercase tracking-widest mb-0.5">Produk</span>
-                                    <span class="block text-sm md:text-base text-white font-black">${storeProducts.length}</span>
+                            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+                                <div class="flex items-center justify-center gap-4 bg-purple-800/50 backdrop-blur px-5 py-2.5 rounded-full border border-purple-700/50">
+                                    <div class="text-center">
+                                        <span class="block text-[10px] text-purple-300 font-bold uppercase tracking-widest mb-0.5">Produk</span>
+                                        <span class="block text-sm md:text-base text-white font-black">${storeProducts.length}</span>
+                                    </div>
+                                    <div class="w-px h-6 bg-purple-600"></div>
+                                    <div class="text-center">
+                                        <span class="block text-[10px] text-purple-300 font-bold uppercase tracking-widest mb-0.5">Rating</span>
+                                        <span class="block text-sm md:text-base text-amber-400 font-black flex items-center justify-center gap-1"><i data-lucide="star" class="w-3.5 h-3.5 md:w-4 md:h-4 fill-amber-400"></i> ${storeAvgRating}</span>
+                                    </div>
                                 </div>
-                                <div class="w-px h-6 bg-purple-600"></div>
-                                <div class="text-center">
-                                    <span class="block text-[10px] text-purple-300 font-bold uppercase tracking-widest mb-0.5">Rating</span>
-                                    <span class="block text-sm md:text-base text-amber-400 font-black flex items-center justify-center gap-1"><i data-lucide="star" class="w-3.5 h-3.5 md:w-4 md:h-4 fill-amber-400"></i> ${storeAvgRating}</span>
-                                </div>
+                                <button onclick="window.shareStore('${window.currentStoreId}')" class="bg-white/20 hover:bg-white/30 text-white text-xs font-bold px-4 py-2.5 rounded-full backdrop-blur border border-white/30 transition-colors flex items-center gap-2">
+                                    <i data-lucide="share-2" class="w-3.5 h-3.5"></i> Bagikan Toko
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -904,10 +947,10 @@
                         ${prodReviews.length > 0 ? `<div class="flex items-center gap-1 bg-amber-50 px-2 py-1 rounded-lg text-xs font-black text-amber-600 border border-amber-100"><i data-lucide="star" class="w-3.5 h-3.5 fill-amber-500"></i> ${avgRating}</div>` : ''}
                     </div>
                     <h1 class="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-3">${p.name}</h1>
-                    ${originalPrice && originalPrice > displayPrice ? `<p class="text-sm font-bold text-gray-400 line-through mb-1">Rp ${originalPrice.toLocaleString('id-ID')}</p>` : ''}
+                    ${p.originalPrice && p.originalPrice > displayPrice ? `<p class="text-sm font-bold text-gray-400 line-through mb-1">Rp ${p.originalPrice.toLocaleString('id-ID')}</p>` : ''}
                     <div class="flex items-center gap-3 mb-4">
                         <p class="text-orange-500 font-black text-3xl md:text-4xl">Rp ${displayPrice.toLocaleString('id-ID')}</p>
-                        ${originalPrice && originalPrice > displayPrice ? `<span class="bg-red-50 text-red-500 border border-red-100 text-sm font-black px-2.5 py-1 rounded-xl shadow-sm">-${Math.round(((originalPrice - displayPrice) / originalPrice) * 100)}%</span>` : ''}
+                        ${p.originalPrice && p.originalPrice > displayPrice ? `<span class="bg-red-50 text-red-500 border border-red-100 text-sm font-black px-2.5 py-1 rounded-xl shadow-sm">-${Math.round(((p.originalPrice - displayPrice) / p.originalPrice) * 100)}%</span>` : ''}
                     </div>
                     
                     ${variantHtml}
@@ -1229,14 +1272,12 @@
                 
                 html += `
                     <!-- BANNER ZONE -->
-                    <div class="bg-gradient-to-b from-[#541ea8] to-[#5b21b6] pb-8 px-5 rounded-b-[2.5rem] shadow-md relative z-10 w-full -mt-1 pt-4">
-                        <div class="max-w-7xl mx-auto w-full">
-                            <div class="relative h-[160px] sm:h-[240px] md:h-[320px] lg:h-[380px] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer border-2 border-white/10" id="banner-container">
-                                <img id="banner-img" src="${b.img}" class="w-full h-full object-cover transition-all duration-500" />
-                                <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-5 md:px-12">
-                                    <span id="banner-tag" class="${b.tagColor} font-black text-[10px] md:text-sm tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300">${window.sanitizeHTML(b.tag)}</span>
-                                    <h3 id="banner-title" class="text-white font-extrabold text-xl md:text-3xl lg:text-4xl leading-[1.15] drop-shadow-lg transition-opacity duration-300">${window.sanitizeHTML(b.title)}</h3>
-                                </div>
+                    <div class="px-5 mt-4 sm:mt-6 mb-6 max-w-7xl mx-auto w-full">
+                        <div class="relative h-[160px] sm:h-[240px] md:h-[320px] lg:h-[380px] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer border-2 border-gray-100" id="banner-container">
+                            <img id="banner-img" src="${b.img}" class="w-full h-full object-cover transition-all duration-500" />
+                            <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-5 md:px-12">
+                                <span id="banner-tag" class="${b.tagColor} font-black text-[10px] md:text-sm tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300">${window.sanitizeHTML(b.tag)}</span>
+                                <h3 id="banner-title" class="text-white font-extrabold text-xl md:text-3xl lg:text-4xl leading-[1.15] drop-shadow-lg transition-opacity duration-300">${window.sanitizeHTML(b.title)}</h3>
                             </div>
                         </div>
                     </div>
@@ -1266,6 +1307,14 @@
                 html += window.renderHomeSections();
             }
             
+            // Footer (Sembunyikan saat filtering)
+            if (!isFiltering && window.products.length > 0) {
+                html += `
+                <div class="mt-8 pb-32 pt-10 bg-gray-50 border-t border-gray-200 w-full flex flex-col items-center justify-center text-center px-5">
+                    <img src="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png" class="h-8 opacity-40 grayscale mb-3">
+                    <p class="text-[10px] font-bold text-gray-400">© 2026 SUQNA Marketplace.<br>Pasar Kita, Untuk Semua.</p>
+                </div>`;
+            }
             return html;
         }
 
@@ -1277,8 +1326,8 @@
                     <!-- TOP BAR (Khusus Desktop) -->
                     <div class="hidden md:flex justify-between items-center py-1.5 px-5 border-b border-white/10 max-w-7xl mx-auto w-full text-[11px] text-purple-100 font-medium tracking-wide">
                         <div class="flex gap-4">
-                            <span class="hover:text-white cursor-pointer transition-colors">Tentang SUQNA</span>
-                            <span class="hover:text-white cursor-pointer transition-colors">Pusat Bantuan</span>
+                            <span onclick="window.openAboutModal()" class="hover:text-white cursor-pointer transition-colors">Tentang SUQNA</span>
+                            <span onclick="window.openHelpWA()" class="hover:text-white cursor-pointer transition-colors">Pusat Bantuan</span>
                         </div>
                         <div class="flex gap-4 items-center">
                             <span onclick="window.navigate('seller_center')" class="hover:text-white cursor-pointer transition-colors flex items-center gap-1.5"><i data-lucide="store" class="w-3.5 h-3.5"></i> Mulai Berjualan Gratis</span>
@@ -1321,14 +1370,8 @@
                 </div>
                 
                 <!-- DYNAMIC BODY (Anti Berkedip) -->
-                <div id="home-body-wrapper" class="w-full">
+                <div id="home-body-wrapper" class="w-full relative z-0">
                     ${window.renderHomeBody()}
-                </div>
-                
-                <!-- FOOTER BAWAH -->
-                <div class="mt-8 pb-32 pt-10 bg-gray-50 border-t border-gray-200 w-full flex flex-col items-center justify-center text-center px-5">
-                    <img src="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png" class="h-8 opacity-40 grayscale mb-3">
-                    <p class="text-[10px] font-bold text-gray-400">© 2026 SUQNA Marketplace.<br>Pasar Kita, Untuk Semua.</p>
                 </div>
             `;
         }
@@ -1638,17 +1681,22 @@
                                 <button onclick="window.navigate('account')" class="w-9 h-9 bg-gray-800 rounded-full text-gray-300 flex items-center justify-center shadow-sm border border-gray-700 hover:bg-gray-700 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4">
-                            <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden border-2 border-gray-700 shrink-0">
-                                ${window.storeProfile.avatar ? `<img src="${window.storeProfile.avatar}" class="w-full h-full object-cover">` : `<span class="text-gray-900 text-2xl font-black uppercase">${window.storeProfile.name.charAt(0)}</span>`}
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden border-2 border-gray-700 shrink-0">
+                                    ${window.storeProfile.avatar ? `<img src="${window.storeProfile.avatar}" class="w-full h-full object-cover">` : `<span class="text-gray-900 text-2xl font-black uppercase">${window.storeProfile.name.charAt(0)}</span>`}
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-black text-xl leading-tight truncate md:max-w-md">${window.storeProfile.name}</h3>
+                                    <p class="text-orange-400 text-[11px] font-bold mt-1 flex items-center gap-2">
+                                        <span class="flex items-center gap-1"><div class="w-1.5 h-1.5 bg-orange-500 rounded-full"></div> Toko Aktif</span>
+                                        ${myStoreReviews.length > 0 ? `<span class="flex items-center gap-1 text-amber-400"><i data-lucide="star" class="w-3 h-3 fill-amber-400"></i> ${storeAvgRating} (${myStoreReviews.length} Ulasan)</span>` : ''}
+                                    </p>
+                                </div>
                             </div>
-                            <div class="flex-1">
-                                <h3 class="text-white font-black text-xl leading-tight truncate md:max-w-md">${window.storeProfile.name}</h3>
-                                <p class="text-orange-400 text-[11px] font-bold mt-1 flex items-center gap-2">
-                                    <span class="flex items-center gap-1"><div class="w-1.5 h-1.5 bg-orange-500 rounded-full"></div> Toko Aktif</span>
-                                    ${myStoreReviews.length > 0 ? `<span class="flex items-center gap-1 text-amber-400"><i data-lucide="star" class="w-3 h-3 fill-amber-400"></i> ${storeAvgRating} (${myStoreReviews.length} Ulasan)</span>` : ''}
-                                </p>
-                            </div>
+                            <button onclick="window.shareStore('${window.userId}')" class="bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold px-4 py-2.5 rounded-full border border-gray-700 transition-colors flex items-center gap-2">
+                                <i data-lucide="share-2" class="w-3.5 h-3.5"></i> Bagikan Toko Saya
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1857,6 +1905,28 @@
                     document.execCommand('copy');
                     document.body.removeChild(textArea);
                     window.showToastMessage('Tautan produk disalin!');
+                }
+            } catch (err) {}
+        }
+        
+        window.shareStore = async function(storeId) {
+            const p = window.products.find(x => x.ownerId === storeId);
+            const storeName = p ? p.storeName : 'Toko SUQNA';
+            // Saat ini kita menggunakan link produk pertama sebagai "kunci" masuk ke toko tersebut
+            let shareUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            if (p) shareUrl += '?product=' + p.id; 
+            
+            const shareData = { title: storeName, text: 'Kunjungi toko ' + storeName + ' di SUQNA! Belanja murah tanpa biaya admin.', url: shareUrl };
+            try {
+                if (navigator.share) await navigator.share(shareData); 
+                else {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = shareUrl;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    window.showToastMessage('Tautan toko disalin!');
                 }
             } catch (err) {}
         }
