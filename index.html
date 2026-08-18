@@ -527,17 +527,31 @@
             window.minPriceFilter = document.getElementById('filter-min-price') ? document.getElementById('filter-min-price').value : '';
             window.maxPriceFilter = document.getElementById('filter-max-price') ? document.getElementById('filter-max-price').value : '';
             window.closeFilterModal();
-            window.render();
+            window.render(); // Full render is okay here because input focus is lost anyway
         }
         
         window.resetFilters = function() {
             window.currentSortBy = 'terbaru';
             window.minPriceFilter = '';
             window.maxPriceFilter = '';
+            window.currentSearchQuery = '';
+            const searchInput = document.getElementById('main-search-input');
+            if(searchInput) searchInput.value = '';
             if(document.getElementById('filter-min-price')) document.getElementById('filter-min-price').value = '';
             if(document.getElementById('filter-max-price')) document.getElementById('filter-max-price').value = '';
             window.setSort('terbaru');
             window.closeFilterModal();
+            
+            // Re-render smartly
+            if (window.currentView === 'home') {
+                const bodyWrapper = document.getElementById('home-body-wrapper');
+                if (bodyWrapper) {
+                    bodyWrapper.innerHTML = window.renderHomeBody();
+                    if(window.lucide) window.lucide.createIcons();
+                    window.startBannerSlide(); 
+                    return;
+                }
+            }
             window.render();
         }
 
@@ -707,6 +721,7 @@
             const bottomNav = document.getElementById('bottom-nav');
             if(!content) return;
             
+            // Only fade in on full renders (like page changes), not smooth partial renders
             content.classList.add('fade-in');
             setTimeout(() => content.classList.remove('fade-in'), 200);
 
@@ -864,14 +879,14 @@
                 }
                 
                 return `
-                    <div class="px-5 mt-6 pb-4 w-full">
+                    <div class="px-5 mt-6 pb-4 w-full slide-up">
                         <div class="max-w-7xl mx-auto w-full">
                             <div class="flex justify-between items-center mb-4">
                                 <h2 class="font-extrabold text-gray-800 text-[15px] flex items-center gap-2">
                                     <i data-lucide="filter" class="w-4 h-4 text-purple-600"></i>
                                     Hasil Pencarian (${filteredProducts.length})
                                 </h2>
-                                <button onclick="window.currentSearchQuery=''; window.resetFilters();" class="text-[10px] text-red-500 font-bold bg-red-50 px-2 py-1.5 rounded-md hover:bg-red-100 transition-colors">Hapus Filter</button>
+                                <button onclick="window.resetFilters();" class="text-[10px] text-red-500 font-bold bg-red-50 px-2 py-1.5 rounded-md hover:bg-red-100 transition-colors">Hapus Filter</button>
                             </div>
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                                 ${filteredProducts.map(p => window.buildHorizontalProductCard(p, true)).join('') || `
@@ -990,67 +1005,95 @@
             return html;
         }
 
-        window.renderHome = function() {
-            if (window.currentBannerIndex >= window.banners.length) {
-                window.currentBannerIndex = 0;
-            }
-            const b = window.banners[window.currentBannerIndex] || window.banners[0];
+        window.renderHomeBody = function() {
+            let isFiltering = window.currentSearchQuery !== '' || window.currentCategoryFilter !== 'Semua' || window.currentSortBy !== 'terbaru' || window.minPriceFilter !== '' || window.maxPriceFilter !== '';
             
-            let html = `
-                <div class="bg-gradient-to-b from-[#4c1d95] to-[#5b21b6] pt-6 pb-8 px-5 rounded-b-[2.5rem] shadow-md relative z-10 w-full">
-                    <div class="max-w-7xl mx-auto w-full">
-                        <!-- Desktop Header Navigation Bar style -->
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-8 mt-2 mb-6 w-full">
-                            <div class="flex items-center justify-center md:justify-start h-20 md:h-24 relative z-10 shrink-0">
-                                <img src="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png" alt="SUQNA Logo" class="h-full w-auto max-w-[85%] md:max-w-[300px] object-contain scale-105 transition-transform duration-300" style="filter: drop-shadow(0px 4px 12px rgba(255, 255, 255, 0.4));">
-                            </div>
-
-                            <div class="flex-1 flex items-center gap-2 w-full max-w-3xl mx-auto md:mx-0">
-                                <div class="flex-1 bg-white rounded-2xl flex items-center px-4 py-3.5 shadow-xl shadow-purple-900/10 focus-within:ring-4 ring-white/30 transition-all">
-                                    <i data-lucide="search" class="w-5 h-5 text-gray-400 flex-shrink-0"></i>
-                                    <input type="text" value="${window.currentSearchQuery}" onkeyup="window.handleSearch(this.value)" placeholder="Cari produk, jasa..." class="flex-1 bg-transparent border-none outline-none text-sm px-3 text-gray-800 placeholder-gray-400 font-bold">
+            let html = '';
+            
+            if (isFiltering) {
+                // If typing/searching, hide banner and show ONLY products
+                html += window.renderHomeSections(); 
+            } else {
+                // Show Banner
+                if (window.currentBannerIndex >= window.banners.length) {
+                    window.currentBannerIndex = 0;
+                }
+                const b = window.banners[window.currentBannerIndex] || window.banners[0];
+                
+                html += `
+                    <!-- BANNER ZONE -->
+                    <div class="bg-gradient-to-b from-[#541ea8] to-[#5b21b6] pb-8 px-5 rounded-b-[2.5rem] shadow-md relative z-10 w-full -mt-1">
+                        <div class="max-w-7xl mx-auto w-full">
+                            <div class="relative h-[160px] sm:h-[240px] md:h-[320px] lg:h-[380px] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer border-2 border-white/10" id="banner-container">
+                                <img id="banner-img" src="${b.img}" class="w-full h-full object-cover transition-all duration-500" />
+                                <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-5 md:px-12">
+                                    <span id="banner-tag" class="${b.tagColor} font-black text-[10px] md:text-sm tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300">${window.sanitizeHTML(b.tag)}</span>
+                                    <h3 id="banner-title" class="text-white font-extrabold text-xl md:text-3xl lg:text-4xl leading-[1.15] drop-shadow-lg transition-opacity duration-300">${window.sanitizeHTML(b.title)}</h3>
                                 </div>
-                                <button onclick="window.openFilterModal()" class="w-12 h-12 bg-white/20 backdrop-blur border border-white/40 rounded-2xl flex flex-shrink-0 items-center justify-center text-white hover:bg-white/30 transition-all shadow-lg active:scale-95 relative">
-                                    ${window.currentSortBy !== 'terbaru' || window.minPriceFilter !== '' ? '<span class="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full animate-pulse border border-white"></span>' : ''}
-                                    <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
-                                </button>
                             </div>
                         </div>
-
-                        <div class="mt-6 relative h-[160px] sm:h-[240px] md:h-[320px] lg:h-[380px] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer border-2 border-white/10 max-w-5xl mx-auto" id="banner-container">
-                            <img id="banner-img" src="${b.img}" class="w-full h-full object-cover transition-all duration-500" />
-                            <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-5 md:px-12">
-                                <span id="banner-tag" class="${b.tagColor} font-black text-[10px] md:text-sm tracking-widest uppercase mb-1 md:mb-2 drop-shadow-md transition-opacity duration-300">${window.sanitizeHTML(b.tag)}</span>
-                                <h3 id="banner-title" class="text-white font-extrabold text-xl md:text-3xl lg:text-4xl leading-[1.15] drop-shadow-lg transition-opacity duration-300">${window.sanitizeHTML(b.title)}</h3>
+                    </div>
+                    
+                    <!-- CATEGORIES ZONE -->
+                    <div id="kategori-section" class="px-5 mt-8 mb-4 relative z-0 max-w-7xl mx-auto w-full">
+                        <div class="flex justify-between items-end mb-5">
+                            <h2 class="font-extrabold text-gray-900 text-lg sm:text-xl">Kategori Pilihan</h2>
+                        </div>
+                        <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-13 gap-y-6 gap-x-3">
+                `;
+                
+                window.categories.forEach(cat => {
+                    const isActive = window.currentCategoryFilter === cat.name;
+                    const ringStyle = isActive ? 'ring-4 ring-purple-600/30 scale-110 shadow-md' : 'hover:scale-105';
+                    html += `
+                        <div onclick="window.filterCategory('${cat.name}')" class="flex flex-col items-center gap-2 cursor-pointer group">
+                            <div class="w-14 h-14 md:w-16 md:h-16 ${cat.bg} rounded-[1.25rem] flex items-center justify-center transition-all duration-300 ${ringStyle} group-active:scale-95 shadow-sm">
+                                <i data-lucide="${cat.icon}" class="w-6 h-6 md:w-7 md:h-7 ${cat.iconColor}"></i>
                             </div>
+                            <span class="text-[9px] md:text-[11px] ${cat.textColor} text-center leading-tight">${cat.name}</span>
+                        </div>
+                    `;
+                });
+
+                html += `</div></div>`;
+                
+                // Show Default Products
+                html += window.renderHomeSections();
+            }
+            
+            return html;
+        }
+
+        window.renderHome = function() {
+            return `
+                <!-- STICKY HEADER ZONE (Anti Tenggelam) -->
+                <div class="sticky top-0 z-[70] w-full bg-gradient-to-b from-[#4c1d95] to-[#541ea8] px-5 pt-6 pb-4 md:pt-4 shadow-md transition-all">
+                    <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-8">
+                        
+                        <!-- Logo -->
+                        <div class="flex items-center justify-center md:justify-start h-12 md:h-16 relative z-10 shrink-0">
+                            <img src="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png" alt="SUQNA Logo" class="h-full w-auto max-w-[85%] md:max-w-[200px] object-contain scale-105 transition-transform duration-300 logo-glow">
+                        </div>
+
+                        <!-- Search Bar -->
+                        <div class="flex-1 flex items-center gap-2 w-full max-w-3xl mx-auto md:mx-0">
+                            <div class="flex-1 bg-white rounded-2xl flex items-center px-4 py-3 shadow-xl shadow-purple-900/10 focus-within:ring-4 ring-white/30 transition-all">
+                                <i data-lucide="search" class="w-5 h-5 text-gray-400 flex-shrink-0"></i>
+                                <input type="text" id="main-search-input" value="${window.currentSearchQuery}" onkeyup="window.handleSearch(this.value)" placeholder="Cari produk, jasa..." class="flex-1 bg-transparent border-none outline-none text-sm px-3 text-gray-800 placeholder-gray-400 font-bold">
+                            </div>
+                            <button onclick="window.openFilterModal()" class="w-12 h-12 bg-white/20 backdrop-blur border border-white/40 rounded-2xl flex flex-shrink-0 items-center justify-center text-white hover:bg-white/30 transition-all shadow-lg active:scale-95 relative">
+                                ${window.currentSortBy !== 'terbaru' || window.minPriceFilter !== '' ? '<span class="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 rounded-full animate-pulse border border-white"></span>' : ''}
+                                <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
                 
-                <div id="kategori-section" class="px-5 mt-8 mb-4 relative z-0 max-w-7xl mx-auto w-full">
-                    <div class="flex justify-between items-end mb-5">
-                        <h2 class="font-extrabold text-gray-900 text-lg md:text-xl">Kategori Pilihan</h2>
-                    </div>
-                    <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-13 gap-y-6 gap-x-3">
+                <!-- DYNAMIC BODY (Anti Berkedip) -->
+                <div id="home-body-wrapper" class="w-full">
+                    ${window.renderHomeBody()}
+                </div>
             `;
-            
-            window.categories.forEach(cat => {
-                const isActive = window.currentCategoryFilter === cat.name;
-                const ringStyle = isActive ? 'ring-4 ring-purple-600/30 scale-110 shadow-md' : 'hover:scale-105';
-                html += `
-                    <div onclick="window.filterCategory('${cat.name}')" class="flex flex-col items-center gap-2 cursor-pointer group">
-                        <div class="w-14 h-14 md:w-16 md:h-16 ${cat.bg} rounded-[1.25rem] flex items-center justify-center transition-all duration-300 ${ringStyle} group-active:scale-95 shadow-sm">
-                            <i data-lucide="${cat.icon}" class="w-6 h-6 md:w-7 md:h-7 ${cat.iconColor}"></i>
-                        </div>
-                        <span class="text-[9px] md:text-[11px] ${cat.textColor} text-center leading-tight">${cat.name}</span>
-                    </div>
-                `;
-            });
-
-            html += `</div></div>`;
-            html += window.renderHomeSections();
-            
-            return html;
         }
 
         window.renderLogin = function() {
@@ -1540,204 +1583,6 @@
             `;
         }
 
-        window.renderProductDetail = function() {
-            const p = window.currentProductDetail;
-            if(!p) return '';
-            const price = p.price || 0;
-            const isOutOfStock = p.stock === 0;
-
-            let displayPrice = price;
-            let displayStock = p.stock;
-            let variantHtml = '';
-            let variantOutOfStock = isOutOfStock;
-
-            if (p.hasVariants && p.variants && p.variants.length > 0) {
-                let selectedIdx = window.selectedVariantIndex || 0;
-                let activeVar = p.variants[selectedIdx];
-                if(activeVar) {
-                    displayPrice = activeVar.price;
-                    displayStock = activeVar.stock;
-                    variantOutOfStock = displayStock === 0;
-                }
-                
-                variantHtml = `
-                    <div class="mb-5 bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                        <h4 class="text-[10px] font-black text-gray-500 mb-2.5 uppercase tracking-widest">Pilih Varian:</h4>
-                        <div class="flex flex-wrap gap-2">
-                            ${p.variants.map((v, idx) => `
-                                <button onclick="window.selectedVariantIndex = ${idx}; window.render();" class="px-4 py-2.5 rounded-xl text-xs font-bold border-2 transition-all active:scale-95 ${idx === selectedIdx ? 'border-orange-500 bg-orange-50/50 text-orange-500 shadow-sm' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'} ${v.stock === 0 ? 'opacity-40 line-through' : ''}">
-                                    ${v.name}
-                                </button>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            }
-
-            const prodReviews = window.reviews.filter(r => r.productId === p.id);
-            const avgRating = prodReviews.length > 0 ? (prodReviews.reduce((sum, r) => sum + r.rating, 0) / prodReviews.length).toFixed(1) : 0;
-            
-            let reviewsHtml = `<div class="mt-6 border-t border-gray-100 pt-6">
-                <h3 class="font-black text-gray-900 text-base mb-4 flex items-center justify-between">
-                    Ulasan Pembeli
-                    ${prodReviews.length > 0 ? `<span class="text-sm font-bold text-amber-500 flex items-center gap-1"><i data-lucide="star" class="w-4 h-4 fill-amber-500 text-amber-500"></i> ${avgRating} (${prodReviews.length})</span>` : ''}
-                </h3>
-                <div class="space-y-4">
-                    ${prodReviews.length === 0 ? '<p class="text-sm text-gray-400 font-medium text-center py-4 bg-gray-50 rounded-2xl border border-dashed border-gray-200">Belum ada ulasan untuk barang ini.</p>' : prodReviews.map(r => `
-                        <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 shadow-sm">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-7 h-7 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-[10px] font-black">${(r.reviewerName || 'A').charAt(0).toUpperCase()}</div>
-                                    <span class="text-xs font-bold text-gray-800">${r.reviewerName || 'Anonim'}</span>
-                                </div>
-                                <div class="flex gap-0.5">
-                                    ${Array(5).fill(0).map((_,i) => `<i data-lucide="star" class="w-3.5 h-3.5 ${i < r.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}"></i>`).join('')}
-                                </div>
-                            </div>
-                            <p class="text-xs text-gray-600 font-medium leading-relaxed">${r.comment || ''}</p>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-
-            return `
-                <div class="w-full bg-gray-100">
-                    <div class="relative w-full h-[380px] md:h-[500px] lg:h-[600px] max-w-7xl mx-auto">
-                        <button onclick="window.navigate('home')" class="absolute top-6 left-4 md:left-10 z-20 w-10 h-10 bg-white/90 backdrop-blur rounded-full shadow-md flex items-center justify-center text-gray-800 hover:bg-white transition-colors">
-                            <i data-lucide="arrow-left" class="w-5 h-5"></i>
-                        </button>
-                        ${window.isAdmin ? `<button onclick="window.deleteProductAdmin('${p.id}')" class="absolute top-6 right-16 md:right-24 z-20 w-10 h-10 bg-red-500/90 backdrop-blur rounded-full shadow-md flex items-center justify-center text-white hover:bg-red-600 transition-all active:scale-95 tooltip" title="Hapus Produk"><i data-lucide="trash-2" class="w-5 h-5"></i></button>` : ''}
-                        <button onclick="window.shareProduct('${p.id}')" class="absolute top-6 right-4 md:right-10 z-20 w-10 h-10 bg-white/90 backdrop-blur rounded-full shadow-md flex items-center justify-center text-orange-500 hover:bg-orange-500 hover:text-white transition-all active:scale-95 group">
-                            <i data-lucide="share-2" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
-                        </button>
-                        <img src="${p.imgUrl}" alt="${p.name}" class="w-full h-full object-contain md:object-cover bg-gray-900">
-                    </div>
-                </div>
-                <div class="bg-white -mt-6 relative z-10 rounded-t-[2rem] px-5 md:px-10 pt-8 pb-32 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] max-w-4xl mx-auto w-full">
-                    <div class="flex items-center gap-2 mb-3">
-                        <span class="bg-purple-50 text-purple-600 border border-purple-100 text-[10px] font-black px-2.5 py-1 rounded-full uppercase">${p.category || 'Lainnya'}</span>
-                        ${prodReviews.length > 0 && avgRating >= 4.5 ? `<span class="bg-amber-50 text-amber-600 border border-amber-100 text-[10px] font-black px-2.5 py-1 rounded-full flex items-center gap-1"><i data-lucide="check-circle" class="w-3 h-3"></i> Terpercaya</span>` : ''}
-                    </div>
-                    <h1 class="text-2xl md:text-3xl font-black text-gray-900 leading-tight mb-3">${p.name}</h1>
-                    ${p.originalPrice && p.originalPrice > displayPrice ? `<p class="text-sm font-bold text-gray-400 line-through mb-1">Rp ${p.originalPrice.toLocaleString('id-ID')}</p>` : ''}
-                    <div class="flex items-center gap-3 mb-4">
-                        <p class="text-orange-500 font-black text-3xl md:text-4xl">Rp ${displayPrice.toLocaleString('id-ID')}</p>
-                        ${p.originalPrice && p.originalPrice > displayPrice ? `<span class="bg-red-50 text-red-500 border border-red-100 text-sm font-black px-2.5 py-1 rounded-xl shadow-sm">-${Math.round(((p.originalPrice - displayPrice) / p.originalPrice) * 100)}%</span>` : ''}
-                    </div>
-                    
-                    ${variantHtml}
-
-                    <div class="bg-gray-50 border border-gray-100 rounded-xl px-4 py-2.5 inline-flex items-center gap-2 mb-6">
-                        <i data-lucide="package" class="w-4 h-4 text-gray-500"></i>
-                        <span class="text-xs font-bold text-gray-700">Sisa Stok: <span class="${displayStock > 0 || displayStock === undefined ? 'text-emerald-600' : 'text-red-500'}">${displayStock !== undefined ? displayStock : 'Tersedia'}</span></span>
-                    </div>
-                    
-                    <div class="w-full h-[1px] bg-gray-100 mb-6"></div>
-                    
-                    <div onclick="window.openStore('${p.ownerId}')" class="flex items-center gap-4 mb-6 p-4 rounded-2xl bg-gray-50 border border-gray-100 cursor-pointer hover:bg-gray-100 transition-colors group max-w-md">
-                        <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-sm overflow-hidden border-2 border-purple-50 group-hover:border-purple-200 transition-colors">
-                            <span class="text-purple-600 font-black text-xl uppercase">${p.storeName ? p.storeName.charAt(0) : 'T'}</span>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="font-extrabold text-gray-900 text-sm mb-0.5">${p.storeName || 'Toko SUQNA'}</h3>
-                            <p class="text-purple-600 text-[11px] font-bold flex items-center gap-1">Kunjungi Toko <i data-lucide="chevron-right" class="w-3 h-3"></i></p>
-                        </div>
-                    </div>
-                    
-                    <h3 class="font-black text-gray-900 text-base mb-3">Detail Deskripsi</h3>
-                    <p class="text-sm md:text-base text-gray-600 leading-relaxed">${p.description || "Tidak ada deskripsi."}</p>
-                    
-                    ${reviewsHtml}
-                </div>
-                <div class="fixed bottom-0 left-0 right-0 w-full bg-white shadow-[0_-10px_30px_rgba(0,0,0,0.08)] z-50 rounded-t-[2rem] border-t border-gray-50 pb-safe">
-                    <div class="max-w-4xl mx-auto p-4 flex gap-3">
-                        <button class="w-14 h-14 bg-gray-50 border border-gray-200 text-gray-600 rounded-2xl flex items-center justify-center flex-shrink-0 hover:bg-gray-100 transition-colors">
-                            <i data-lucide="message-square" class="w-6 h-6"></i>
-                        </button>
-                        <button onclick="window.addToCart('${p.id}'); if(!${variantOutOfStock}) window.navigate('cart');" class="flex-1 ${variantOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none' : 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-200'} font-extrabold text-lg py-4 rounded-2xl flex justify-center items-center transition-transform active:scale-95">
-                            ${variantOutOfStock ? 'Stok Habis' : 'Beli Sekarang'}
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        window.renderCart = function() {
-            if (window.cart.length === 0) {
-                return `
-                    <div class="bg-gradient-to-b from-[#4c1d95] to-[#5b21b6] pt-10 pb-6 px-5 rounded-b-[2rem] shadow-sm text-center w-full">
-                        <h2 class="text-white font-extrabold text-2xl">Keranjang Belanja</h2>
-                    </div>
-                    <div class="flex flex-col items-center justify-center pt-32 text-gray-400 w-full">
-                        <div class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-4 border-4 border-gray-100">
-                            <i data-lucide="shopping-cart" class="w-10 h-10 text-gray-300"></i>
-                        </div>
-                        <p class="text-sm font-bold text-gray-500">Keranjang Anda Masih Kosong</p>
-                        <button onclick="window.navigate('home')" class="mt-4 bg-purple-50 text-purple-600 font-bold px-6 py-2.5 rounded-full text-sm">Mulai Belanja</button>
-                    </div>`;
-            }
-
-            const cartByStore = {};
-            window.cart.forEach(item => {
-                if (!cartByStore[item.ownerId]) {
-                    cartByStore[item.ownerId] = {
-                        storeName: item.storeName || 'SUQNA Seller',
-                        items: [], total: 0
-                    };
-                }
-                cartByStore[item.ownerId].items.push(item);
-                cartByStore[item.ownerId].total += item.price;
-            });
-
-            let html = `
-                <div class="bg-gradient-to-b from-[#4c1d95] to-[#5b21b6] pt-10 pb-6 px-5 rounded-b-[2rem] shadow-sm relative z-10 text-center w-full">
-                    <div class="max-w-5xl mx-auto w-full">
-                        <h2 class="text-white font-extrabold text-2xl">Keranjang Belanja</h2>
-                    </div>
-                </div>
-                <div class="px-5 mt-6 pb-28 space-y-6 relative z-0 max-w-5xl mx-auto w-full">
-            `;
-
-            Object.keys(cartByStore).forEach(ownerId => {
-                const store = cartByStore[ownerId];
-                html += `
-                    <div class="bg-white rounded-[1.5rem] shadow-[0_5px_15px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden">
-                        <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-                            <div class="flex items-center gap-2 cursor-pointer" onclick="window.openStore('${ownerId}')">
-                                <i data-lucide="store" class="w-4 h-4 text-purple-600"></i>
-                                <span class="font-black text-gray-900 text-sm">${store.storeName}</span>
-                                <i data-lucide="chevron-right" class="w-3 h-3 text-gray-400"></i>
-                            </div>
-                        </div>
-                        <div class="p-4 space-y-4">
-                            ${store.items.map(item => `
-                                <div class="flex justify-between items-center group">
-                                    <div class="flex items-center gap-3">
-                                        <img src="${item.imgUrl}" class="w-14 h-14 md:w-20 md:h-20 rounded-xl object-cover border border-gray-100 shadow-sm"/>
-                                        <div>
-                                            <h4 class="font-bold text-xs md:text-sm text-gray-800 leading-tight mb-1 line-clamp-2">${item.name} ${item.variantName ? `<br><span class="inline-block mt-1 text-orange-500 bg-orange-50 px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider border border-orange-100">${item.variantName}</span>` : ''}</h4>
-                                            <p class="text-orange-500 text-sm md:text-base font-black">Rp ${item.price.toLocaleString('id-ID')}</p>
-                                        </div>
-                                    </div>
-                                    <button onclick="window.removeFromCart('${item.cartItemId}')" class="text-gray-300 p-2 rounded-full hover:bg-red-50 hover:text-red-500 transition-colors active:scale-95 flex-shrink-0"><i data-lucide="trash-2" class="w-4 h-4 md:w-5 md:h-5"></i></button>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div class="bg-gray-50 px-4 py-4 border-t border-gray-100 flex justify-between items-center">
-                            <div>
-                                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-wider mb-0.5">Subtotal Toko</p>
-                                <span class="text-gray-900 font-black text-base md:text-lg">Rp ${store.total.toLocaleString('id-ID')}</span>
-                            </div>
-                            <button onclick="window.openCheckoutModal('${ownerId}')" class="bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs md:text-sm font-extrabold px-5 py-2.5 rounded-xl shadow-lg shadow-orange-200 active:scale-95 transition-transform">Checkout</button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            html += `</div>`;
-            return html;
-        }
-
         window.lihatKategori = function(tipe) {
             if (window.currentView !== 'home') {
                 window.navigate('home');
@@ -1781,12 +1626,35 @@
 
         window.filterCategory = function(catName) {
             window.currentCategoryFilter = catName;
+            
+            // Smart Render: Only update the body, keep the search bar intact
+            if (window.currentView === 'home') {
+                const bodyWrapper = document.getElementById('home-body-wrapper');
+                if (bodyWrapper) {
+                    bodyWrapper.innerHTML = window.renderHomeBody();
+                    if(window.lucide) window.lucide.createIcons();
+                    bodyWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    return;
+                }
+            }
             window.render();
         }
 
         window.handleSearch = function(val) {
             window.currentSearchQuery = val;
-            window.render();
+            
+            // Smart Render: Update products instantly without reloading the search bar
+            if (window.currentView === 'home') {
+                const bodyWrapper = document.getElementById('home-body-wrapper');
+                if (bodyWrapper) {
+                    bodyWrapper.innerHTML = window.renderHomeBody();
+                    if(window.lucide) window.lucide.createIcons();
+                    
+                    if (val === '') window.startBannerSlide(); // Restart banner if search is cleared
+                    return;
+                }
+            }
+            window.render(); // Fallback if somehow not on home
         }
 
         window.confirmCheckout = async function() {
