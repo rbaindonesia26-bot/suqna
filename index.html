@@ -6,6 +6,15 @@
     <meta name="theme-color" content="#5b21b6">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- META TAGS SEO & OPEN GRAPH (UNTUK TAMPILAN MEWAH DI WHATSAPP/SOSMED) -->
+    <meta name="description" content="Pasar Digital Syariah & Multi-Vendor Lokal. 100% Gratis Tanpa Biaya Admin.">
+    <meta property="og:title" content="SUQNA - Pasar Kita, Untuk Semua">
+    <meta property="og:description" content="Ayo belanja kebutuhan harian dan dukung UMKM lokal di SUQNA. Buka toko online Anda sekarang, 100% Gratis!">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=800">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png">
     <title>SUQNA - Pasar Kita, Untuk Semua</title>
@@ -380,7 +389,7 @@
         }
 
         window.openHelpWA = function() {
-            const waNumber = "6281234040580"; // <-- GANTI DENGAN NOMOR WA ADMIN ANDA
+            const waNumber = "6281234567890"; // <-- GANTI DENGAN NOMOR WA ADMIN ANDA
             const message = "Halo Admin SUQNA, saya butuh bantuan mengenai aplikasi.";
             window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, '_blank');
         }
@@ -453,17 +462,29 @@
                 }
                 window.pendingRoute = false;
             }
-            // Only re-render if NOT on home or if we are not actively typing
-            if (window.currentView !== 'home' || (document.getElementById('main-search-input') && document.activeElement !== document.getElementById('main-search-input'))) {
-                if(window.render) window.render();
+            // HANYA merender area produk jika ada ketikan pencarian, BUKAN seluruh layar.
+            if (window.currentView === 'home' && document.getElementById('main-search-input') && document.activeElement === document.getElementById('main-search-input')) {
+                 const bodyWrapper = document.getElementById('home-body-wrapper');
+                 if (bodyWrapper) {
+                     bodyWrapper.innerHTML = window.renderHomeBody();
+                     if(window.lucide) window.lucide.createIcons();
+                 }
+            } else {
+                 if(window.render) window.render();
             }
         }, (e) => console.error(e));
 
         onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'reviews')), (snapshot) => {
             window.reviews = [];
             snapshot.forEach((doc) => { window.reviews.push({ id: doc.id, ...doc.data() }); });
-            if (window.currentView !== 'home' || (document.getElementById('main-search-input') && document.activeElement !== document.getElementById('main-search-input'))) {
-                if(window.render) window.render();
+            if (window.currentView === 'home' && document.getElementById('main-search-input') && document.activeElement === document.getElementById('main-search-input')) {
+                 const bodyWrapper = document.getElementById('home-body-wrapper');
+                 if (bodyWrapper) {
+                     bodyWrapper.innerHTML = window.renderHomeBody();
+                     if(window.lucide) window.lucide.createIcons();
+                 }
+            } else {
+                 if(window.render) window.render();
             }
         }, (e) => console.error(e));
 
