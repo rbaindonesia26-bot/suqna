@@ -208,6 +208,15 @@
         <main id="content" class="flex-1 overflow-y-auto overflow-x-hidden relative bg-white pb-28 transition-all duration-300 hide-scroll">
         </main>
 
+        <!-- Tombol Chat Melayang (Floating Chat Button) -->
+        <button onclick="window.openFloatingChat()" id="floating-chat-btn" class="fixed bottom-[85px] right-4 md:bottom-10 md:right-10 w-14 h-14 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(37,211,102,0.4)] z-[90] hover:scale-110 active:scale-95 transition-all duration-300 group border-2 border-white/50">
+            <i data-lucide="message-circle" class="w-7 h-7 group-hover:animate-pulse"></i>
+            <span class="absolute -top-1 -right-1 flex h-4 w-4">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-4 w-4 bg-green-100 border-2 border-green-500"></span>
+            </span>
+        </button>
+
         <nav id="bottom-nav" class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-center z-[60] pb-safe transition-transform duration-300 shadow-[0_-10px_40px_rgba(0,0,0,0.06)]">
             <div class="flex justify-around items-end w-full max-w-7xl mx-auto px-2 pt-2 pb-4">
                 <!-- Beranda -->
@@ -389,9 +398,34 @@
         }
 
         window.openHelpWA = function() {
-            const waNumber = "6281234567890"; // <-- GANTI DENGAN NOMOR WA ADMIN ANDA
+            const waNumber = "6281234040580"; // <-- GANTI DENGAN NOMOR WA ADMIN ANDA
             const message = "Halo Admin SUQNA, saya butuh bantuan mengenai aplikasi.";
             window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        // Floating Chat Button Logic
+        window.openFloatingChat = function() {
+            let phone = "6281234040580"; // GANTI: Default nomor WA Admin
+            let text = "Halo Admin SUQNA, saya butuh bantuan.";
+
+            if (window.currentView === 'store' && window.currentStoreId) {
+                let p = window.products.find(x => x.ownerId === window.currentStoreId);
+                if (p && p.storePhone) {
+                    phone = p.storePhone;
+                    text = `Halo *${p.storeName}*, saya ingin bertanya seputar toko Anda di SUQNA.`;
+                }
+            } else if (window.currentView === 'detail' && window.currentProductDetail) {
+                let p = window.currentProductDetail;
+                if (p.storePhone) {
+                    phone = p.storePhone;
+                    text = `Halo *${p.storeName}*, saya tertarik dengan produk *${p.name}* di SUQNA. Apakah masih tersedia?`;
+                }
+            }
+
+            let cleanPhone = phone.replace(/\D/g, '');
+            if(cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.substring(1); 
+            
+            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`, '_blank');
         }
 
         // Banner Default
@@ -462,7 +496,6 @@
                 }
                 window.pendingRoute = false;
             }
-            // HANYA merender area produk jika ada ketikan pencarian, BUKAN seluruh layar.
             if (window.currentView === 'home' && document.getElementById('main-search-input') && document.activeElement === document.getElementById('main-search-input')) {
                  const bodyWrapper = document.getElementById('home-body-wrapper');
                  if (bodyWrapper) {
@@ -756,12 +789,12 @@
             const widthClass = isGrid ? 'w-full' : 'min-w-[160px] sm:min-w-[190px] w-[160px] sm:w-[190px] snap-start';
 
             return `
-                <div onclick="window.openProductDetail('${p.id}')" class="${widthClass} bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col relative cursor-pointer hover:shadow-md transition-shadow group">
+                <div onclick="window.openProductDetail('${p.id}')" class="${widthClass} bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col relative cursor-pointer hover:shadow-md transition-shadow">
                     ${adminDeleteBtn}
                     ${isOutOfStock ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center"><div class="bg-red-500/90 text-white font-black text-xs px-3 py-1 rounded-full shadow-lg transform -rotate-12">STOK HABIS</div></div>` : ''}
-                    <div class="h-36 sm:h-44 bg-gray-50 relative w-full overflow-hidden">
+                    <div class="h-36 sm:h-44 bg-gray-50 relative w-full overflow-hidden group">
                         <img src="${p.imgUrl}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
-                        <div class="absolute top-2 left-2 bg-white/90 backdrop-blur-sm text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors text-[8px] font-extrabold px-2 py-1 rounded-full uppercase shadow-sm max-w-[80%] truncate border border-purple-50">${p.category || 'Lainnya'}</div>
+                        <div class="absolute top-2 left-2 bg-white/90 backdrop-blur-sm text-purple-600 text-[8px] font-extrabold px-2 py-1 rounded-full uppercase shadow-sm max-w-[80%] truncate border border-purple-50">${p.category || 'Lainnya'}</div>
                         ${originalPrice > price ? `<div class="absolute bottom-2 right-2 bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-md z-10">-${Math.round(((originalPrice - price) / originalPrice) * 100)}%</div>` : ''}
                     </div>
                     <div class="p-3.5 flex flex-col flex-1 relative z-0">
@@ -769,9 +802,9 @@
                             <h3 class="font-bold text-[13px] sm:text-sm text-gray-800 leading-[1.3] line-clamp-2">${p.name}</h3>
                         </div>
                         <div class="flex items-center justify-between mb-2 mt-auto">
-                            <div onclick="event.stopPropagation(); window.openStore('${p.ownerId}')" class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 px-1 py-0.5 -ml-1 rounded transition-colors sub-group">
-                                <i data-lucide="store" class="w-3 h-3 text-gray-400 sub-group-hover:text-purple-600"></i>
-                                <span class="text-[9px] font-medium text-gray-500 sub-group-hover:text-gray-700 truncate max-w-[80px]">${p.storeName || 'Online'}</span>
+                            <div onclick="event.stopPropagation(); window.openStore('${p.ownerId}')" class="flex items-center gap-1.5 cursor-pointer hover:bg-gray-100 px-1 py-0.5 -ml-1 rounded transition-colors group">
+                                <i data-lucide="store" class="w-3 h-3 text-gray-400 group-hover:text-purple-600"></i>
+                                <span class="text-[9px] font-medium text-gray-500 group-hover:text-gray-700 truncate max-w-[80px]">${p.storeName || 'Online'}</span>
                             </div>
                             ${ratingHtml}
                         </div>
@@ -780,7 +813,7 @@
                                 ${originalPrice > price ? `<span class="text-[10px] text-gray-400 line-through font-bold mb-[1px]">Rp ${originalPrice.toLocaleString('id-ID')}</span>` : ''}
                                 <p class="text-orange-500 font-black text-sm sm:text-base leading-none">Rp ${price.toLocaleString('id-ID')}</p>
                             </div>
-                            <button onclick="event.stopPropagation(); window.addToCart('${p.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center hover:bg-orange-500 hover:text-white transition-colors flex-shrink-0 shadow-sm">
+                            <button onclick="event.stopPropagation(); window.addToCart('${p.id}')" class="w-8 h-8 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center hover:bg-orange-100 transition-colors flex-shrink-0">
                                 <i data-lucide="plus" class="w-4 h-4"></i>
                             </button>
                         </div>
@@ -794,6 +827,13 @@
             const bottomNav = document.getElementById('bottom-nav');
             if(!content) return;
             
+            // Atur visibility tombol floating chat
+            const chatBtn = document.getElementById('floating-chat-btn');
+            if(chatBtn) {
+                if(window.currentView === 'login') chatBtn.classList.add('hidden');
+                else chatBtn.classList.remove('hidden');
+            }
+
             if (window.currentView === 'home') {
                 content.innerHTML = window.renderHome();
                 bottomNav.style.transform = 'translateY(0)';
@@ -1741,7 +1781,7 @@
                             
                             <div class="w-full text-left">
                                 <label class="text-[10px] text-gray-500 font-bold ml-1 mb-1.5 block uppercase tracking-wide">Nomor WhatsApp Toko</label>
-                                <input type="text" id="edit-store-phone" value="${window.storeProfile.phone || ''}" placeholder="Cth: 628123456789" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 font-bold text-gray-800 text-center text-sm focus:ring-2 focus:ring-gray-900/20 outline-none transition-all">
+                                <input type="text" id="edit-store-phone" value="${window.storeProfile.phone || ''}" placeholder="Cth: 6281234040580" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 font-bold text-gray-800 text-center text-sm focus:ring-2 focus:ring-gray-900/20 outline-none transition-all">
                             </div>
                             
                             <button onclick="window.saveProfile()" class="w-full bg-gray-900 text-white font-extrabold text-lg py-4 rounded-2xl mt-2 shadow-lg shadow-gray-400/50">Simpan Profil</button>
