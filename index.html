@@ -492,10 +492,16 @@
             
             if (window.pendingRoute && window.products.length > 0) {
                 const urlParams = new URLSearchParams(window.location.search);
-                const shareId = urlParams.get('product');
-                if (shareId) {
-                    const p = window.products.find(x => x.id === shareId);
+                const shareProduct = urlParams.get('product');
+                const shareStore = urlParams.get('store');
+                
+                if (shareProduct) {
+                    const p = window.products.find(x => x.id === shareProduct);
                     if (p) { window.currentProductDetail = p; window.currentView = 'detail'; }
+                } else if (shareStore) {
+                    // Pintu Khusus untuk menangkap Link Toko VIP
+                    window.currentStoreId = shareStore;
+                    window.currentView = 'store';
                 }
                 window.pendingRoute = false;
             }
