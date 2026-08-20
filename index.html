@@ -477,7 +477,8 @@
             window.firestoreBanners = [];
             snapshot.forEach((doc) => { window.firestoreBanners.push({ id: doc.id, ...doc.data() }); });
             if (window.firestoreBanners.length > 0) {
-                window.firestoreBanners.sort((a,b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+                window.firestoreBanners.sort((a,b) => (a.order || 99) - (b.order || 99));                
                 window.banners = window.firestoreBanners;
             } else {
                 window.banners = [...window.defaultBanners];
@@ -1771,7 +1772,10 @@
                                     <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Judul Banner (Gunakan &lt;br&gt; utk baris baru)</label>
                                     <input type="text" id="new-banner-title" placeholder="Cth: Diskon Lebaran<br>Hingga 50%" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 focus:ring-2 focus:ring-purple-500/50 outline-none text-sm">
                                 </div>
-                                
+                                <div class="space-y-1">
+    <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Nomor Urut Tampil</label>
+    <input type="number" id="new-banner-order" placeholder="Cth: 1 (Tampil paling awal)" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 focus:ring-2 focus:ring-purple-500/50 outline-none">
+</div>
                                 <div class="flex gap-2 pt-2">
                                     <button onclick="window.tempBannerImg = ''; window.editingBannerId = null; window.render();" class="flex-1 bg-white border border-gray-300 text-gray-600 font-extrabold py-3 rounded-xl">Batal</button>
                                     <button onclick="window.saveNewBanner()" class="flex-1 bg-purple-600 text-white font-extrabold py-3 rounded-xl shadow-md hover:bg-purple-700" id="btn-simpan-banner">${window.editingBannerId ? 'Update Banner' : 'Simpan Banner'}</button>
@@ -2279,12 +2283,12 @@
             const tag = document.getElementById('new-banner-tag').value;
             const color = document.getElementById('new-banner-color').value;
             const title = document.getElementById('new-banner-title').value;
+            const orderNumber = Number(document.getElementById('new-banner-order').value) || 99;
 
             if(!window.tempBannerImg || !tag || !title) return window.showToastMessage('Isi gambar, label promo, dan judul!');
 
             try {
-                const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, timestamp: Date.now() };
-                
+const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, timestamp: Date.now(), order: orderNumber };                
                 if (window.editingBannerId) {
                     await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'banners', window.editingBannerId), b);
                     window.showToastMessage('Banner Berhasil Diperbarui!');
@@ -2296,6 +2300,7 @@
                 
                 if(document.getElementById('new-banner-tag')) document.getElementById('new-banner-tag').value = '';
                 if(document.getElementById('new-banner-title')) document.getElementById('new-banner-title').value = '';
+                if(document.getElementById('new-banner-order')) document.getElementById('new-banner-order').value = '';
                 window.tempBannerImg = ''; 
                 window.render(); 
             } catch(e) { 
