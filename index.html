@@ -42,8 +42,43 @@
         .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .logo-glow { filter: drop-shadow(0px 4px 12px rgba(255, 255, 255, 0.4)); }
     </style>
+    <style>
+  .pita-kemerdekaan {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+    position: fixed; 
+    top: 0;
+    right: 0;
+    z-index: 9999; 
+    pointer-events: none; 
+  }
+  .pita-kemerdekaan span {
+    position: absolute;
+    display: block;
+    width: 220px;
+    padding: 8px 0;
+    background-color: #CC0000; 
+    border-bottom: 5px solid #FFFFFF; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); 
+    color: #FFFFFF;
+    font-family: 'Arial', sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 1px;
+    right: -55px;
+    top: 30px;
+    transform: rotate(45deg); 
+  }
+</style>
 </head>
 <body class="text-gray-800 font-sans flex justify-center min-h-[100dvh] bg-white overflow-hidden">
+    <!-- PITA HUT RI 81 (Mulai) -->
+<div class="pita-kemerdekaan">
+  <span>DIRGAHAYU RI 81</span>
+</div>
+<!-- PITA HUT RI 81 (Selesai) -->
 
     <div id="app" class="w-full h-[100dvh] mx-auto bg-white relative overflow-hidden flex flex-col">
         
