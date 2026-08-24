@@ -2176,19 +2176,28 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
             } catch(e) { console.error("Error Lihat Kategori:", e); }
         };
 
-        window.shareProduct = async function(id) {
+window.shareProduct = async function(id) {
             const p = window.products.find(x => x.id === id);
             if(!p) return;
-            const shareUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?product=' + id;
-// --- LOGIKA TEKS BAGIKAN DINAMIS ---
-        const isFlash = (p.isFlashSale === 'true' || p.isFlashSale === true) && p.flashSaleEnd;
-        const pesanTeks = isFlash 
-            ? '⚡ SEDANG FLASH SALE! Promo Spesial ' + p.name + ' di SUQNA! Cek sekarang sebelum kehabisan.' 
-            : 'Cek ' + p.name + ' di SUQNA! Pasar Kita, Untuk Semua.';
+
+            // Buat link bawaan
+            let shareUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?product=' + id;
             
-        const shareData = { title: p.name, text: pesanTeks, url: shareUrl };
+            // --- JALUR KHUSUS BALIHO HTML ---
+            if (p.name.includes('Logam Mulia') || p.name.includes('Antam')) {
+                shareUrl = window.location.protocol + "//" + window.location.host + "/suqna/antam.html";
+            }
+
+            // --- LOGIKA TEKS BAGIKAN DINAMIS ---
+            const isFlash = (p.isFlashSale === 'true' || p.isFlashSale === true) && p.flashSaleEnd;
+            const pesanTeks = isFlash 
+                ? '⚡ SEDANG FLASH SALE! Promo Spesial ' + p.name + ' di SUQNA! Cek sekarang sebelum kehabisan.' 
+                : 'Cek ' + p.name + ' di SUQNA! Pasar Kita, Untuk Semua.';
+                
+            const shareData = { title: p.name, text: pesanTeks, url: shareUrl };
+
             try {
-                if (navigator.share) await navigator.share(shareData); 
+                if (navigator.share) await navigator.share(shareData);
                 else {
                     const textArea = document.createElement("textarea");
                     textArea.value = shareUrl;
@@ -2199,8 +2208,7 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                     window.showToastMessage('Tautan produk disalin!');
                 }
             } catch (err) {}
-        }
-        
+        }        
         window.shareStore = async function(storeId) {
             const p = window.products.find(x => x.ownerId === storeId);
             const storeName = p ? p.storeName : 'Toko SUQNA';
