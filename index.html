@@ -2341,14 +2341,20 @@ ${ p.name.includes('Logam Mulia') || p.name.includes('Emas') ? `
             
             if(name && price > 0 && subcat) {
                 const finalImgUrl = window.tempProductImg || (window.editingProductData ? window.editingProductData.imgUrl : `https://placehold.co/400x400/8b5cf6/ffffff?text=${name.substring(0,2).toUpperCase()}`);
-                const p = {
-                    name: name, price: price, originalPrice: originalPrice, stock: stock, category: subcat, description: desc,
-                    storeName: window.storeProfile.name, storePhone: window.storeProfile.phone || '',
-                    ownerId: window.userId, imgUrl: finalImgUrl,
-                    hasVariants: useVariants, variants: finalVariants,
-                    timestamp: window.editingProductData ? window.editingProductData.timestamp : Date.now()
-                };
-                
+// Membaca kabel dari Kotak Flash Sale
+        const isFlashSaleVal = document.getElementById('new-prod-is-flashsale') ? document.getElementById('new-prod-is-flashsale').value : 'false';
+        const flashSaleEndVal = document.getElementById('new-prod-flashsale-end') ? document.getElementById('new-prod-flashsale-end').value : '';
+
+        // Memasukkan data ke dalam Keranjang Database
+        const p = {
+            name: name, price: price, originalPrice: originalPrice, stock: stock, category: subcat, description: desc,
+            storeName: window.storeProfile.name, storePhone: window.storeProfile.phone || '',
+            ownerId: window.userId, imgUrl: finalImgUrl,
+            hasVariants: useVariants, variants: finalVariants,
+            timestamp: window.editingProductData ? window.editingProductData.timestamp : Date.now(),
+            isFlashSale: isFlashSaleVal,
+            flashSaleEnd: flashSaleEndVal
+        };                
                 if (window.editingProductData) {
                     await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', window.editingProductData.id), p);
                     window.showToastMessage('Barang Diperbarui');
