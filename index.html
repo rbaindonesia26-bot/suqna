@@ -74,7 +74,20 @@
 </style>
 </head>
 <body class="text-gray-800 font-sans flex justify-center min-h-[100dvh] bg-white overflow-hidden">
-
+<!-- JURUS LAYAR TIRAI (SPLASH SCREEN) -->
+    <div id="splash-screen" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center transition-opacity duration-700 ease-out">
+        <!-- Teks Logo Berdenyut -->
+<!-- Teks Logo Berdenyut dengan Gradasi Oranye-Ungu -->
+        <h1 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-[#5E1085] to-[#FF6A00] bg-clip-text text-transparent tracking-widest animate-pulse mb-4">
+            SUQNA
+        </h1>
+        <!-- Animasi Loading Melingkar (Oranye Aksen) -->
+        <div class="w-10 h-10 border-4 border-gray-200 border-t-[#FF6A00] rounded-full animate-spin"></div>        
+        <!-- Teks Pendukung -->
+        <p class="mt-5 text-sm text-gray-500 font-medium tracking-wide animate-pulse">
+            Menyiapkan etalase...
+        </p>
+    </div>
     <div id="app" class="w-full h-[100dvh] mx-auto bg-white relative overflow-hidden flex flex-col">
     
     <!-- PITA HUT RI 81 (Mulai) -->
@@ -2754,6 +2767,22 @@ const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, 
                 }
             });
         }, 1000); // Mesin berdetak setiap 1 detik
+    </script>
+    <!-- LOGIKA MESIN PENARIK TIRAI -->
+    <script>
+        window.addEventListener('load', () => {
+            // Kita atur agar tirai ditarik otomatis setelah 3 detik (3000 milidetik). 
+            // Bapak bisa mengubah angka 3000 menjadi 5000 jika dirasa 5 detik lebih aman.
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if (splash) {
+                    splash.style.opacity = '0'; // Membuatnya memudar halus
+                    setTimeout(() => {
+                        splash.style.display = 'none'; // Menghilangkannya dari layar
+                    }, 700); // Waktu transisi memudar (0.7 detik)
+                }
+            }, 3000); 
+        });
     </script>
 </body>
 </html>
