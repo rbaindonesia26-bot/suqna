@@ -923,6 +923,12 @@ window.defaultBanners = [];
                     ${isOutOfStock ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center"><div class="bg-red-500/90 text-white font-black text-xs px-3 py-1 rounded-full shadow-lg transform -rotate-12">STOK HABIS</div></div>` : ''}
                     <div class="h-36 sm:h-44 bg-gray-50 relative w-full overflow-hidden group">
                         <img src="${p.imgUrl}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
+                        ${ p.name.includes('Logam Mulia') || p.name.includes('Emas') ? `
+        <!-- LABEL PITA FLASH SALE -->
+        <div class="absolute top-0 right-0 bg-gradient-to-l from-red-600 to-red-700 text-white text-[9px] sm:text-[10px] font-black px-2.5 py-1 rounded-bl-xl shadow-md z-10 flex items-center gap-1 border-b border-l border-red-500 tracking-wider">
+            ⚡ FLASH SALE
+        </div>
+        ` : '' }
                         <div class="absolute top-2 left-2 bg-white/90 backdrop-blur-sm text-purple-600 text-[8px] font-extrabold px-2 py-1 rounded-full uppercase shadow-sm max-w-[80%] truncate border border-purple-50">${p.category || 'Lainnya'}</div>
                         ${originalPrice > price ? `<div class="absolute bottom-2 right-2 bg-red-500 text-white text-[10px] font-black px-2 py-1 rounded-lg shadow-md z-10">-${Math.round(((originalPrice - price) / originalPrice) * 100)}%</div>` : ''}
                     </div>
