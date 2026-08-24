@@ -2683,5 +2683,35 @@ const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, 
         // Memulai Aplikasi
         window.render();
     </script>
+    <!-- MESIN WAKTU FLASHSALE SUQNA -->
+    <script>
+        setInterval(function() {
+            // Sapu bersih seluruh halaman, cari semua yang pakai seragam 'flashsale-timer'
+            const timers = document.querySelectorAll('.flashsale-timer');
+            const sekarang = new Date().getTime();
+
+            timers.forEach(function(timerEl) {
+                // Baca batas waktu dari masing-masing spanduk
+                const waktuBerakhir = new Date(timerEl.getAttribute('data-endtime')).getTime();
+                const sisaWaktu = waktuBerakhir - sekarang;
+
+                if (sisaWaktu > 0) {
+                    const jam = Math.floor((sisaWaktu % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const menit = Math.floor((sisaWaktu % (1000 * 60 * 60)) / (1000 * 60));
+                    const detik = Math.floor((sisaWaktu % (1000 * 60)) / 1000);
+
+                    // Tulis angkanya ke layar dengan format 00:00:00
+                    timerEl.innerHTML = 
+                        String(jam).padStart(2, '0') + ":" + 
+                        String(menit).padStart(2, '0') + ":" + 
+                        String(detik).padStart(2, '0');
+                } else {
+                    // Jika waktu habis, ubah warna dan teks
+                    timerEl.innerHTML = "BERAKHIR";
+                    timerEl.style.color = "#ef4444"; // Berubah merah
+                }
+            });
+        }, 1000); // Mesin berdetak setiap 1 detik
+    </script>
 </body>
 </html>
