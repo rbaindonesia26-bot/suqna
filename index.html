@@ -876,12 +876,12 @@ window.defaultBanners = [];
                 
                 if (p.hasVariants && p.variants && p.variants.length > 0) {
                     let selectedVar = p.variants[window.selectedVariantIndex || 0];
-                    if (selectedVar.stock === 0) return window.showToastMessage('Maaf, stok varian ini sedang habis.');
+                    if (selectedVar.stock === 0) return window.showToastMessage('Maaf, stok varian ini sudah Sold Out.');
                     cartItem.price = selectedVar.price;
                     cartItem.variantName = selectedVar.name;
                     cartItem.variantIndex = window.selectedVariantIndex || 0;
                 } else {
-                    if(p.stock === 0) return window.showToastMessage('Maaf, stok barang sedang habis.');
+                    if(p.stock === 0) return window.showToastMessage('Maaf, produk ini sudah Sold Out.');
                 }
                 
                 window.cart.push(cartItem); 
@@ -1239,7 +1239,7 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                         <i data-lucide="home" class="w-6 h-6"></i>
                     </button>
                     ${isOutOfStock ? 
-                        `<button class="flex-1 bg-gray-300 text-white font-extrabold text-lg rounded-2xl cursor-not-allowed flex items-center justify-center gap-2"><i data-lucide="x-circle" class="w-5 h-5"></i> Stok Habis</button>`
+                        `<button class="flex-1 bg-gray-300 text-white font-extrabold text-lg rounded-2xl cursor-not-allowed flex items-center justify-center gap-2"><i data-lucide="x-circle" class="w-5 h-5"></i> Sold Out</button>`
                         : 
                         `<button onclick="window.addToCart('${p.id}')" class="flex-1 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-extrabold text-lg rounded-2xl shadow-lg shadow-orange-200 transition-transform active:scale-95 flex items-center justify-center gap-2"><i data-lucide="shopping-bag" class="w-5 h-5"></i> Tambah Keranjang</button>`
                     }
@@ -2055,7 +2055,7 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                                                 <button onclick="window.deleteProduct('${p.id}')" class="bg-white/90 backdrop-blur text-red-500 p-2 rounded-full shadow-sm hover:bg-red-50 transition-colors"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                                             </div>
                                             <div class="h-32 md:h-40 bg-gray-50 w-full relative">
-                                                ${p.stock === 0 ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center"><span class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded shadow-sm">HABIS</span></div>` : ''}
+                                                ${p.stock === 0 ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center"><span class="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded shadow-sm">SOLD OUT</span></div>` : ''}
                                                 <img src="${p.imgUrl}" class="h-full w-full object-cover">
                                             </div>
                                             <div class="p-3 flex-1 flex flex-col relative z-0">
