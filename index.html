@@ -933,7 +933,7 @@ window.defaultBanners = [];
             return `
                 <div onclick="window.openProductDetail('${p.id}')" class="${widthClass} bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col relative cursor-pointer hover:shadow-md transition-shadow">
                     ${adminDeleteBtn}
-                    ${isOutOfStock ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center"><div class="bg-red-500/90 text-white font-black text-xs px-3 py-1 rounded-full shadow-lg transform -rotate-12">STOK HABIS</div></div>` : ''}
+                    ${isOutOfStock ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center"><div class="bg-red-500/90 text-white font-black text-xs px-3 py-1 rounded-full shadow-lg transform -rotate-12">SOLD OUT</div></div>` : ''}
                     <div class="h-36 sm:h-44 bg-gray-50 relative w-full overflow-hidden group">
                         <img src="${p.imgUrl}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
 ${ (p.isFlashSale === 'true' || p.isFlashSale === true) && p.flashSaleEnd ? `
