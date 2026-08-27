@@ -2195,15 +2195,6 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                                 <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Deskripsi</label>
                                 <textarea id="new-prod-desc" placeholder="Tuliskan spesifikasi lengkap..." rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 font-medium text-gray-800 text-sm focus:ring-2 focus:ring-gray-900/20 outline-none transition-all">${window.editingProductData ? (window.editingProductData.description || '') : ''}</textarea>
                             </div>
-                            <div class="space-y-1 mt-3">
-                                <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Link Foto Tambahan (Galeri) - Pisahkan dengan koma</label>
-                                <input type="text" id="new-prod-gallery" placeholder="https://foto1.jpg, https://foto2.jpg" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 font-medium text-xs text-gray-800 outline-none">
-                            </div>
-                            <div class="space-y-1 mt-2">
-                                <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Link Video Pendek (Opsional - MP4)</label>
-                                <input type="text" id="new-prod-video" placeholder="https://link-video.mp4" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 font-medium text-xs text-gray-800 outline-none">
-                            </div>
-                            <button onclick="window.saveProduct()" class="w-full bg-gray-900 text-white font-extrabold text-lg py-4 rounded-2xl mt-2 shadow-lg shadow-gray-400/50 transition-transform active:scale-95">${window.editingProductData ? 'Simpan Perubahan' : 'Tayangkan di Pasar'}</button>
                         </div>
                     `}
                 </div>
