@@ -2941,27 +2941,5 @@ window.slideGallery = function(productId, direction) {
             }, 3000); 
         });
     </script>
-    <script>
-// Skrip otomatis untuk menyuntikkan kolom galeri dan video ke dalam form tambah produk
-setInterval(() => {
-    let descArea = document.getElementById('new-prod-desc');
-    if(descArea && !document.getElementById('new-prod-gallery')) {
-        let container = descArea.closest('.space-y-1') || descArea.parentNode;
-        if(container) {
-            let htmlGallery = `
-                <div class="space-y-1 mt-3" id="wrapper-gallery-input">
-                    <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Link Foto Tambahan (Galeri) - Pisahkan dengan koma</label>
-                    <input type="text" id="new-prod-gallery" placeholder="https://foto1.jpg, https://foto2.jpg" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 font-medium text-xs text-gray-800 outline-none">
-                </div>
-                <div class="space-y-1 mt-2" id="wrapper-video-input">
-                    <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Link Video Pendek (Opsional - MP4)</label>
-                    <input type="text" id="new-prod-video" placeholder="https://link-video.mp4" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 font-medium text-xs text-gray-800 outline-none">
-                </div>
-            `;
-            container.insertAdjacentHTML('afterend', htmlGallery);
-        }
-    }
-}, 1000);
-</script>
 </body>
 </html>
