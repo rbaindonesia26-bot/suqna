@@ -1538,23 +1538,26 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                 const b = window.banners[window.currentBannerIndex] || window.banners[0];
                 
                 html += `
-<!-- BANNER ZONE -->
-<div class="px-5 mt-4 sm:mt-6 mb-6 max-w-7xl mx-auto w-full">
-    <div class="relative h-[160px] sm:h-[240px] md:h-[320px] lg:h-[380px] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer border-2 border-gray-100" id="banner-container">
-        <img id="banner-img" src="${b.img}" class="w-full h-full object-cover transition-all duration-500" />
-        <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-5 md:px-12">
-            <span id="banner-tag" class="${b.tagColor} font-black text-[10px] md:text-sm tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300">${window.sanitizeHTML(b.tag)}</span>
-            <h3 id="banner-title" class="text-white font-extrabold text-xl md:text-3xl lg:text-4xl leading-[1.15] drop-shadow-lg transition-opacity duration-300">${window.sanitizeHTML(b.title)}</h3>
-        </div>
-
-        <!-- PITA KEMERDEKAAN / SPECIAL PROMO (PINDAHAN) -->
-            <div class="pita-kemerdekaan z-[60]">
-            <span>SPECIAL 9.9</span>
-        </div>
-
-    </div>
-</div>
-
+            <!-- BANNER ZONE -->
+                    <div class="px-5 mt-4 sm:mt-6 mb-6 max-w-7xl mx-auto w-full">
+                        <div class="relative h-[160px] sm:h-[240px] md:h-[320px] lg:h-[380px] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer border-2 border-gray-100" id="banner-container">
+                            <img id="banner-img" src="${b.img}" class="w-full h-full object-cover transition-all duration-500" />
+                            <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-5 md:px-12">
+                                <!-- Teks tag asli di dalam banner (Bisa Anda hapus jika merasa dobel dengan pita) -->
+                                <span id="banner-tag" class="${b.tagColor} font-black text-[10px] md:text-sm tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300">${window.sanitizeHTML(b.tag)}</span>
+                                <h3 id="banner-title" class="text-white font-extrabold text-xl md:text-3xl lg:text-4xl leading-[1.15] drop-shadow-lg transition-opacity duration-300">${window.sanitizeHTML(b.title)}</h3>
+                            </div>
+                            
+                            <!-- PITA DINAMIS TERKAIT INPUT ADMIN -->
+                            ${b.tag && b.tag.trim() !== '' ? `
+                            <div class="pita-kemerdekaan z-[60]">
+                                <span>${window.sanitizeHTML(b.tag)}</span>
+                            </div>
+                            ` : ''}
+                            
+                        </div>
+                    </div>
+                    
                     <!-- CATEGORIES ZONE (3D FAUX CSS) -->
                     <div id="kategori-section" class="px-5 mt-8 mb-4 relative z-0 max-w-7xl mx-auto w-full">
                         <div class="flex justify-between items-end mb-5">
