@@ -56,31 +56,32 @@
     </style>
 <style>
 .pita-kemerdekaan {
-    width: 110px; /* Diperkecil dari 150px */
-    height: 110px; /* Diperkecil dari 150px */
+    width: 110px;
+    height: 110px;
     overflow: hidden;
     position: absolute;
-    top: 170px; /* Tetap di posisi aslinya agar sejajar dengan banner */
+    top: 0;
     right: 0;
-    z-index: 9999;
+    z-index: 60;
     pointer-events: none;
+    transition: opacity 0.3s;
   }
   .pita-kemerdekaan span {
     position: absolute;
     display: block;
-    width: 170px; /* Diperkecil dari 220px */
-    padding: 4px 0; /* Ketebalan pita ditipiskan */
+    width: 170px;
+    padding: 4px 0;
     background-color: #ea580c;
     border-bottom: 2px solid #FFFFFF;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     color: #FFFFFF;
     font-family: 'Arial', sans-serif;
-    font-size: 8px; /* Teks diperkecil agar lebih eksklusif */
+    font-size: 8px;
     font-weight: bold;
     text-align: center;
     letter-spacing: 1px;
-    right: -45px; /* Disesuaikan dengan ukuran baru */
-    top: 22px; /* Disesuaikan dengan ukuran baru */
+    right: -45px;
+    top: 22px;
     transform: rotate(45deg);
   }
 </style>
@@ -88,24 +89,15 @@
 <body class="text-gray-100 font-sans flex justify-center min-h-[100dvh] bg-[#09090b] overflow-hidden">
     <!-- JURUS LAYAR TIRAI (SPLASH SCREEN) -->
     <div id="splash-screen" class="fixed inset-0 z-[9999] bg-[#09090b] flex flex-col items-center justify-center transition-opacity duration-700 ease-out">
-    <!-- Teks Logo Berdenyut -->
-<!-- Teks Logo Berdenyut dengan Gradasi Oranye-Ungu -->
         <h1 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-[#D4AF37] to-[#FF6A00] bg-clip-text text-transparent tracking-widest animate-pulse mb-4">
             SUQNA
         </h1>
-        <!-- Animasi Loading Melingkar (Oranye Aksen) -->
         <div class="w-10 h-10 border-4 border-gray-200 border-t-[#FF6A00] rounded-full animate-spin"></div>        
-        <!-- Teks Pendukung -->
         <p class="mt-5 text-sm text-gray-500 font-medium tracking-wide animate-pulse">
             Menyiapkan etalase...
         </p>
     </div>
     <div id="app" class="w-full h-[100dvh] mx-auto bg-[#09090b] relative overflow-hidden flex flex-col vvip-banner-gold gold-glow-border">
-    <!-- PITA HUT RI 81 (Mulai) -->
-    <div class="pita-kemerdekaan">
-        <span>SPECIAL 9.9</span>
-    </div>
-    <!-- PITA HUT RI 81 (Selesai) -->
         
         <!-- Toast Notification -->
         <div id="toast" class="hidden absolute top-20 left-1/2 transform -translate-x-1/2 bg-gray-900/90 backdrop-blur text-white px-5 py-3 rounded-full text-xs font-bold z-[100] shadow-2xl transition-all whitespace-nowrap flex items-center gap-2 border border-gray-700">
@@ -523,7 +515,7 @@
         }
 
         // Banner Default
-window.defaultBanners = [];        
+        window.defaultBanners = [];        
         window.banners = [...window.defaultBanners]; 
         window.currentBannerIndex = 0;
         window.bannerInterval = null;
@@ -564,7 +556,6 @@ window.defaultBanners = [];
             window.firestoreBanners = [];
             snapshot.forEach((doc) => { window.firestoreBanners.push({ id: doc.id, ...doc.data() }); });
             if (window.firestoreBanners.length > 0) {
-
                 window.firestoreBanners.sort((a,b) => (a.order || 99) - (b.order || 99));                
                 window.banners = window.firestoreBanners;
             } else {
@@ -573,17 +564,16 @@ window.defaultBanners = [];
             if(window.render) window.render();
         }, (e) => console.error(e));
 
-onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'products')), (snapshot) => {
-    window.products = [];
-    snapshot.forEach((doc) => { 
-        let itemData = doc.data();
-        // FILTER PEMBUANG OTOMATIS: Abaikan produk dummy/contoh
-        if (itemData.isDummy === true || itemData.name === "Mini Gold 0.1 Gram" || itemData.name === "Kopi Susu Gula Aren Premium" || itemData.name === "Baju Koko Kurta Modern") {
-            return; // Lewati/jangan masukkan ke daftar produk
-        }
-        window.products.push({ id: doc.id, ...itemData }); 
-    });
-    window.products.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'products')), (snapshot) => {
+            window.products = [];
+            snapshot.forEach((doc) => { 
+                let itemData = doc.data();
+                if (itemData.isDummy === true || itemData.name === "Mini Gold 0.1 Gram" || itemData.name === "Kopi Susu Gula Aren Premium" || itemData.name === "Baju Koko Kurta Modern") {
+                    return; 
+                }
+                window.products.push({ id: doc.id, ...itemData }); 
+            });
+            window.products.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
             if (window.pendingRoute && window.products.length > 0) {
                 const urlParams = new URLSearchParams(window.location.search);
                 const shareProduct = urlParams.get('product');
@@ -593,7 +583,6 @@ onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'products'
                     const p = window.products.find(x => x.id === shareProduct);
                     if (p) { window.currentProductDetail = p; window.currentView = 'detail'; }
                 } else if (shareStore) {
-                    // Pintu Khusus untuk menangkap Link Toko VIP
                     window.currentStoreId = shareStore;
                     window.currentView = 'store';
                 }
@@ -739,7 +728,7 @@ onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'products'
                     if (bodyWrapper) {
                         bodyWrapper.innerHTML = window.renderHomeBody();
                         if(window.lucide) window.lucide.createIcons();
-                        return; // Anti-Kedip
+                        return; 
                     }
                 }
                 window.render();
@@ -773,12 +762,11 @@ onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'products'
                         if(window.lucide) window.lucide.createIcons();
                         window.startBannerSlide(); 
                         
-                        // Sistem Naik Ke Atas Perlahan (Anti Mental Kasar)
                         setTimeout(() => {
                             const contentArea = document.getElementById('content');
                             if (contentArea) contentArea.scrollTo({top: 0, behavior: 'smooth'});
                         }, 50);
-                        return; // Berhenti agar tidak kedip seluruh layar
+                        return; 
                     }
                 }
                 window.render();
@@ -792,14 +780,12 @@ onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'products'
             try {
                 window.currentCategoryFilter = catName;
                 
-                // SISTEM ANTI-KEDIP DAN ANTI-MOGOK
                 if (window.currentView === 'home') {
                     const bodyWrapper = document.getElementById('home-body-wrapper');
                     if (bodyWrapper) {
                         bodyWrapper.innerHTML = window.renderHomeBody();
                         if(window.lucide) window.lucide.createIcons();
                         
-                        // Naik ke atas perlahan
                         setTimeout(() => {
                             const contentArea = document.getElementById('content');
                             if(contentArea) contentArea.scrollTo({top: 0, behavior: 'smooth'});
@@ -810,7 +796,7 @@ onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'products'
                 window.render();
             } catch (e) { 
                 console.error("Error Filter Category:", e); 
-                window.render(); // Fallback jika gagal
+                window.render(); 
             }
         }
 
@@ -904,7 +890,6 @@ onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'products'
                 window.cart.push(cartItem); 
                 window.showToastMessage('Ditambahkan ke keranjang!'); 
                 
-                // Animasi Keranjang Melompat
                 const cartIcon = document.getElementById('cart-icon');
                 const cartBadge = document.getElementById('cart-badge');
                 if(cartIcon) {
@@ -954,7 +939,6 @@ onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'products'
                     <div class="h-36 sm:h-44 bg-gray-50 relative w-full overflow-hidden group">
                         <img src="${p.imgUrl}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
 ${ (p.isFlashSale === 'true' || p.isFlashSale === true) && p.flashSaleEnd ? `
-<!-- LABEL PITA FLASH SALE DINAMIS -->
         <div class="absolute top-0 right-0 animate-pulse bg-gradient-to-l from-red-600 to-red-700 text-white text-[9px] sm:text-[10px] font-black px-2.5 py-1 rounded-bl-xl shadow-md z-10 flex items-center gap-1 border-b border-l border-red-500 tracking-wider">
             ⚡ FLASH SALE
         </div>
@@ -991,7 +975,6 @@ ${ (p.isFlashSale === 'true' || p.isFlashSale === true) && p.flashSaleEnd ? `
             const bottomNav = document.getElementById('bottom-nav');
             if(!content) return;
             
-            // Atur visibility tombol floating chat
             const chatBtn = document.getElementById('floating-chat-btn');
             if(chatBtn) {
                 if(window.currentView === 'login') chatBtn.classList.add('hidden');
@@ -1158,18 +1141,15 @@ ${ (p.isFlashSale === 'true' || p.isFlashSale === true) && p.flashSaleEnd ? `
 
             return `
 <div class="relative w-full h-[40vh] sm:h-[50vh] bg-gray-100 group" id="product-gallery-${p.id}">
-        <!-- Area Tampilan Utama (Bisa Gambar atau Video) -->
         <div class="w-full h-full relative overflow-hidden" id="gallery-display-${p.id}">
             <img src="${p.imgUrl}" class="w-full h-full object-cover transition-all duration-300" id="main-media-${p.id}">
         </div>
 
-        <!-- Tombol Panah Kiri-Kanan (Hanya muncul jika ada galeri/video) -->
         ${ (p.gallery && p.gallery.length > 1) || p.videoUrl ? `
             <button onclick="window.slideGallery('${p.id}', -1)" class="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/75 text-white rounded-full flex items-center justify-center opacity-80 transition-opacity">❮</button>
             <button onclick="window.slideGallery('${p.id}', 1)" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/75 text-white rounded-full flex items-center justify-center opacity-80 transition-opacity">❯</button>
         ` : ''}
 
-        <!-- Tombol Bagikan & Navigasi Atas -->
         <button onclick="window.navigate('account')" class="absolute top-6 left-5 w-10 h-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-gray-800 shadow-md">
             <i data-lucide="arrow-left" class="w-5 h-5"></i>
         </button>
@@ -1180,7 +1160,6 @@ ${ (p.isFlashSale === 'true' || p.isFlashSale === true) && p.flashSaleEnd ? `
         <div class="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-black/50 to-transparent"></div>
     </div>
 
-    <!-- Barisan Foto Kecil (Thumbnail Preview) di Bawahnya -->
     ${ p.gallery && p.gallery.length > 1 ? `
         <div class="flex gap-2 p-2 bg-gray-50 overflow-x-auto">
             ${p.gallery.map((img, idx) => `
@@ -1193,9 +1172,7 @@ ${ (p.isFlashSale === 'true' || p.isFlashSale === true) && p.flashSaleEnd ? `
     ` : ''}
                 <div class="bg-white rounded-t-[2.5rem] -mt-8 relative z-10 px-6 pt-8 pb-32 min-h-[60vh] w-full max-w-4xl mx-auto shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
 ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
-<!-- MULAI KODE SPANDUK FLASH SALE PREMIUM -->
         <div class="mb-5 bg-gradient-to-r from-gray-900 to-black rounded-2xl p-4 border border-yellow-600/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] relative overflow-hidden">
-            <!-- Efek Cahaya Kemewahan -->
             <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent opacity-50"></div>
             
             <div class="flex justify-between items-center relative z-10">
@@ -1204,7 +1181,6 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                     <p class="text-white font-black text-sm sm:text-base">Berakhir Dalam:</p>
 </div>
             <div class="text-right">
-                <!-- Angka Timer Dinamis -->
                 <div class="flashsale-timer text-yellow-400 font-mono font-bold text-lg sm:text-xl tracking-widest drop-shadow-[0_0_5px_rgba(253,224,71,0.5)]" data-endtime="${p.flashSaleEnd}">
                     MENGHITUNG...
                 </div>
@@ -1212,7 +1188,6 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
         </div>
         </div>
         </div>       
-    <!-- AKHIR KODE SPANDUK FLASH SALE PREMIUM -->
         ` : '' }        
                     <div class="flex justify-between items-start mb-3">
                         <div class="${catBg} ${catColor} text-[10px] font-extrabold px-3 py-1.5 rounded-lg uppercase tracking-wider flex items-center gap-1.5 border border-white/50 shadow-sm"><i data-lucide="${catIcon}" class="w-3.5 h-3.5"></i> ${p.category || 'Umum'}</div>
@@ -1541,6 +1516,7 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                     window.currentBannerIndex = 0;
                 }
                 const b = window.banners[window.currentBannerIndex] || window.banners[0];
+                const hasTag = b && b.tag && b.tag.trim() !== '';
                 
                 html += `
                     <!-- BANNER ZONE -->
@@ -1550,6 +1526,11 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                             <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-5 md:px-12">
                                 <span id="banner-tag" class="${b.tagColor} font-black text-[10px] md:text-sm tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300">${window.sanitizeHTML(b.tag)}</span>
                                 <h3 id="banner-title" class="text-white font-extrabold text-xl md:text-3xl lg:text-4xl leading-[1.15] drop-shadow-lg transition-opacity duration-300">${window.sanitizeHTML(b.title)}</h3>
+                            </div>
+                            
+                            <!-- PITA DINAMIS TERKAIT INPUT ADMIN -->
+                            <div id="banner-ribbon" class="pita-kemerdekaan ${hasTag ? '' : 'hidden'}">
+                                <span id="banner-ribbon-text">${hasTag ? window.sanitizeHTML(b.tag) : ''}</span>
                             </div>
                         </div>
                     </div>
@@ -1591,13 +1572,12 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
         }
 
         window.renderHome = function() {
-            // GENERATE 10 DYNAMIC SEARCH TAGS
             let dynamicTags = [];
             let seenQueries = new Set();
             
             if (window.products && window.products.length > 0) {
                 for (let p of window.products) {
-                    if (dynamicTags.length >= 10) break; // MAKSIMAL 10 TAG DINAMIS (Bisa digeser)
+                    if (dynamicTags.length >= 10) break; 
                     let shortName = p.name.split(' ').slice(0, 2).join(' '); 
                     if (!seenQueries.has(shortName.toLowerCase())) {
                         seenQueries.add(shortName.toLowerCase());
@@ -1633,7 +1613,7 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
 
             return `
                 <!-- STICKY HEADER ZONE -->
-                    <div class="sticky top-0 z-[70] w-full bg-[#09090b] border-b border-amber-500/20 shadow-md transition-all">   
+                    <div class="sticky top-0 z-[70] w-full bg-[#09090b] border-b border-amber-500/20 shadow-md transition-all">    
                     
                     <!-- TOP BAR (Khusus Desktop) -->
                     <div class="hidden md:flex justify-between items-center py-1.5 px-5 border-b border-white/10 max-w-7xl mx-auto w-full text-[11px] text-purple-100 font-medium tracking-wide">
@@ -1861,7 +1841,7 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
         }
 
         window.renderAdminDashboard = function() {
-            if (!window.isAdmin) return ''; 
+            if (!window.isAdmin) return; 
 
             let isAddingBanner = window.tempBannerImg !== '' || window.editingBannerId !== null;
 
@@ -1905,8 +1885,8 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                             <div class="space-y-3 bg-purple-50/50 p-4 rounded-2xl border border-purple-100 fade-in">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div class="space-y-1">
-                                        <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Teks Label Promo</label>
-                                        <input type="text" id="new-banner-tag" placeholder="Cth: PROMO SPESIAL" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 focus:ring-2 focus:ring-purple-500/50 outline-none text-sm">
+                                        <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Teks Label Promo (Teks Pita Pojok)</label>
+                                        <input type="text" id="new-banner-tag" placeholder="Cth: SPECIAL 9.9" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 focus:ring-2 focus:ring-purple-500/50 outline-none text-sm">
                                     </div>
                                     <div class="space-y-1">
                                         <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Warna Label</label>
@@ -1938,7 +1918,7 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                     <div class="bg-white rounded-3xl border border-gray-100 p-5 shadow-sm">
                         <h3 class="font-black text-gray-900 text-sm mb-4">Daftar Banner Aktif</h3>
                         <div class="space-y-3">
-                            ${window.firestoreBanners.length === 0 ? '<p class="text-xs text-gray-400 font-medium text-center bg-gray-50 p-4 rounded-xl border border-dashed border-gray-200">Saat ini menggunakan 3 Banner Bawaan Sistem (Default).</p>' : window.firestoreBanners.map(b => `
+                            ${window.firestoreBanners.length === 0 ? '<p class="text-xs text-gray-400 font-medium text-center bg-gray-50 p-4 rounded-xl border border-dashed border-gray-200">Saat ini menggunakan Banner Bawaan Sistem (Default).</p>' : window.firestoreBanners.map(b => `
                                 <div class="flex items-center gap-3 bg-gray-50 p-3 rounded-2xl border border-gray-100 relative">
                                     <img src="${b.img}" class="w-20 h-14 md:w-32 md:h-20 object-cover rounded-xl shadow-sm">
                                     <div class="flex-1">
@@ -2048,7 +2028,6 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                         </div>
                     ` : !window.isAddingProduct ? `
                         <div class="grid lg:grid-cols-3 gap-6">
-                            <!-- Kolom Kiri: Tombol & Pesanan (1/3 Lebar Layar PC) -->
                             <div class="space-y-6">
                                 <button onclick="window.toggleAddProduct()" class="w-full bg-gray-900 text-white font-extrabold text-lg py-4 rounded-2xl flex justify-center items-center gap-2 shadow-lg shadow-gray-400/50 transition-transform active:scale-95">
                                     <i data-lucide="plus-circle" class="w-5 h-5"></i> Tambah Dagangan Baru
@@ -2083,7 +2062,6 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                                 </div>
                             </div>
 
-                            <!-- Kolom Kanan: Etalase Produk (2/3 Lebar Layar PC) -->
                             <div class="lg:col-span-2">
                                 <div class="flex items-center gap-2 mb-5"><h3 class="font-black text-gray-900 text-lg">Kelola Etalase</h3><span class="bg-gray-100 text-gray-600 text-[10px] px-2.5 py-1 rounded-full font-bold">${window.products.filter(p => p.ownerId === window.userId).length} Barang</span></div>
                                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -2127,7 +2105,6 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                                 <span class="text-xs md:text-sm text-gray-500 font-bold relative z-0">Unggah Foto Barang</span>
                             </div>
                             <input type="file" id="prod-img-upload" class="hidden" accept="image/*" onchange="window.handleImageBase64(event, (url) => { window.tempProductImg = url; const img = document.getElementById('new-prod-preview'); img.src = url; img.classList.remove('hidden'); })">
-<!-- Kotak Input Galeri & Video Tambahan -->
 <div class="space-y-1 mt-3">
     <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Link Foto Tambahan (Galeri) - Pisahkan dengan koma</label>
     <input type="text" id="new-prod-gallery" placeholder="https://foto1.jpg, https://foto2.jpg" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 font-medium text-xs text-gray-800 outline-none">
@@ -2168,7 +2145,6 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                                     <input type="number" id="new-prod-stock" value="${window.editingProductData && window.editingProductData.stock !== undefined ? window.editingProductData.stock : 1}" placeholder="Cth: 10" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 font-black text-gray-900 focus:ring-2 focus:ring-gray-900/20 outline-none transition-all">
                                 </div>
                             </div>
-                            <!-- PANEL PENGATURAN FLASH SALE -->
             <div class="mt-4 p-4 bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-200 rounded-2xl shadow-sm mb-4">
                 <div class="flex items-center justify-between mb-3">
                     <div>
@@ -2237,19 +2213,16 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
             } catch(e) { console.error("Error Lihat Kategori:", e); }
         };
 
-window.shareProduct = async function(id) {
+        window.shareProduct = async function(id) {
             const p = window.products.find(x => x.id === id);
             if(!p) return;
 
-            // Buat link bawaan
             let shareUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?product=' + id;
             
-            // --- JALUR KHUSUS BALIHO HTML ---
             if (p.name.includes('Logam Mulia') || p.name.includes('Antam')) {
                 shareUrl = window.location.protocol + "//" + window.location.host + "/suqna/antam.html";
             }
 
-            // --- LOGIKA TEKS BAGIKAN DINAMIS ---
             const isFlash = (p.isFlashSale === 'true' || p.isFlashSale === true) && p.flashSaleEnd;
             const pesanTeks = isFlash 
                 ? '⚡ SEDANG FLASH SALE! Promo Spesial ' + p.name + ' di SUQNA! Cek sekarang sebelum kehabisan.' 
@@ -2270,6 +2243,7 @@ window.shareProduct = async function(id) {
                 }
             } catch (err) {}
         }        
+        
         window.shareStore = async function(storeId) {
             const p = window.products.find(x => x.ownerId === storeId);
             const storeName = p ? p.storeName : 'Toko SUQNA';
@@ -2302,7 +2276,7 @@ window.shareProduct = async function(id) {
                         if(window.lucide) window.lucide.createIcons();
                         
                         if (val === '') window.startBannerSlide(); 
-                        return; // Sistem anti-kedip
+                        return; 
                     }
                 }
                 window.render(); 
@@ -2420,11 +2394,9 @@ window.shareProduct = async function(id) {
             
             if(name && price > 0 && subcat) {
                 const finalImgUrl = window.tempProductImg || (window.editingProductData ? window.editingProductData.imgUrl : `https://placehold.co/400x400/8b5cf6/ffffff?text=${name.substring(0,2).toUpperCase()}`);
-// Membaca kabel dari Kotak Flash Sale
         const isFlashSaleVal = document.getElementById('new-prod-is-flashsale') ? document.getElementById('new-prod-is-flashsale').value : 'false';
         const flashSaleEndVal = document.getElementById('new-prod-flashsale-end') ? document.getElementById('new-prod-flashsale-end').value : '';
 
-        // Memasukkan data ke dalam Keranjang Database
 const p = {
         name: name, 
         price: price, 
@@ -2713,11 +2685,30 @@ const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, 
                     const img = document.getElementById('banner-img');
                     const title = document.getElementById('banner-title');
                     const tag = document.getElementById('banner-tag');
+                    
+                    const ribbon = document.getElementById('banner-ribbon');
+                    const ribbonText = document.getElementById('banner-ribbon-text');
+
                     if(img) {
                         img.style.opacity = 0;
+                        if(ribbon) ribbon.style.opacity = 0;
+                        
                         setTimeout(() => { 
-                            img.src = b.img; title.innerHTML = window.sanitizeHTML(b.title); 
-                            tag.innerHTML = window.sanitizeHTML(b.tag); tag.className = `${b.tagColor} font-black text-[10px] md:text-xs tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300`;
+                            img.src = b.img; 
+                            title.innerHTML = window.sanitizeHTML(b.title); 
+                            tag.innerHTML = window.sanitizeHTML(b.tag); 
+                            tag.className = `${b.tagColor} font-black text-[10px] md:text-xs tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300`;
+                            
+                            if (ribbon && ribbonText) {
+                                if (b.tag && b.tag.trim() !== '') {
+                                    ribbonText.innerHTML = window.sanitizeHTML(b.tag);
+                                    ribbon.classList.remove('hidden');
+                                } else {
+                                    ribbon.classList.add('hidden');
+                                }
+                                ribbon.style.opacity = 1;
+                            }
+
                             img.style.opacity = 1; 
                         }, 300);
                     }
@@ -2779,12 +2770,10 @@ window.deleteDummyData = function() {
     if(!window.isAdmin) return;
     window.showToastMessage('Membersihkan total data dummy...');
     
-    // 1. Bersihkan dari memori global produk aktif
     if(window.currentProducts) {
         window.currentProducts = window.currentProducts.filter(p => !p.isDummy && p.name !== "Mini Gold 0.1 Gram" && p.name !== "Kopi Susu Gula Aren Premium" && p.name !== "Baju Koko Kurta Modern");
     }
 
-    // 2. Bersihkan juga data produk di localStorage jika tersimpan di sana
     try {
         let savedProducts = JSON.parse(localStorage.getItem('suqna_products') || '[]');
         if(savedProducts.length > 0) {
@@ -2798,11 +2787,9 @@ window.deleteDummyData = function() {
     setTimeout(() => {
         window.showToastMessage('Etalase berhasil dibersihkan!');
         window.navigate('home');
-        // Muat ulang halaman secara otomatis untuk memastikan pembersihan total
         window.location.reload();
     }, 600);
 }
-        // Menyimpan status index foto yang sedang aktif untuk setiap produk
 window.galleryStates = window.galleryStates || {};
 
 window.setGalleryMedia = function(productId, url, type) {
@@ -2822,10 +2809,8 @@ window.slideGallery = function(productId, direction) {
     const displayContainer = document.getElementById(`gallery-display-${productId}`);
     if(!displayContainer) return;
 
-    // Cari kontainer terdekat atau ambil elemen produk
     const parentContainer = displayContainer.closest('div.relative') || document.body;
     
-    // Ambil semua sumber gambar dari thumbnail yang tampil di layar
     const thumbnails = document.querySelectorAll(`img[onclick*="setGalleryMedia('${productId}'"]`);
     if(thumbnails.length <= 1) return;
 
@@ -2844,7 +2829,6 @@ window.slideGallery = function(productId, direction) {
 
     window.setGalleryMedia(productId, urls[currentIndex], 'image');
 };
-        // PWA Registration & Install Logic
         window.deferredPrompt = null;
         
         if ('serviceWorker' in navigator) {
@@ -2895,18 +2879,14 @@ window.slideGallery = function(productId, direction) {
             window.deferredPrompt = null;
         });
 
-        // Memulai Aplikasi
         window.render();
     </script>
-    <!-- MESIN WAKTU FLASHSALE SUQNA -->
     <script>
         setInterval(function() {
-            // Sapu bersih seluruh halaman, cari semua yang pakai seragam 'flashsale-timer'
             const timers = document.querySelectorAll('.flashsale-timer');
             const sekarang = new Date().getTime();
 
             timers.forEach(function(timerEl) {
-                // Baca batas waktu dari masing-masing spanduk
                 const waktuBerakhir = new Date(timerEl.getAttribute('data-endtime')).getTime();
                 const sisaWaktu = waktuBerakhir - sekarang;
 
@@ -2915,31 +2895,26 @@ window.slideGallery = function(productId, direction) {
                     const menit = Math.floor((sisaWaktu % (1000 * 60 * 60)) / (1000 * 60));
                     const detik = Math.floor((sisaWaktu % (1000 * 60)) / 1000);
 
-                    // Tulis angkanya ke layar dengan format 00:00:00
                     timerEl.innerHTML = 
                         String(jam).padStart(2, '0') + ":" + 
                         String(menit).padStart(2, '0') + ":" + 
                         String(detik).padStart(2, '0');
                 } else {
-                    // Jika waktu habis, ubah warna dan teks
                     timerEl.innerHTML = "BERAKHIR";
-                    timerEl.style.color = "#ef4444"; // Berubah merah
+                    timerEl.style.color = "#ef4444"; 
                 }
             });
-        }, 1000); // Mesin berdetak setiap 1 detik
+        }, 1000); 
     </script>
-    <!-- LOGIKA MESIN PENARIK TIRAI -->
     <script>
         window.addEventListener('load', () => {
-            // Kita atur agar tirai ditarik otomatis setelah 3 detik (3000 milidetik). 
-            // Bapak bisa mengubah angka 3000 menjadi 5000 jika dirasa 5 detik lebih aman.
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 if (splash) {
-                    splash.style.opacity = '0'; // Membuatnya memudar halus
+                    splash.style.opacity = '0'; 
                     setTimeout(() => {
-                        splash.style.display = 'none'; // Menghilangkannya dari layar
-                    }, 700); // Waktu transisi memudar (0.7 detik)
+                        splash.style.display = 'none'; 
+                    }, 700); 
                 }
             }, 3000); 
         });
