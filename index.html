@@ -106,42 +106,24 @@
         <span>SPECIAL 9.9</span>
     </div>
     <!-- PITA HUT RI 81 (Selesai) -->
-<!-- --- KUPON MINI DENGAN FITUR OTOMATIS HILANG SAAT DISCROOL --- -->
-        <div id="floating-coupon-99" class="fixed bottom-6 left-6 z-50 transition-all duration-300 transform opacity-100 translate-y-0">
-            <div class="bg-[#18181b]/95 backdrop-blur-md rounded-xl p-3 border border-amber-500/60 shadow-2xl flex items-center gap-3 gold-glow-border">
-                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-black font-black text-sm shadow-md shrink-0">
-                    9.9
-                </div>
-                <div class="text-left">
-                    <div class="text-[9px] font-bold text-amber-400 tracking-wider">
-                        👑 VVIP PASS (5 TOKO PERTAMA)
-                    </div>
-                    <div class="text-xs font-black text-white leading-tight">
-                        PROMO 9.9 + GRATIS BALIHO
-                    </div>
-                </div>
-                <button onclick="window.open('https://wa.me/?text=Halo%20SUQNA,%20Saya%20mau%20klaim%20kuota%20Gratis%20Baliho%20Spesial%209.9%20untuk%20toko%20saya!', '_blank')" 
-                    class="ml-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-extrabold text-[10px] uppercase tracking-wider shadow hover:brightness-110 active:scale-95 transition-all whitespace-nowrap">
-                    Klaim
-                </button>
+<!-- --- KUPON MINI DI SUDUT KIRI ATAS BANNER (SEJAJAR DENGAN PITA) --- -->
+        <div style="position: absolute; top: 170px; left: 40px; z-index: 30;" class="bg-[#18181b]/95 backdrop-blur-md rounded-xl p-3 border border-amber-500/60 shadow-2xl flex items-center gap-3 gold-glow-border">
+            <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-black font-black text-sm shadow-md shrink-0">
+                9.9
             </div>
+            <div class="text-left">
+                <div class="text-[9px] font-bold text-amber-400 tracking-wider">
+                    👑 VVIP PASS (5 TOKO PERTAMA)
+                </div>
+                <div class="text-xs font-black text-white leading-tight">
+                    PROMO 9.9 + GRATIS BALIHO
+                </div>
+            </div>
+            <button onclick="window.open('https://wa.me/?text=Halo%20SUQNA,%20Saya%20mau%20klaim%20kuota%20Gratis%20Baliho%20Spesial%209.9%20untuk%20toko%20saya!', '_blank')" 
+                class="ml-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-extrabold text-[10px] uppercase tracking-wider shadow hover:brightness-110 active:scale-95 transition-all whitespace-nowrap">
+                Klaim
+            </button>
         </div>
-
-        <!-- --- SKRIP PINTAR PENGATUR SCROLL --- -->
-        <script>
-            window.addEventListener('scroll', function() {
-                const coupon = document.getElementById('floating-coupon-99');
-                if (!coupon) return;
-                
-                if (window.scrollY > 150) {
-                    coupon.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
-                    coupon.classList.remove('opacity-100', 'translate-y-0');
-                } else {
-                    coupon.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
-                    coupon.classList.add('opacity-100', 'translate-y-0');
-                }
-            });
-        </script>
         <!-- Toast Notification -->
         <div id="toast" class="hidden absolute top-20 left-1/2 transform -translate-x-1/2 bg-gray-900/90 backdrop-blur text-white px-5 py-3 rounded-full text-xs font-bold z-[100] shadow-2xl transition-all whitespace-nowrap flex items-center gap-2 border border-gray-700">
             <i data-lucide="info" class="w-4 h-4 text-orange-400"></i>
