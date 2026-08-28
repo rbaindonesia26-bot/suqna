@@ -58,7 +58,7 @@
     display: block;
     width: 170px; /* Diperkecil dari 220px */
     padding: 4px 0; /* Ketebalan pita ditipiskan */
-    background-color: #CC0000;
+    background-color: #ea580c;
     border-bottom: 2px solid #FFFFFF;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     color: #FFFFFF;
@@ -92,7 +92,7 @@
     
     <!-- PITA HUT RI 81 (Mulai) -->
     <div class="pita-kemerdekaan">
-        <span>DIRGAHAYU RI 81</span>
+        <span>SPECIAL 9.9</span>
     </div>
     <!-- PITA HUT RI 81 (Selesai) -->
         
@@ -2195,6 +2195,7 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                                 <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Deskripsi</label>
                                 <textarea id="new-prod-desc" placeholder="Tuliskan spesifikasi lengkap..." rows="3" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 font-medium text-gray-800 text-sm focus:ring-2 focus:ring-gray-900/20 outline-none transition-all">${window.editingProductData ? (window.editingProductData.description || '') : ''}</textarea>
                             </div>
+                            <button onclick="window.saveProduct()" class="w-full bg-gray-900 text-white font-extrabold text-lg py-4 rounded-2xl mt-2 shadow-lg shadow-gray-400/50 transition-all hover:bg-black active:scale-[0.98]">Tayangkan di Pasar</button>
                         </div>
                     `}
                 </div>
