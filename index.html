@@ -7,11 +7,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <!-- META TAGS SEO & OPEN GRAPH (SAMPUL LINK WHATSAPP / SOSMED) -->
+    <!-- META TAGS SEO & OPEN GRAPH -->
     <meta name="description" content="Pasar Digital Syariah & Multi-Vendor Lokal. 100% Gratis Tanpa Biaya Admin.">
     <meta property="og:title" content="SUQNA - Pasar Kita, Untuk Semua">
     <meta property="og:description" content="Ayo belanja kebutuhan harian dan dukung UMKM lokal di SUQNA. Buka toko online Anda sekarang, 100% Gratis!">
-    <!-- MENGGUNAKAN LOGO RESMI SUQNA SEBAGAI PAPAN NAMA MALL -->
     <meta property="og:image" content="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
@@ -60,7 +59,7 @@
     height: 110px;
     overflow: hidden;
     position: absolute;
-    top: 0;
+    top: 0 !important; 
     right: 0;
     z-index: 60;
     pointer-events: none;
@@ -116,7 +115,7 @@
                 
                 <div class="space-y-3">
                     <a id="modal-wa-btn" href="#" target="_blank" class="hidden w-full bg-[#25D366] text-white font-extrabold py-3.5 rounded-2xl hover:bg-[#1DA851] transition-colors shadow-lg shadow-green-200 flex items-center justify-center gap-2">
-                        <i data-lucide="message-circle" class="w-5 h-5"></i> Chat Penjual ke WA
+                        <i data-lucide="message-circle" class="w-5 h-5"></i> Chat Admin ke WA
                     </a>
                     <button onclick="window.closeModal()" class="w-full bg-gray-100 text-gray-700 font-extrabold py-3.5 rounded-2xl hover:bg-gray-200 transition-colors">
                         Tutup Layar
@@ -211,7 +210,6 @@
                     <button onclick="window.setSort('termurah')" id="sort-termurah" class="sort-btn bg-gray-50 border-2 border-transparent text-gray-600 font-bold py-2.5 rounded-xl text-xs transition-all shadow-sm hover:bg-gray-100">Harga Termurah</button>
                     <button onclick="window.setSort('termahal')" id="sort-termahal" class="sort-btn bg-gray-50 border-2 border-transparent text-gray-600 font-bold py-2.5 rounded-xl text-xs transition-all shadow-sm hover:bg-gray-100">Harga Termahal</button>
                     <button onclick="window.setSort('terlaris')" id="sort-terlaris" class="sort-btn bg-gray-50 border-2 border-transparent text-gray-600 font-bold py-2.5 rounded-xl text-xs transition-all shadow-sm hover:bg-gray-100">Rating Tertinggi</button>
-                    <!-- Hidden select to link with 'Lihat Semua' feature -->
                     <select id="sort-produk" class="hidden" onchange="window.setSort(this.value); window.applyFilters();">
                         <option value="terbaru">Terbaru</option>
                         <option value="termurah">Termurah</option>
@@ -252,7 +250,6 @@
                     SUQNA adalah ekosistem pasar digital syariah yang didedikasikan untuk memberdayakan UMKM lokal. 
                     <br><br>Kami hadir untuk menciptakan ruang belanja yang aman, bebas biaya admin, dan 100% transparan agar uang langsung masuk ke penjual.<br><b>Pasar Kita, Untuk Semua.</b>
                 </p>
-                <!-- VISI & MISI SUQNA -->
 <div class="mt-6 text-left border-t border-purple-100 pt-4">
     <div class="mb-4">
         <h3 class="text-base font-bold text-purple-700 flex items-center gap-2">
@@ -283,7 +280,6 @@
         </ul>
     </div>
 </div>
-<!-- END VISI & MISI -->
                 <button onclick="window.closeAboutModal()" class="w-full bg-gray-100 text-gray-800 font-extrabold py-3.5 rounded-2xl hover:bg-gray-200 transition-colors border border-gray-200">
                     Tutup
                 </button>
@@ -305,13 +301,11 @@
 
         <nav id="bottom-nav" class="absolute bottom-0 w-full bg-white border-t border-gray-100 flex justify-center z-[60] pb-safe transition-transform duration-300 shadow-[0_-10px_40px_rgba(0,0,0,0.06)]">
             <div class="flex justify-around items-end w-full max-w-7xl mx-auto px-2 pt-2 pb-4">
-                <!-- Beranda -->
                 <button onclick="window.navigate('home')" id="nav-home" class="flex flex-col items-center gap-1 transition-colors w-[20%] group mb-1">
                     <i data-lucide="home" class="w-6 h-6 text-purple-600 group-active:scale-95 transition-transform"></i>
                     <span class="text-[10px] font-bold text-purple-600">Beranda</span>
                 </button>
                 
-                <!-- Kategori -->
                 <button onclick="window.navigate('home'); setTimeout(() => { const catSec = document.getElementById('kategori-section'); if(catSec) document.getElementById('content').scrollTo({top: catSec.offsetTop - 70, behavior: 'smooth'}); }, 50);" id="nav-kategori" class="flex flex-col items-center gap-1 transition-colors w-[20%] group mb-1">
                     <i data-lucide="layout-grid" class="w-6 h-6 text-gray-400 group-hover:text-gray-600 group-active:scale-95 transition-all"></i>
                     <span class="text-[10px] font-medium text-gray-400">Kategori</span>
@@ -325,14 +319,12 @@
                     <span class="text-[10px] font-medium text-gray-400 absolute bottom-1">Jual</span>
                 </div>
 
-                <!-- Keranjang -->
                 <button onclick="window.navigate('cart')" id="nav-cart" class="flex flex-col items-center gap-1 transition-colors w-[20%] relative group mb-1">
                     <div id="cart-badge" class="hidden absolute -top-1.5 right-2 bg-red-500 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm border-2 border-white transition-transform">0</div>
                     <i id="cart-icon" data-lucide="shopping-cart" class="w-6 h-6 text-gray-400 group-hover:text-gray-600 transition-all duration-200"></i>
                     <span class="text-[10px] font-medium text-gray-400">Keranjang</span>
                 </button>
                 
-                <!-- Akun -->
                 <button onclick="window.navigate('account')" id="nav-account" class="flex flex-col items-center gap-1 transition-colors w-[20%] group mb-1">
                     <i data-lucide="user" class="w-6 h-6 text-gray-400 group-hover:text-gray-600 group-active:scale-95 transition-all"></i>
                     <span class="text-[10px] font-medium text-gray-400">Akun</span>
@@ -376,6 +368,7 @@
         const googleProvider = new GoogleAuthProvider();
 
         // State Management
+        window.activeVoucher = null;
         window.currentView = 'home';
         window.userId = null; 
         window.userEmail = "";
@@ -388,6 +381,7 @@
         window.isStoreUnlocked = false; 
         window.editingProductData = null;
         window.pendingRoute = true; 
+        window.myClaims = []; 
         
         window.tempVariants = [];
         window.selectedVariantIndex = 0;
@@ -484,14 +478,14 @@
         }
 
         window.openHelpWA = function() {
-            const waNumber = "6281234040580"; // <-- GANTI DENGAN NOMOR WA ADMIN ANDA
+            const waNumber = "6281234040580"; 
             const message = "Halo Admin SUQNA, saya butuh bantuan mengenai aplikasi.";
             window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
         // Floating Chat Button Logic
         window.openFloatingChat = function() {
-            let phone = "6281234040580"; // GANTI: Default nomor WA Admin
+            let phone = "6281234040580"; 
             let text = "Halo Admin SUQNA, saya butuh bantuan.";
 
             if (window.currentView === 'store' && window.currentStoreId) {
@@ -551,6 +545,13 @@
             "Barang Bekas": ["Pakaian & Aksesoris Bekas", "Elektronik Bekas", "Buku Bekas", "Perabotan Bekas"],
             "Lainnya": ["Lain-lain / Umum"]
         };
+
+        // FIREBASE LISTENERS
+        onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'vouchers')), (snapshot) => {
+            window.activeVoucher = null;
+            snapshot.forEach((doc) => { window.activeVoucher = { id: doc.id, ...doc.data() }; });
+            if(window.render) window.render();
+        }, (e) => console.error(e));
 
         onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'banners')), (snapshot) => {
             window.firestoreBanners = [];
@@ -636,6 +637,12 @@
                     if(window.render) window.render();
                 });
 
+                onSnapshot(query(collection(db, 'artifacts', appId, 'users', window.userId, 'claims')), (snapshot) => {
+                    window.myClaims = [];
+                    snapshot.forEach((doc) => { window.myClaims.push(doc.id); });
+                    if(window.render) window.render();
+                });
+
                 onSnapshot(query(collection(db, 'artifacts', appId, 'users', window.userId, 'orders')), (snapshot) => {
                     window.myOrders = [];
                     snapshot.forEach((doc) => { window.myOrders.push({ id: doc.id, ...doc.data() }); });
@@ -657,7 +664,7 @@
                 window.userId = null; window.userEmail = ""; window.isAdmin = false;
                 window.storeProfile = { name: "Toko Baru", phone: "", avatar: "" };
                 window.userProfile = { name: "", address: "", avatar: "" };
-                window.isStoreUnlocked = false; window.myOrders = []; window.incomingOrders = [];
+                window.isStoreUnlocked = false; window.myOrders = []; window.incomingOrders = []; window.myClaims = [];
                 if(['account', 'seller_center', 'cart', 'admin_dashboard'].includes(window.currentView)) window.currentView = 'login';
             }
             if(window.render) window.render();
@@ -1518,20 +1525,58 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                 const b = window.banners[window.currentBannerIndex] || window.banners[0];
                 const hasTag = b && b.tag && b.tag.trim() !== '';
                 
+                const v = window.activeVoucher;
+                const hasVoucher = v !== null && v !== undefined;
+
+                const isAlreadyClaimed = hasVoucher && window.myClaims && window.myClaims.includes(v.id);
+                
                 html += `
-                    <!-- BANNER ZONE -->
                     <div class="px-5 mt-4 sm:mt-6 mb-6 max-w-7xl mx-auto w-full">
-                        <div class="relative h-[160px] sm:h-[240px] md:h-[320px] lg:h-[380px] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer border-2 border-gray-100" id="banner-container">
-                            <img id="banner-img" src="${b.img}" class="w-full h-full object-cover transition-all duration-500" />
-                            <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-5 md:px-12">
-                                <span id="banner-tag" class="${b.tagColor} font-black text-[10px] md:text-sm tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300">${window.sanitizeHTML(b.tag)}</span>
-                                <h3 id="banner-title" class="text-white font-extrabold text-xl md:text-3xl lg:text-4xl leading-[1.15] drop-shadow-lg transition-opacity duration-300">${window.sanitizeHTML(b.title)}</h3>
+                        <div class="${hasVoucher ? 'flex flex-col md:flex-row gap-4 lg:gap-5' : ''}">
+                            
+                            <!-- BANNER UTAMA -->
+                            <div class="relative ${hasVoucher ? 'flex-1' : 'w-full'} h-[160px] sm:h-[240px] md:h-[320px] lg:h-[380px] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer border-2 border-gray-100" id="banner-container">
+                                <img id="banner-img" src="${b.img}" class="w-full h-full object-cover transition-all duration-500" />
+                                <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-5 md:px-12">
+                                    <span id="banner-tag" class="${b.tagColor} font-black text-[10px] md:text-sm tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300">${window.sanitizeHTML(b.tag)}</span>
+                                    <h3 id="banner-title" class="text-white font-extrabold text-xl md:text-3xl lg:text-4xl leading-[1.15] drop-shadow-lg transition-opacity duration-300">${window.sanitizeHTML(b.title)}</h3>
+                                </div>
+                                <div id="banner-ribbon" class="pita-kemerdekaan ${hasTag ? '' : 'hidden'}">
+                                    <span id="banner-ribbon-text">${hasTag ? window.sanitizeHTML(b.tag) : ''}</span>
+                                </div>
                             </div>
                             
-                            <!-- PITA DINAMIS TERKAIT INPUT ADMIN -->
-                            <div id="banner-ribbon" class="pita-kemerdekaan ${hasTag ? '' : 'hidden'}">
-                                <span id="banner-ribbon-text">${hasTag ? window.sanitizeHTML(b.tag) : ''}</span>
+                            <!-- TIKET VOUCHER DINAMIS (SUNGGUHAN & REAL-TIME) -->
+                            ${hasVoucher ? `
+                            <div class="md:w-[30%] lg:w-[28%] h-[140px] md:h-[320px] lg:h-[380px] bg-gradient-to-br from-gray-900 to-black rounded-2xl border border-yellow-500/40 shadow-[0_0_20px_rgba(212,175,55,0.15)] flex flex-row md:flex-col relative overflow-hidden group cursor-pointer transform transition-transform hover:-translate-y-1 active:scale-95" onclick="window.claimVoucher()">
+                                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yellow-400 to-transparent opacity-70"></div>
+                                
+                                <div class="absolute left-1/3 -top-3 w-6 h-6 bg-[#09090b] rounded-full border-b border-yellow-500/40 z-10 md:hidden"></div>
+                                <div class="absolute left-1/3 -bottom-3 w-6 h-6 bg-[#09090b] rounded-full border-t border-yellow-500/40 z-10 md:hidden"></div>
+                                <div class="hidden md:block absolute -left-3 top-[60%] -translate-y-1/2 w-6 h-6 bg-[#09090b] rounded-full border-r border-yellow-500/40 z-10"></div>
+                                <div class="hidden md:block absolute -right-3 top-[60%] -translate-y-1/2 w-6 h-6 bg-[#09090b] rounded-full border-l border-yellow-500/40 z-10"></div>
+
+                                <div class="flex-1 p-4 md:p-5 flex flex-col justify-center items-center text-center relative z-0 border-r-2 md:border-r-0 md:border-b-2 border-dashed border-gray-700 mx-2 md:mx-4 md:my-0">
+                                    <i data-lucide="ticket" class="w-8 h-8 md:w-12 md:h-12 text-yellow-400 mb-1 md:mb-2 group-hover:scale-110 transition-transform"></i>
+                                    <h4 class="text-yellow-500 font-bold text-[9px] md:text-[10px] uppercase tracking-[0.2em]">${window.sanitizeHTML(v.title)}</h4>
+                                    <h3 class="text-white font-black text-xl md:text-3xl leading-none gold-text-shimmer mt-1">${window.sanitizeHTML(v.mainText)}</h3>
+                                </div>
+                                
+                                <div class="w-1/3 md:w-full p-3 md:p-5 flex flex-col justify-center items-center bg-gray-900/60 md:bg-transparent">
+                                    <p class="hidden md:block text-gray-400 text-[10px] mb-3 font-medium uppercase tracking-wider">${window.sanitizeHTML(v.subText)}</p>
+                                    ${isAlreadyClaimed ? `
+                                        <button class="w-full bg-gradient-to-r from-gray-300 to-gray-400 text-gray-600 font-black text-[10px] md:text-sm py-3 md:py-4 rounded-xl shadow-inner cursor-not-allowed">
+                                            TERKLAIM <i data-lucide="check" class="w-4 h-4 inline"></i>
+                                        </button>
+                                    ` : `
+                                        <button class="w-full bg-gradient-to-r from-[#D4AF37] to-[#FF8C00] text-gray-900 font-black text-[10px] md:text-sm py-3 md:py-4 rounded-xl shadow-[0_0_15px_rgba(245,158,11,0.4)] animate-pulse">
+                                            KLAIM
+                                        </button>
+                                    `}
+                                </div>
                             </div>
+                            ` : ''}
+
                         </div>
                     </div>
                     
@@ -1904,15 +1949,42 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                                     <input type="text" id="new-banner-title" placeholder="Cth: Diskon Lebaran<br>Hingga 50%" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 focus:ring-2 focus:ring-purple-500/50 outline-none text-sm">
                                 </div>
                                 <div class="space-y-1">
-    <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Nomor Urut Tampil</label>
-    <input type="number" id="new-banner-order" placeholder="Cth: 1 (Tampil paling awal)" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 focus:ring-2 focus:ring-purple-500/50 outline-none">
-</div>
+                                    <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Nomor Urut Tampil</label>
+                                    <input type="number" id="new-banner-order" placeholder="Cth: 1 (Tampil paling awal)" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 focus:ring-2 focus:ring-purple-500/50 outline-none">
+                                </div>
                                 <div class="flex gap-2 pt-2">
                                     <button onclick="window.tempBannerImg = ''; window.editingBannerId = null; window.render();" class="flex-1 bg-white border border-gray-300 text-gray-600 font-extrabold py-3 rounded-xl">Batal</button>
                                     <button onclick="window.saveNewBanner()" class="flex-1 bg-purple-600 text-white font-extrabold py-3 rounded-xl shadow-md hover:bg-purple-700" id="btn-simpan-banner">${window.editingBannerId ? 'Update Banner' : 'Simpan Banner'}</button>
                                 </div>
                             </div>
                         ` : ''}
+                    </div>
+
+                    <!-- PANEL KONTROL VOUCHER VVIP -->
+                    <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-xl space-y-5 mt-6">
+                        <h3 class="font-black text-gray-900 text-sm mb-2 flex items-center gap-2">
+                            <i data-lucide="ticket" class="w-4 h-4 text-yellow-500"></i> Pengaturan Tiket VVIP
+                        </h3>
+                        <p class="text-[11px] text-gray-500 font-medium">Kosongkan semua dan klik "Matikan Tiket" untuk menyembunyikan tiket dari layar pembeli.</p>
+                        
+                        <div class="space-y-3 bg-yellow-50/50 p-4 rounded-2xl border border-yellow-100">
+                            <div class="space-y-1">
+                                <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Judul Kecil (Atas)</label>
+                                <input type="text" id="voucher-title" placeholder="Cth: Kupon Sultan" value="${window.activeVoucher ? window.activeVoucher.title : ''}" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 outline-none text-sm">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Teks Utama (Gunakan &lt;br&gt; utk baris baru)</label>
+                                <input type="text" id="voucher-main" placeholder="Cth: CASHBACK<br>99%" value="${window.activeVoucher ? window.activeVoucher.mainText : ''}" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 outline-none text-sm">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Syarat / Info (Bawah)</label>
+                                <input type="text" id="voucher-sub" placeholder="Cth: Hanya Hari Ini" value="${window.activeVoucher ? window.activeVoucher.subText : ''}" class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 font-bold text-gray-800 outline-none text-sm">
+                            </div>
+                            <div class="flex gap-2 pt-2">
+                                <button onclick="window.deleteVoucher('${window.activeVoucher ? window.activeVoucher.id : ''}')" class="flex-1 bg-red-50 text-red-600 font-extrabold py-3 rounded-xl border border-red-100 hover:bg-red-100 transition-colors">Matikan Tiket</button>
+                                <button onclick="window.saveVoucher()" class="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 text-white font-extrabold py-3 rounded-xl shadow-md transition-transform active:scale-95">Tayangkan Tiket</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="bg-white rounded-3xl border border-gray-100 p-5 shadow-sm">
@@ -2531,6 +2603,79 @@ const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, 
                 }
             );
         }
+
+        window.saveVoucher = async function() {
+            const title = document.getElementById('voucher-title').value;
+            const mainText = document.getElementById('voucher-main').value;
+            const subText = document.getElementById('voucher-sub').value;
+
+            if(!title || !mainText) return window.showToastMessage('Judul dan Teks Utama voucher wajib diisi!');
+
+            const vData = { title: title, mainText: mainText, subText: subText, timestamp: Date.now() };
+            
+            try {
+                if (window.activeVoucher && window.activeVoucher.id) {
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'vouchers', window.activeVoucher.id), vData);
+                } else {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'vouchers'), vData);
+                }
+                window.showToastMessage('Tiket VVIP berhasil ditayangkan!');
+            } catch(e) { window.showToastMessage('Gagal menyimpan voucher.'); }
+        }
+
+        window.deleteVoucher = async function(id) {
+            if(!id) return window.showToastMessage('Belum ada tiket yang aktif.');
+            window.showConfirmModal('Matikan Tiket', 'Yakin ingin mencopot tiket VVIP dari halaman depan?', async () => {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'vouchers', id));
+                    window.activeVoucher = null;
+                    window.showToastMessage('Tiket VVIP dimatikan!');
+                } catch(e) {}
+            });
+        }
+
+        window.claimVoucher = async function() {
+            if (!window.userId) {
+                window.showToastMessage('Silakan masuk/daftar dulu untuk mengklaim Kupon!');
+                setTimeout(() => window.navigate('login'), 1500);
+                return;
+            }
+
+            const v = window.activeVoucher;
+            if (!v) return;
+
+            if (window.myClaims && window.myClaims.includes(v.id)) {
+                return window.showToastMessage('Kupon ini sudah pernah Anda klaim!');
+            }
+            
+            const waNumber = "6281234040580"; 
+            const userName = window.storeProfile.name && window.storeProfile.name !== "Toko Baru" ? window.storeProfile.name : (window.userProfile.name || 'Pengguna SUQNA');
+            const promoSultan = (v.title + " " + v.mainText).replace(/<br>/gi, ' '); 
+            
+            const pesan = `Halo Admin SUQNA! Saya *${userName}* mau mengklaim promo *${promoSultan}*. Apakah kuotanya masih tersedia?`;
+            const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(pesan)}`;
+
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'users', window.userId, 'claims', v.id), {
+                    voucherId: v.id,
+                    title: v.title,
+                    timestamp: Date.now()
+                });
+
+                window.showModal(
+                    'Kupon Sultan Diklaim! 🎉', 
+                    `Selamat! Anda selangkah lagi mendapatkan promo ${v.title}. Segera klik tombol di bawah untuk konfirmasi ke WhatsApp Admin!`, 
+                    waLink
+                );
+
+                const waBtn = document.getElementById('modal-wa-btn');
+                if(waBtn) waBtn.innerHTML = '<i data-lucide="message-circle" class="w-5 h-5"></i> Chat Admin ke WA';
+                if(window.lucide) window.lucide.createIcons();
+                
+            } catch (e) {
+                window.showToastMessage('Gagal mengklaim kupon, periksa koneksi Anda.');
+            }
+        };
 
         window.toggleEditProfile = function() { window.isEditingProfile = !window.isEditingProfile; window.render(); }
 
