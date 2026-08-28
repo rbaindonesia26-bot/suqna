@@ -56,16 +56,17 @@
     </style>
 <style>
 .pita-kemerdekaan {
-    width: 110px; /* Diperkecil dari 150px */
-    height: 110px; /* Diperkecil dari 150px */
+    width: 110px;
+    height: 110px;
     overflow: hidden;
     position: absolute;
-    top: 170px; /* Tetap di posisi aslinya agar sejajar dengan banner */
+    top: 0 !important; /* WAJIB 0 agar nempel di pojok atas */
     right: 0;
-    z-index: 20;
+    z-index: 60; /* Pastikan di atas gambar banner */
     pointer-events: none;
+    transition: opacity 0.3s;
   }
-  .pita-kemerdekaan span {
+    .pita-kemerdekaan span {
     position: absolute;
     display: block;
     width: 0px; /* Diperkecil dari 220px */
@@ -1548,10 +1549,9 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                                 <h3 id="banner-title" class="text-white font-extrabold text-xl md:text-3xl lg:text-4xl leading-[1.15] drop-shadow-lg transition-opacity duration-300">${window.sanitizeHTML(b.title)}</h3>
                             </div>
                             
-                            <!-- PITA DINAMIS TERKAIT INPUT ADMIN -->
-                            ${b.tag && b.tag.trim() !== '' ? `
-                            <div class="pita-kemerdekaan z-[60]">
-                                <span>${window.sanitizeHTML(b.tag)}</span>
+                    <!-- PITA DINAMIS -->
+                            <div id="banner-ribbon" class="pita-kemerdekaan ${b.tag && b.tag.trim() !== '' ? '' : 'hidden'}">
+                                <span id="banner-ribbon-text">${b.tag ? window.sanitizeHTML(b.tag) : ''}</span>
                             </div>
                             ` : ''}
                             
@@ -2708,7 +2708,7 @@ const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, 
             } catch (e) { window.showToastMessage('Gagal mengirim ulasan.'); }
         }
 
-        window.startBannerSlide = function() {
+window.startBannerSlide = function() {
             clearInterval(window.bannerInterval);
             window.bannerInterval = setInterval(() => {
                 if (window.banners && window.banners.length > 0) {
@@ -2717,18 +2717,38 @@ const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, 
                     const img = document.getElementById('banner-img');
                     const title = document.getElementById('banner-title');
                     const tag = document.getElementById('banner-tag');
+                    
+                    // Ambil elemen pita
+                    const ribbon = document.getElementById('banner-ribbon');
+                    const ribbonText = document.getElementById('banner-ribbon-text');
+
                     if(img) {
                         img.style.opacity = 0;
+                        if(ribbon) ribbon.style.opacity = 0; // Pita ikut memudar
+                        
                         setTimeout(() => { 
-                            img.src = b.img; title.innerHTML = window.sanitizeHTML(b.title); 
-                            tag.innerHTML = window.sanitizeHTML(b.tag); tag.className = `${b.tagColor} font-black text-[10px] md:text-xs tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300`;
+                            img.src = b.img; 
+                            title.innerHTML = window.sanitizeHTML(b.title); 
+                            tag.innerHTML = window.sanitizeHTML(b.tag); 
+                            tag.className = `${b.tagColor} font-black text-[10px] md:text-xs tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300`;
+                            
+                            // Logika memunculkan/menyembunyikan pita sesuai Teks Admin
+                            if (ribbon && ribbonText) {
+                                if (b.tag && b.tag.trim() !== '') {
+                                    ribbonText.innerHTML = window.sanitizeHTML(b.tag);
+                                    ribbon.classList.remove('hidden');
+                                } else {
+                                    ribbon.classList.add('hidden');
+                                }
+                                ribbon.style.opacity = 1; // Pita muncul lagi
+                            }
+
                             img.style.opacity = 1; 
                         }, 300);
                     }
                 }
             }, 3500);
-        }
-        
+        }        
         window.stopBannerSlide = function() { clearInterval(window.bannerInterval); }
         
         window.generateDummyData = async function() {
