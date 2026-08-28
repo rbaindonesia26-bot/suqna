@@ -100,46 +100,34 @@
             Menyiapkan etalase...
         </p>
     </div>
-<!-- === KONTEN SPLASH / BANNER UTAMA === -->
-<div id="app" class="w-full h-[100dvh] mx-auto bg-[#09090b] relative overflow-hidden flex flex-col vvip-banner-gold gold-glow-border">
-    
-    <!-- PITA KEMERDEKAAN -->
-    <div class="pita-kemerdekaan">
-        <span>SPECIAL 9.9</span>
-    </div>
+<!-- === KONTEN BANNER UTAMA (AMAN TANPA MENGGANGGU ID="APP") === -->
+        <div class="w-full h-[100dvh] mx-auto bg-[#09090b] relative overflow-hidden flex flex-col vvip-banner-gold gold-glow-border">
+            
+            <!-- PITA KEMERDEKAAN -->
+            <div class="pita-kemerdekaan">
+                <span>SPECIAL 9.9</span>
+            </div>
 
-    <!-- KUPON MINI VVIP -->
-    <div style="position: absolute; top: 170px; left: 40px; z-index: 30;" class="bg-[#18181b]/95 backdrop-blur-md rounded-xl p-3 border border-amber-500/60 shadow-2xl flex items-center gap-3 gold-glow-border">
-        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-black font-black text-sm shadow-md shrink-0">9.9</div>
-        <div class="text-left">
-            <div class="text-[9px] font-bold text-amber-400 tracking-wider">👑 VVIP PASS (5 TOKO PERTAMA)</div>
-            <div class="text-xs font-black text-white leading-tight">PROMO 9.9 + GRATIS BALIHO</div>
+            <!-- KUPON MINI VVIP -->
+            <div style="position: absolute; top: 170px; left: 40px; z-index: 30;" class="bg-[#18181b]/95 backdrop-blur-md rounded-xl p-3 border border-amber-500/60 shadow-2xl flex items-center gap-3 gold-glow-border">
+                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-black font-black text-sm shadow-md shrink-0">9.9</div>
+                <div class="text-left">
+                    <div class="text-[9px] font-bold text-amber-400 tracking-wider">👑 VVIP PASS (5 TOKO PERTAMA)</div>
+                    <div class="text-xs font-black text-white leading-tight">PROMO 9.9 + GRATIS BALIHO</div>
+                </div>
+                <button onclick="window.open('https://wa.me/?text=Halo%20SUQNA,%20Saya%20mau%20klaim%20kuota%20Gratis%20Baliho%20Spesial%209.9%20untuk%20toko%20saya!', '_blank')" class="ml-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-extrabold text-[10px] uppercase tracking-wider shadow hover:brightness-110 active:scale-95 transition-all whitespace-nowrap">Klaim</button>
+            </div>
+
+            <!-- KONTEN TEKS BANNER -->
+            <div class="my-auto flex flex-col items-center justify-center p-6 text-center">
+                <h1 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-[#D4AF37] to-[#FF6A00] bg-clip-text text-transparent tracking-widest animate-pulse mb-4">SUQNA</h1>
+                <p class="mt-2 text-sm text-gray-400 font-medium tracking-wide">Pusat Belanja & Toko Online Syariah</p>
+            </div>
+
         </div>
-        <button onclick="window.open('https://wa.me/?text=Halo%20SUQNA,%20Saya%20mau%20klaim%20kuota%20Gratis%20Baliho%20Spesial%209.9%20untuk%20toko%20saya!', '_blank')" class="ml-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-extrabold text-[10px] uppercase tracking-wider shadow hover:brightness-110 active:scale-95 transition-all whitespace-nowrap">Klaim</button>
-    </div>
+        <!-- === BATAS AKHIR BANNER === -->
 
-    <!-- KONTEN LOADING / ANIMASI -->
-    <div class="my-auto flex flex-col items-center justify-center p-6 text-center">
-        <h1 class="text-4xl md:text-5xl font-black bg-gradient-to-r from-[#D4AF37] to-[#FF6A00] bg-clip-text text-transparent tracking-widest animate-pulse mb-4">SUQNA</h1>
-        <div class="w-10 h-10 border-4 border-gray-200 border-t-[#FF6A00] rounded-full animate-spin mx-auto"></div>
-        <p class="mt-5 text-sm text-gray-500 font-medium tracking-wide animate-pulse">Menyiapkan etalase...</p>
-    </div>
-
-</div>
-<!-- === BATAS AKHIR BANNER === -->
-    <script>
-    // Pengaman Auto-Hide Splash Screen jika skrip utama tertunda
-    window.addEventListener('load', function() {
-        setTimeout(function() {
-            const splash = document.getElementById('app');
-            if(splash && splash.style.display !== 'none') {
-                // Pastikan etalase terbuka mulus
-                console.log("SUQNA VVIP Ready");
-            }
-        }, 1500);
-    });
-</script>
-        <!-- Toast Notification -->
+    <!-- Toast Notification -->
         <div id="toast" class="hidden absolute top-20 left-1/2 transform -translate-x-1/2 bg-gray-900/90 backdrop-blur text-white px-5 py-3 rounded-full text-xs font-bold z-[100] shadow-2xl transition-all whitespace-nowrap flex items-center gap-2 border border-gray-700">
             <i data-lucide="info" class="w-4 h-4 text-orange-400"></i>
             <span id="toast-msg">Notifikasi</span>
