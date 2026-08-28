@@ -56,20 +56,19 @@
     </style>
 <style>
 .pita-kemerdekaan {
-    width: 110px;
-    height: 110px;
+    width: 110px; /* Diperkecil dari 150px */
+    height: 110px; /* Diperkecil dari 150px */
     overflow: hidden;
     position: absolute;
-    top: 0 !important; /* WAJIB 0 agar nempel di pojok atas */
+    top: 170px; /* Tetap di posisi aslinya agar sejajar dengan banner */
     right: 0;
-    z-index: 60; /* Pastikan di atas gambar banner */
+    z-index: 9999;
     pointer-events: none;
-    transition: opacity 0.3s;
   }
-    .pita-kemerdekaan span {
+  .pita-kemerdekaan span {
     position: absolute;
     display: block;
-    width: 0px; /* Diperkecil dari 220px */
+    width: 170px; /* Diperkecil dari 220px */
     padding: 4px 0; /* Ketebalan pita ditipiskan */
     background-color: #ea580c;
     border-bottom: 2px solid #FFFFFF;
@@ -102,6 +101,11 @@
         </p>
     </div>
     <div id="app" class="w-full h-[100dvh] mx-auto bg-[#09090b] relative overflow-hidden flex flex-col vvip-banner-gold gold-glow-border">
+    <!-- PITA HUT RI 81 (Mulai) -->
+    <div class="pita-kemerdekaan">
+        <span>SPECIAL 9.9</span>
+    </div>
+    <!-- PITA HUT RI 81 (Selesai) -->
         
         <!-- Toast Notification -->
         <div id="toast" class="hidden absolute top-20 left-1/2 transform -translate-x-1/2 bg-gray-900/90 backdrop-blur text-white px-5 py-3 rounded-full text-xs font-bold z-[100] shadow-2xl transition-all whitespace-nowrap flex items-center gap-2 border border-gray-700">
@@ -1539,22 +1543,14 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                 const b = window.banners[window.currentBannerIndex] || window.banners[0];
                 
                 html += `
-            <!-- BANNER ZONE -->
+                    <!-- BANNER ZONE -->
                     <div class="px-5 mt-4 sm:mt-6 mb-6 max-w-7xl mx-auto w-full">
                         <div class="relative h-[160px] sm:h-[240px] md:h-[320px] lg:h-[380px] rounded-2xl overflow-hidden shadow-2xl group cursor-pointer border-2 border-gray-100" id="banner-container">
                             <img id="banner-img" src="${b.img}" class="w-full h-full object-cover transition-all duration-500" />
                             <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-5 md:px-12">
-                                <!-- Teks tag asli di dalam banner (Bisa Anda hapus jika merasa dobel dengan pita) -->
                                 <span id="banner-tag" class="${b.tagColor} font-black text-[10px] md:text-sm tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300">${window.sanitizeHTML(b.tag)}</span>
                                 <h3 id="banner-title" class="text-white font-extrabold text-xl md:text-3xl lg:text-4xl leading-[1.15] drop-shadow-lg transition-opacity duration-300">${window.sanitizeHTML(b.title)}</h3>
                             </div>
-                            
-                    <!-- PITA DINAMIS -->
-                            <div id="banner-ribbon" class="pita-kemerdekaan ${b.tag && b.tag.trim() !== '' ? '' : 'hidden'}">
-                                <span id="banner-ribbon-text">${b.tag ? window.sanitizeHTML(b.tag) : ''}</span>
-                            </div>
-                            ` : ''}
-                            
                         </div>
                     </div>
                     
@@ -2708,7 +2704,7 @@ const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, 
             } catch (e) { window.showToastMessage('Gagal mengirim ulasan.'); }
         }
 
-window.startBannerSlide = function() {
+        window.startBannerSlide = function() {
             clearInterval(window.bannerInterval);
             window.bannerInterval = setInterval(() => {
                 if (window.banners && window.banners.length > 0) {
@@ -2717,38 +2713,18 @@ window.startBannerSlide = function() {
                     const img = document.getElementById('banner-img');
                     const title = document.getElementById('banner-title');
                     const tag = document.getElementById('banner-tag');
-                    
-                    // Ambil elemen pita
-                    const ribbon = document.getElementById('banner-ribbon');
-                    const ribbonText = document.getElementById('banner-ribbon-text');
-
                     if(img) {
                         img.style.opacity = 0;
-                        if(ribbon) ribbon.style.opacity = 0; // Pita ikut memudar
-                        
                         setTimeout(() => { 
-                            img.src = b.img; 
-                            title.innerHTML = window.sanitizeHTML(b.title); 
-                            tag.innerHTML = window.sanitizeHTML(b.tag); 
-                            tag.className = `${b.tagColor} font-black text-[10px] md:text-xs tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300`;
-                            
-                            // Logika memunculkan/menyembunyikan pita sesuai Teks Admin
-                            if (ribbon && ribbonText) {
-                                if (b.tag && b.tag.trim() !== '') {
-                                    ribbonText.innerHTML = window.sanitizeHTML(b.tag);
-                                    ribbon.classList.remove('hidden');
-                                } else {
-                                    ribbon.classList.add('hidden');
-                                }
-                                ribbon.style.opacity = 1; // Pita muncul lagi
-                            }
-
+                            img.src = b.img; title.innerHTML = window.sanitizeHTML(b.title); 
+                            tag.innerHTML = window.sanitizeHTML(b.tag); tag.className = `${b.tagColor} font-black text-[10px] md:text-xs tracking-widest uppercase mb-1 drop-shadow-md transition-opacity duration-300`;
                             img.style.opacity = 1; 
                         }, 300);
                     }
                 }
             }, 3500);
-        }        
+        }
+        
         window.stopBannerSlide = function() { clearInterval(window.bannerInterval); }
         
         window.generateDummyData = async function() {
