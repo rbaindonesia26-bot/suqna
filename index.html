@@ -399,25 +399,25 @@
         window.selectedVariantIndex = 0;
 
         // Varian Logika (Warna & Ukuran Terpisah Ala Sultan)
-        window.renderVariantListDOM = function() {
-            const container = document.getElementById('variant-list-container');
-            if(!container) return;
-            if(window.tempVariants.length === 0) {
-                container.innerHTML = '<p class="text-[10px] text-gray-400 text-center py-2 font-bold bg-gray-50 rounded-xl border border-dashed border-gray-200">Belum ada varian ditambahkan.</p>';
-                return;
-            }
-            container.innerHTML = window.tempVariants.map((v, i) => `
-                <div class="flex gap-2 items-center mb-2 bg-gray-50 p-2.5 rounded-xl border border-gray-200 shadow-sm slide-up">
-                    <input type="text" placeholder="Warna (Cth: Hitam)" value="${v.color || ''}" oninput="window.tempVariants[${i}].color = this.value" class="w-[28%] text-[11px] font-bold p-2 rounded-lg bg-white border outline-none focus:ring-1 focus:ring-purple-500">
-                    <input type="text" placeholder="Ukuran (Cth: XL)" value="${v.size || ''}" oninput="window.tempVariants[${i}].size = this.value" class="w-[25%] text-[11px] font-bold p-2 rounded-lg bg-white border outline-none focus:ring-1 focus:ring-purple-500">
-                    <input type="number" placeholder="Harga (Rp)" value="${v.price || ''}" oninput="window.tempVariants[${i}].price = parseInt(this.value)||0" class="w-[25%] text-[11px] font-black p-2 rounded-lg bg-white border outline-none focus:ring-1 focus:ring-purple-500">
-                    <input type="number" placeholder="Stok" value="${v.stock !== undefined ? v.stock : 1}" oninput="window.tempVariants[${i}].stock = parseInt(this.value)||0" class="w-[15%] text-[11px] font-black p-2 rounded-lg bg-white border outline-none focus:ring-1 focus:ring-purple-500 text-center">
-                    <button onclick="window.removeVariantItem(${i})" class="w-[7%] text-red-500 flex justify-center items-center hover:bg-red-50 p-2 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                </div>
-            `).join('');
-            if(window.lucide) window.lucide.createIcons();
-        }
-
+window.renderVariantListDOM = function() {
+    const container = document.getElementById('variant-list-container');
+    if(!container) return;
+    if(window.tempVariants.length === 0) {
+        container.innerHTML = '<p class="text-[10px] text-gray-400 text-center py-2 font-bold bg-gray-50 rounded-xl border border-dashed border-gray-200">Belum ada varian ditambahkan.</p>';
+        return;
+    }
+    container.innerHTML = window.tempVariants.map((v, i) => `
+        <div class="flex gap-2 items-center mb-2 bg-gray-50 p-2.5 rounded-xl border border-gray-200 shadow-sm slide-up">
+            <input type="text" placeholder="Warna (Cth: Hitam)" value="${v.color || ''}" oninput="window.tempVariants[${i}].color = this.value" class="w-[28%] text-[11px] font-bold text-gray-900 p-2 rounded-lg bg-white border border-gray-300 outline-none focus:ring-1 focus:ring-purple-500">
+            <input type="text" placeholder="Ukuran (Cth: XL)" value="${v.size || ''}" oninput="window.tempVariants[${i}].size = this.value" class="w-[25%] text-[11px] font-bold text-gray-900 p-2 rounded-lg bg-white border border-gray-300 outline-none focus:ring-1 focus:ring-purple-500">
+            <input type="number" placeholder="Harga (Rp)" value="${v.price || ''}" oninput="window.tempVariants[${i}].price = parseInt(this.value)||0" class="w-[25%] text-[11px] font-black text-gray-900 p-2 rounded-lg bg-white border border-gray-300 outline-none focus:ring-1 focus:ring-purple-500">
+            <input type="number" placeholder="Stok" value="${v.stock !== undefined ? v.stock : 1}" oninput="window.tempVariants[${i}].stock = parseInt(this.value)||0" class="w-[15%] text-[11px] font-black text-gray-900 p-2 rounded-lg bg-white border border-gray-300 outline-none focus:ring-1 focus:ring-purple-500 text-center">
+            <button onclick="window.removeVariantItem(${i})" class="w-[7%] text-red-500 flex justify-center items-center hover:bg-red-50 p-2 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+        </div>
+    `).join('');
+    if(window.lucide) window.lucide.createIcons();
+}
+        
         window.addVariantItem = function() {
             window.tempVariants.push({color: '', size: '', price: 0, stock: 1});
             window.renderVariantListDOM();
