@@ -42,6 +42,7 @@
         .logo-glow { filter: drop-shadow(0px 4px 12px rgba(255, 255, 255, 0.4)); }
         body { background-color: #09090b !important; color: #f4f4f5 !important; }
         .vvip-banner-gold { border: 1px solid rgba(212, 175, 55, 0.35) !important; box-shadow: 0 0 35px rgba(212, 175, 55, 0.12) !important; }    
+    
     /* --- AKSEN KILAU EMAS & BERLIAN VVIP SULTAN --- */
     .gold-glow-border {
         border: 1px solid rgba(212, 175, 55, 0.6) !important;
@@ -51,6 +52,29 @@
         background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFF8DC 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+    }
+
+    /* --- EFEK TOMBOL KATEGORI ALA SULTAN --- */
+    .sultan-cat-btn {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+    .sultan-cat-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0));
+        border-radius: 1.25rem 1.25rem 0 0;
+        pointer-events: none;
+    }
+    .sultan-cat-btn:hover {
+        transform: translateY(-4px) scale(1.05);
+        filter: brightness(1.1);
+        box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.4), inset 0 3px 6px rgba(255, 255, 255, 0.6), inset 0 -3px 6px rgba(0, 0, 0, 0.3) !important;
     }
     </style>
 <style>
@@ -398,26 +422,25 @@
         window.tempVariants = [];
         window.selectedVariantIndex = 0;
 
-        // Varian Logika (Warna & Ukuran Terpisah Ala Sultan)
-window.renderVariantListDOM = function() {
-    const container = document.getElementById('variant-list-container');
-    if(!container) return;
-    if(window.tempVariants.length === 0) {
-        container.innerHTML = '<p class="text-[10px] text-gray-400 text-center py-2 font-bold bg-gray-50 rounded-xl border border-dashed border-gray-200">Belum ada varian ditambahkan.</p>';
-        return;
-    }
-    container.innerHTML = window.tempVariants.map((v, i) => `
-        <div class="flex gap-2 items-center mb-2 bg-gray-50 p-2.5 rounded-xl border border-gray-200 shadow-sm slide-up">
-            <input type="text" placeholder="Warna (Cth: Hitam)" value="${v.color || ''}" oninput="window.tempVariants[${i}].color = this.value" class="w-[28%] text-[11px] font-bold text-gray-900 p-2 rounded-lg bg-white border border-gray-300 outline-none focus:ring-1 focus:ring-purple-500">
-            <input type="text" placeholder="Ukuran (Cth: XL)" value="${v.size || ''}" oninput="window.tempVariants[${i}].size = this.value" class="w-[25%] text-[11px] font-bold text-gray-900 p-2 rounded-lg bg-white border border-gray-300 outline-none focus:ring-1 focus:ring-purple-500">
-            <input type="number" placeholder="Harga (Rp)" value="${v.price || ''}" oninput="window.tempVariants[${i}].price = parseInt(this.value)||0" class="w-[25%] text-[11px] font-black text-gray-900 p-2 rounded-lg bg-white border border-gray-300 outline-none focus:ring-1 focus:ring-purple-500">
-            <input type="number" placeholder="Stok" value="${v.stock !== undefined ? v.stock : 1}" oninput="window.tempVariants[${i}].stock = parseInt(this.value)||0" class="w-[15%] text-[11px] font-black text-gray-900 p-2 rounded-lg bg-white border border-gray-300 outline-none focus:ring-1 focus:ring-purple-500 text-center">
-            <button onclick="window.removeVariantItem(${i})" class="w-[7%] text-red-500 flex justify-center items-center hover:bg-red-50 p-2 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-        </div>
-    `).join('');
-    if(window.lucide) window.lucide.createIcons();
-}
-        
+        window.renderVariantListDOM = function() {
+            const container = document.getElementById('variant-list-container');
+            if(!container) return;
+            if(window.tempVariants.length === 0) {
+                container.innerHTML = '<p class="text-[10px] text-gray-400 text-center py-2 font-bold bg-gray-50 rounded-xl border border-dashed border-gray-200">Belum ada varian ditambahkan.</p>';
+                return;
+            }
+            container.innerHTML = window.tempVariants.map((v, i) => `
+                <div class="flex gap-2 items-center mb-2 bg-gray-50 p-2.5 rounded-xl border border-gray-200 shadow-sm slide-up">
+                    <input type="text" placeholder="Warna (Cth: Hitam)" value="${v.color || ''}" oninput="window.tempVariants[${i}].color = this.value" class="w-[28%] text-[11px] font-bold text-gray-900 p-2 rounded-lg bg-white border border-gray-300 outline-none focus:ring-1 focus:ring-purple-500">
+                    <input type="text" placeholder="Ukuran (Cth: XL)" value="${v.size || ''}" oninput="window.tempVariants[${i}].size = this.value" class="w-[25%] text-[11px] font-bold text-gray-900 p-2 rounded-lg bg-white border border-gray-300 outline-none focus:ring-1 focus:ring-purple-500">
+                    <input type="number" placeholder="Harga (Rp)" value="${v.price || ''}" oninput="window.tempVariants[${i}].price = parseInt(this.value)||0" class="w-[25%] text-[11px] font-black text-gray-900 p-2 rounded-lg bg-white border border-gray-300 outline-none focus:ring-1 focus:ring-purple-500">
+                    <input type="number" placeholder="Stok" value="${v.stock !== undefined ? v.stock : 1}" oninput="window.tempVariants[${i}].stock = parseInt(this.value)||0" class="w-[15%] text-[11px] font-black text-gray-900 p-2 rounded-lg bg-white border border-gray-300 outline-none focus:ring-1 focus:ring-purple-500 text-center">
+                    <button onclick="window.removeVariantItem(${i})" class="w-[7%] text-red-500 flex justify-center items-center hover:bg-red-50 p-2 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </div>
+            `).join('');
+            if(window.lucide) window.lucide.createIcons();
+        }
+
         window.addVariantItem = function() {
             window.tempVariants.push({color: '', size: '', price: 0, stock: 1});
             window.renderVariantListDOM();
@@ -440,7 +463,6 @@ window.renderVariantListDOM = function() {
             }
         }
 
-        // Filter & Sort State
         window.currentSearchQuery = '';
         window.currentCategoryFilter = 'Semua';
         window.currentSortBy = 'terbaru';
@@ -448,16 +470,13 @@ window.renderVariantListDOM = function() {
         window.maxPriceFilter = '';
         window.authMode = 'login';
         
-        // Modal Ulasan
         window.currentReviewOrderId = null;
         window.currentReviewProductId = null;
         window.selectedRating = 0;
         
-        // Checkout & Admin Confirm
         window.currentCheckoutStoreId = null;
         window.confirmActionCallback = null;
 
-        // Profiles
         window.storeProfile = { name: "Toko Baru", phone: "", avatar: "" };
         window.userProfile = { name: "", address: "", avatar: "" }; 
 
@@ -465,7 +484,6 @@ window.renderVariantListDOM = function() {
         window.tempProductImg = '';
         window.tempBannerImg = ''; 
 
-        // Data Storage
         window.products = [];
         window.cart = [];
         window.myOrders = [];
@@ -524,19 +542,19 @@ window.renderVariantListDOM = function() {
         window.bannerInterval = null;
 
         window.categories = [
-            { name: "Semua", icon: "layout-grid", bg: "bg-gradient-to-br from-purple-400 to-indigo-600", textColor: "text-purple-600 font-black", iconColor: "text-white drop-shadow-md" },
-            { name: "Belanja & Retail", icon: "shopping-bag", bg: "bg-gradient-to-br from-orange-400 to-red-500", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
-            { name: "Kendaraan", icon: "car", bg: "bg-gradient-to-br from-blue-400 to-blue-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
-            { name: "Properti", icon: "building-2", bg: "bg-gradient-to-br from-indigo-400 to-purple-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
-            { name: "Pendidikan", icon: "book-open", bg: "bg-gradient-to-br from-yellow-400 to-amber-500", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
-            { name: "Bisnis & Grosir", icon: "briefcase", bg: "bg-gradient-to-br from-fuchsia-400 to-pink-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
-            { name: "Hobi & Gaya", icon: "heart", bg: "bg-gradient-to-br from-rose-400 to-pink-500", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
-            { name: "Digital", icon: "monitor", bg: "bg-gradient-to-br from-cyan-400 to-blue-500", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
-            { name: "Jasa Layanan", icon: "wrench", bg: "bg-gradient-to-br from-emerald-400 to-green-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
-            { name: "Wisata", icon: "plane", bg: "bg-gradient-to-br from-teal-400 to-emerald-500", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
-            { name: "Kuliner", icon: "utensils", bg: "bg-gradient-to-br from-red-400 to-rose-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
-            { name: "Barang Bekas", icon: "archive", bg: "bg-gradient-to-br from-amber-500 to-orange-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
-            { name: "Lainnya", icon: "more-horizontal", bg: "bg-gradient-to-br from-gray-400 to-gray-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" }
+            { name: "Semua", icon: "layout-grid", bg: "bg-gradient-to-br from-purple-500 to-indigo-700", textColor: "text-purple-600 font-black", iconColor: "text-white drop-shadow-md" },
+            { name: "Belanja & Retail", icon: "shopping-bag", bg: "bg-gradient-to-br from-orange-500 to-red-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Kendaraan", icon: "car", bg: "bg-gradient-to-br from-blue-500 to-blue-700", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Properti", icon: "building-2", bg: "bg-gradient-to-br from-indigo-500 to-purple-700", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Pendidikan", icon: "book-open", bg: "bg-gradient-to-br from-yellow-500 to-amber-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Bisnis & Grosir", icon: "briefcase", bg: "bg-gradient-to-br from-fuchsia-500 to-pink-700", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Hobi & Gaya", icon: "heart", bg: "bg-gradient-to-br from-rose-500 to-pink-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Digital", icon: "monitor", bg: "bg-gradient-to-br from-cyan-500 to-blue-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Jasa Layanan", icon: "wrench", bg: "bg-gradient-to-br from-emerald-500 to-green-700", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Wisata", icon: "plane", bg: "bg-gradient-to-br from-teal-500 to-emerald-600", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Kuliner", icon: "utensils", bg: "bg-gradient-to-br from-red-500 to-rose-700", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Barang Bekas", icon: "archive", bg: "bg-gradient-to-br from-amber-600 to-orange-700", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
+            { name: "Lainnya", icon: "more-horizontal", bg: "bg-gradient-to-br from-gray-500 to-gray-700", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" }
         ];
 
         window.categoryData = {
@@ -1593,7 +1611,7 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                         </div>
                     </div>
                     
-                    <!-- CATEGORIES ZONE (3D FAUX CSS) -->
+                    <!-- CATEGORIES ZONE (SULTAN GLOSSY STYLE) -->
                     <div id="kategori-section" class="px-5 mt-8 mb-4 relative z-0 max-w-7xl mx-auto w-full">
                         <div class="flex justify-between items-end mb-5">
                             <h2 class="font-extrabold text-gray-900 text-lg sm:text-xl">Kategori Pilihan</h2>
@@ -1603,11 +1621,11 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                 
                 window.categories.forEach(cat => {
                     const isActive = window.currentCategoryFilter === cat.name;
-                    const ringStyle = isActive ? 'ring-4 ring-purple-600/30 scale-105' : 'hover:scale-105 hover:-translate-y-1';
+                    const ringStyle = isActive ? 'ring-4 ring-amber-400/70 scale-105 shadow-[0_0_25px_rgba(212,175,55,0.6)]' : '';
                     
                     html += `
                         <div onclick="window.filterCategory('${cat.name}')" class="flex flex-col items-center gap-2 cursor-pointer group">
-                            <div class="w-14 h-14 md:w-16 md:h-16 ${cat.bg} rounded-[1.25rem] flex items-center justify-center transition-all duration-300 ${ringStyle} active:scale-95 active:translate-y-1 active:shadow-inner shadow-[0_8px_15px_-5px_rgba(0,0,0,0.3),inset_0_3px_5px_rgba(255,255,255,0.5),inset_0_-3px_5px_rgba(0,0,0,0.2)] border border-white/20">
+                            <div class="w-14 h-14 md:w-16 md:h-16 ${cat.bg} rounded-[1.25rem] flex items-center justify-center sultan-cat-btn ${ringStyle} active:scale-95 shadow-[0_12px_25px_-5px_rgba(0,0,0,0.5),inset_0_4px_6px_rgba(255,255,255,0.45),inset_0_-4px_6px_rgba(0,0,0,0.3)] border border-white/25">
                                 <i data-lucide="${cat.icon}" class="w-6 h-6 md:w-7 md:h-7 ${cat.iconColor}"></i>
                             </div>
                             <span class="text-[9px] md:text-[11px] ${cat.textColor} text-center leading-tight font-bold">${cat.name}</span>
@@ -1684,7 +1702,8 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                             <div class="w-px h-3 bg-purple-400/50"></div>
                             <span onclick="window.installPWA()" class="hover:text-white cursor-pointer transition-colors flex items-center gap-1.5"><i data-lucide="download" class="w-3.5 h-3.5"></i> Download Aplikasi</span>
                             <div class="w-px h-3 bg-purple-400/50"></div>
-<span onclick="window.open('https://translate.google.com/translate?sl=id&tl=en&u=' + window.location.href, '_blank')" class="hover:text-white cursor-pointer transition-colors flex items-center gap-1.5" title="Terjemahkan ke Bahasa Inggris"><i data-lucide="globe" class="w-3.5 h-3.5"></i> ID / EN</span>                        </div>
+                            <span onclick="window.open('https://translate.google.com/translate?sl=id&tl=en&u=' + window.location.href, '_blank')" class="hover:text-white cursor-pointer transition-colors flex items-center gap-1.5" title="Terjemahkan ke Bahasa Inggris"><i data-lucide="globe" class="w-3.5 h-3.5"></i> ID / EN</span>
+                        </div>
                     </div>
 
                     <!-- MAIN HEADER (Logo & Search) -->
@@ -1694,11 +1713,11 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                         <div class="flex items-center justify-center md:justify-start h-12 md:h-14 relative z-10 shrink-0 md:mt-1">
                             <img src="https://i.ibb.co.com/MxMTVwJr/Untitled-design-20.png" alt="SUQNA Logo" class="h-full w-auto max-w-[85%] md:max-w-[200px] object-contain scale-105 transition-transform duration-300 logo-glow">
                             <!-- Tombol Bahasa Khusus HP -->
-<div class="absolute right-0 md:hidden z-20">
-    <span onclick="window.open('https://translate.google.com/translate?sl=id&tl=en&u=' + window.location.href, '_blank')" class="flex items-center justify-center gap-1.5 cursor-pointer text-white bg-white/10 px-2.5 py-1.5 rounded-lg border border-white/20 backdrop-blur-sm text-[10px] font-medium shadow-sm hover:bg-white/20 transition-all">
-        <i data-lucide="globe" class="w-3.5 h-3.5"></i> ID / EN
-    </span>
-</div>
+                            <div class="absolute right-0 md:hidden z-20">
+                                <span onclick="window.open('https://translate.google.com/translate?sl=id&tl=en&u=' + window.location.href, '_blank')" class="flex items-center justify-center gap-1.5 cursor-pointer text-white bg-white/10 px-2.5 py-1.5 rounded-lg border border-white/20 backdrop-blur-sm text-[10px] font-medium shadow-sm hover:bg-white/20 transition-all">
+                                    <i data-lucide="globe" class="w-3.5 h-3.5"></i> ID / EN
+                                </span>
+                            </div>
                         </div>
 
                         <!-- Search Bar & Tags -->
@@ -1709,14 +1728,12 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                                     <input type="text" id="main-search-input" value="${window.currentSearchQuery}" onkeyup="window.handleSearch(this.value)" placeholder="Cari produk, jasa..." class="flex-1 bg-transparent border-none outline-none text-sm px-3 text-gray-800 placeholder-gray-400 font-bold">
                                 </div>
                                 
-                                <!-- TOMBOL FILTER PUTIH (ANTI HILANG) -->
                                 <button onclick="window.openFilterModal()" class="w-12 h-12 bg-white rounded-2xl flex flex-shrink-0 items-center justify-center text-purple-600 hover:bg-gray-50 transition-all shadow-xl shadow-purple-900/10 active:scale-95 relative">
                                     ${window.currentSortBy !== 'terbaru' || window.minPriceFilter !== '' ? '<span class="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 rounded-full animate-pulse border-2 border-white"></span>' : ''}
                                     <i data-lucide="sliders-horizontal" class="w-5 h-5"></i>
                                 </button>
                             </div>
                             
-                            <!-- SEARCH TAGS (Muncul di HP dan Laptop, Bisa di-scroll 10 Tag) -->
                             <div class="flex items-center gap-3 mt-3 px-1 overflow-x-auto hide-scroll">
                                 ${tagsHtml}
                             </div>
@@ -3082,7 +3099,7 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 if (splash) {
-                    splash.style.opacity = '0'; 
+                    splash.active ? '' : (splash.style.opacity = '0');
                     setTimeout(() => {
                         splash.style.display = 'none'; 
                     }, 700); 
