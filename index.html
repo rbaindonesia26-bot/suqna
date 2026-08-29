@@ -568,11 +568,7 @@
         onSnapshot(query(collection(db, 'artifacts', appId, 'public', 'data', 'products')), (snapshot) => {
             window.products = [];
             snapshot.forEach((doc) => { 
-                let itemData = doc.data();
-                if (itemData.isDummy === true || itemData.name === "Mini Gold 0.1 Gram" || itemData.name === "Kopi Susu Gula Aren Premium" || itemData.name === "Baju Koko Kurta Modern") {
-                    return; 
-                }
-                window.products.push({ id: doc.id, ...itemData }); 
+                window.products.push({ id: doc.id, ...doc.data() }); 
             });
             window.products.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
             if (window.pendingRoute && window.products.length > 0) {
@@ -2664,7 +2660,7 @@ const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, 
 
                 window.showModal(
                     'Kupon Sultan Diklaim! 🎉', 
-                    `Selamat! Anda selangkah lagi mendapatkan promo ${v.title}. Segera klik tombol di bawah untuk konfirmasi ke WhatsApp Admin!`, 
+                    `Selamat! Anda selangkah lagi mendapatkan promo ${window.sanitizeHTML(v.title)}. Segera klik tombol di bawah untuk konfirmasi ke WhatsApp Admin!`, 
                     waLink
                 );
 
@@ -2911,69 +2907,73 @@ const arr = [
                 window.navigate('home');
             } catch(e) { window.showToastMessage('Gagal menyuntik data.'); }
         }
-window.deleteDummyData = function() {
-    if(!window.isAdmin) return;
-    window.showToastMessage('Membersihkan total data dummy...');
-    
-    if(window.currentProducts) {
-        window.currentProducts = window.currentProducts.filter(p => !p.isDummy && p.name !== "Mini Gold 0.1 Gram" && p.name !== "Kopi Susu Gula Aren Premium" && p.name !== "Baju Koko Kurta Modern");
-    }
 
-    try {
-        let savedProducts = JSON.parse(localStorage.getItem('suqna_products') || '[]');
-        if(savedProducts.length > 0) {
-            let filtered = savedProducts.filter(p => !p.isDummy && p.name !== "Mini Gold 0.1 Gram" && p.name !== "Kopi Susu Gula Aren Premium" && p.name !== "Baju Koko Kurta Modern");
-            localStorage.setItem('suqna_products', JSON.stringify(filtered));
+        window.deleteDummyData = async function() {
+            if(!window.isAdmin) return;
+            window.showToastMessage('Menghapus data dummy dari server Firebase...');
+            
+            try {
+                // Deteksi mana saja yang merupakan produk dummy
+                const dummyProducts = window.products.filter(p => 
+                    p.isDummy === true || 
+                    p.name === "Mini Gold 0.1 Gram" || 
+                    p.name === "Kopi Susu Gula Aren Premium" || 
+                    p.name === "Baju Koko Kurta Modern"
+                );
+                
+                // Tembak perintah hapus langsung ke database Firebase
+                for (let dp of dummyProducts) {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', dp.id));
+                }
+                
+                window.showToastMessage('Sip! Etalase bersih dari data Dummy.');
+                window.navigate('home');
+            } catch(err) {
+                console.error(err);
+                window.showToastMessage('Gagal menghapus data dummy.');
+            }
         }
-    } catch(err) {
-        console.error(err);
-    }
-    
-    setTimeout(() => {
-        window.showToastMessage('Etalase berhasil dibersihkan!');
-        window.navigate('home');
-        window.location.reload();
-    }, 600);
-}
-window.galleryStates = window.galleryStates || {};
 
-window.setGalleryMedia = function(productId, url, type) {
-    const displayContainer = document.getElementById(`gallery-display-${productId}`);
-    if(!displayContainer) return;
+        window.galleryStates = window.galleryStates || {};
 
-    if(type === 'video') {
-        displayContainer.innerHTML = `<video src="${url}" controls autoplay class="w-full h-full object-cover"></video>`;
-    } else {
-        displayContainer.innerHTML = `<img src="${url}" class="w-full h-full object-cover transition-all duration-300">`;
-    }
-};
+        window.setGalleryMedia = function(productId, url, type) {
+            const displayContainer = document.getElementById(`gallery-display-${productId}`);
+            if(!displayContainer) return;
 
-window.galleryIndexes = window.galleryIndexes || {};
+            if(type === 'video') {
+                displayContainer.innerHTML = `<video src="${url}" controls autoplay class="w-full h-full object-cover"></video>`;
+            } else {
+                displayContainer.innerHTML = `<img src="${url}" class="w-full h-full object-cover transition-all duration-300">`;
+            }
+        };
 
-window.slideGallery = function(productId, direction) {
-    const displayContainer = document.getElementById(`gallery-display-${productId}`);
-    if(!displayContainer) return;
+        window.galleryIndexes = window.galleryIndexes || {};
 
-    const parentContainer = displayContainer.closest('div.relative') || document.body;
-    
-    const thumbnails = document.querySelectorAll(`img[onclick*="setGalleryMedia('${productId}'"]`);
-    if(thumbnails.length <= 1) return;
+        window.slideGallery = function(productId, direction) {
+            const displayContainer = document.getElementById(`gallery-display-${productId}`);
+            if(!displayContainer) return;
 
-    let urls = Array.from(thumbnails).map(img => img.src);
-    let currentImg = displayContainer.querySelector('img');
-    let currentIndex = currentImg ? urls.indexOf(currentImg.src) : 0;
+            const parentContainer = displayContainer.closest('div.relative') || document.body;
+            
+            const thumbnails = document.querySelectorAll(`img[onclick*="setGalleryMedia('${productId}'"]`);
+            if(thumbnails.length <= 1) return;
 
-    if(currentIndex === -1) currentIndex = 0;
+            let urls = Array.from(thumbnails).map(img => img.src);
+            let currentImg = displayContainer.querySelector('img');
+            let currentIndex = currentImg ? urls.indexOf(currentImg.src) : 0;
 
-    currentIndex += direction;
-    if(currentIndex >= urls.length) {
-        currentIndex = 0;
-    } else if(currentIndex < 0) {
-        currentIndex = urls.length - 1;
-    }
+            if(currentIndex === -1) currentIndex = 0;
 
-    window.setGalleryMedia(productId, urls[currentIndex], 'image');
-};
+            currentIndex += direction;
+            if(currentIndex >= urls.length) {
+                currentIndex = 0;
+            } else if(currentIndex < 0) {
+                currentIndex = urls.length - 1;
+            }
+
+            window.setGalleryMedia(productId, urls[currentIndex], 'image');
+        };
+        
         window.deferredPrompt = null;
         
         if ('serviceWorker' in navigator) {
