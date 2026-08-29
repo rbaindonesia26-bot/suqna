@@ -155,27 +155,37 @@
         <div id="checkout-modal" class="hidden absolute inset-0 bg-black/60 z-[105] flex items-end sm:items-center justify-center backdrop-blur-sm transition-opacity pb-safe sm:pb-0">
             <div class="bg-white rounded-t-[2rem] sm:rounded-[2rem] p-6 w-full sm:max-w-md sm:mb-10 shadow-2xl transform translate-y-full transition-transform duration-300" id="checkout-modal-content">
                 <div class="flex justify-between items-center mb-5">
-                    <h3 class="text-lg font-black text-gray-900 flex items-center gap-2"><i data-lucide="truck" class="w-5 h-5 text-orange-500"></i> Detail Pengiriman</h3>
+                    <h3 class="text-lg font-black text-gray-900 flex items-center gap-2"><i data-lucide="shield-check" class="w-5 h-5 text-purple-600"></i> Konfirmasi Pembayaran & Pengiriman</h3>
                     <button onclick="window.closeCheckoutModal()" class="text-gray-400 hover:text-gray-800 bg-gray-100 p-2 rounded-full"><i data-lucide="x" class="w-4 h-4"></i></button>
                 </div>
                 
                 <div class="space-y-4 mb-6">
                     <div class="space-y-1.5">
-                        <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Pilih Metode Pengiriman</label>
+                        <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Metode Pengiriman</label>
                         <select id="checkout-delivery" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-bold text-gray-800 focus:ring-2 focus:ring-purple-600/50 outline-none">
                             <option value="Ambil Sendiri di Toko">Ambil Sendiri di Toko</option>
                             <option value="Kurir Lokal / Ojol">Kurir Lokal / Ojol</option>
-                            <option value="Ekspedisi (JNE/J&T dll)">Ekspedisi (JNE/J&T dll)</option>
+                            <option value="Ekspedisi Reguler">Ekspedisi Reguler (JNE/J&T dll)</option>
                         </select>
                     </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Metode Pembayaran Syariah</label>
+                        <select id="checkout-payment" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm font-bold text-gray-800 focus:ring-2 focus:ring-purple-600/50 outline-none">
+                            <option value="Transfer Bank / QRIS">Transfer Bank / QRIS (Verifikasi Otomatis)</option>
+                            <option value="COD (Bayar di Tempat)">COD / Bayar di Tempat (Sesuai Syariah)</option>
+                            <option value="Bayar Langsung ke Penjual">Konfirmasi Langsung ke Penjual</option>
+                        </select>
+                    </div>
+
                     <div class="space-y-1.5">
                         <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Catatan Pesanan (Opsional)</label>
-                        <textarea id="checkout-notes" rows="2" placeholder="Cth: Tolong dibungkus kado, warna merah..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-medium text-gray-800 text-sm focus:ring-2 focus:ring-purple-600/50 outline-none transition-all"></textarea>
+                        <textarea id="checkout-notes" rows="2" placeholder="Cth: Tolong pastikan barang dikemas aman..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-medium text-gray-800 text-sm focus:ring-2 focus:ring-purple-600/50 outline-none transition-all"></textarea>
                     </div>
                 </div>
 
                 <button onclick="window.confirmCheckout()" class="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-extrabold text-lg py-4 rounded-2xl shadow-lg shadow-orange-200 active:scale-95 transition-transform flex justify-center items-center gap-2">
-                    <i data-lucide="message-circle" class="w-5 h-5"></i> Lanjut Pesan via WA
+                    <i data-lucide="message-circle" class="w-5 h-5"></i> Kirim Struk Pesanan ke WA
                 </button>
             </div>
         </div>
@@ -319,10 +329,11 @@
                     <span class="text-[10px] font-medium text-gray-400 absolute bottom-1">Jual</span>
                 </div>
 
-                <button onclick="window.navigate('cart')" id="nav-cart" class="flex flex-col items-center gap-1 transition-colors w-[20%] relative group mb-1">
-                   <div class="relative">
-                    <div id="cart-badge" class="hidden absolute -top-1.5 right-2 bg-red-500 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm border-2 border-white transition-transform">0</div>
-                    <i id="cart-icon" data-lucide="shopping-cart" class="w-6 h-6 text-gray-400 group-hover:text-gray-600 transition-all duration-200"></i>
+                <button onclick="window.navigate('cart')" id="nav-cart" class="flex flex-col items-center gap-1 transition-colors w-[20%] group mb-1">
+                    <div class="relative">
+                        <div id="cart-badge" class="hidden absolute -top-1.5 -right-2 bg-red-500 text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm border-2 border-white transition-transform z-10">0</div>
+                        <i id="cart-icon" data-lucide="shopping-cart" class="w-6 h-6 text-gray-400 group-hover:text-gray-600 transition-all duration-200"></i>
+                    </div>
                     <span class="text-[10px] font-medium text-gray-400">Keranjang</span>
                 </button>
                 
@@ -387,7 +398,7 @@
         window.tempVariants = [];
         window.selectedVariantIndex = 0;
 
-        // Varian Logika
+        // Varian Logika (Warna & Ukuran Terpisah Ala Sultan)
         window.renderVariantListDOM = function() {
             const container = document.getElementById('variant-list-container');
             if(!container) return;
@@ -397,17 +408,18 @@
             }
             container.innerHTML = window.tempVariants.map((v, i) => `
                 <div class="flex gap-2 items-center mb-2 bg-gray-50 p-2.5 rounded-xl border border-gray-200 shadow-sm slide-up">
-                    <input type="text" placeholder="Nama Varian (Cth: 0.5 Gram)" value="${v.name}" oninput="window.tempVariants[${i}].name = this.value" class="w-[35%] text-[11px] font-bold p-2.5 rounded-lg bg-white border outline-none focus:ring-1 focus:ring-purple-500">
-                    <input type="number" placeholder="Harga (Rp)" value="${v.price || ''}" oninput="window.tempVariants[${i}].price = parseInt(this.value)||0" class="w-[35%] text-[11px] font-black p-2.5 rounded-lg bg-white border outline-none focus:ring-1 focus:ring-purple-500">
-                    <input type="number" placeholder="Stok" value="${v.stock !== undefined ? v.stock : 1}" oninput="window.tempVariants[${i}].stock = parseInt(this.value)||0" class="w-[20%] text-[11px] font-black p-2.5 rounded-lg bg-white border outline-none focus:ring-1 focus:ring-purple-500 text-center">
-                    <button onclick="window.removeVariantItem(${i})" class="w-[10%] text-red-500 flex justify-center items-center hover:bg-red-50 p-2 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <input type="text" placeholder="Warna (Cth: Hitam)" value="${v.color || ''}" oninput="window.tempVariants[${i}].color = this.value" class="w-[28%] text-[11px] font-bold p-2 rounded-lg bg-white border outline-none focus:ring-1 focus:ring-purple-500">
+                    <input type="text" placeholder="Ukuran (Cth: XL)" value="${v.size || ''}" oninput="window.tempVariants[${i}].size = this.value" class="w-[25%] text-[11px] font-bold p-2 rounded-lg bg-white border outline-none focus:ring-1 focus:ring-purple-500">
+                    <input type="number" placeholder="Harga (Rp)" value="${v.price || ''}" oninput="window.tempVariants[${i}].price = parseInt(this.value)||0" class="w-[25%] text-[11px] font-black p-2 rounded-lg bg-white border outline-none focus:ring-1 focus:ring-purple-500">
+                    <input type="number" placeholder="Stok" value="${v.stock !== undefined ? v.stock : 1}" oninput="window.tempVariants[${i}].stock = parseInt(this.value)||0" class="w-[15%] text-[11px] font-black p-2 rounded-lg bg-white border outline-none focus:ring-1 focus:ring-purple-500 text-center">
+                    <button onclick="window.removeVariantItem(${i})" class="w-[7%] text-red-500 flex justify-center items-center hover:bg-red-50 p-2 rounded-lg transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 </div>
             `).join('');
             if(window.lucide) window.lucide.createIcons();
         }
 
         window.addVariantItem = function() {
-            window.tempVariants.push({name: '', price: 0, stock: 1});
+            window.tempVariants.push({color: '', size: '', price: 0, stock: 1});
             window.renderVariantListDOM();
         }
 
@@ -469,7 +481,6 @@
             return str.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/&lt;br&gt;/gi, '<br>');
         };
 
-        // Modal Top Bar Handlers
         window.openAboutModal = function() {
             document.getElementById('about-modal').classList.remove('hidden');
         }
@@ -484,7 +495,6 @@
             window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, '_blank');
         }
 
-        // Floating Chat Button Logic
         window.openFloatingChat = function() {
             let phone = "6281234040580"; 
             let text = "Halo Admin SUQNA, saya butuh bantuan.";
@@ -505,17 +515,14 @@
 
             let cleanPhone = phone.replace(/\D/g, '');
             if(cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.substring(1); 
-            
             window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`, '_blank');
         }
 
-        // Banner Default
         window.defaultBanners = [];        
         window.banners = [...window.defaultBanners]; 
         window.currentBannerIndex = 0;
         window.bannerInterval = null;
 
-        // EFEK TOMBOL 3D GRADIENT
         window.categories = [
             { name: "Semua", icon: "layout-grid", bg: "bg-gradient-to-br from-purple-400 to-indigo-600", textColor: "text-purple-600 font-black", iconColor: "text-white drop-shadow-md" },
             { name: "Belanja & Retail", icon: "shopping-bag", bg: "bg-gradient-to-br from-orange-400 to-red-500", textColor: "text-gray-700 font-bold", iconColor: "text-white drop-shadow-md" },
@@ -808,6 +815,7 @@
             window.currentCheckoutStoreId = storeOwnerId;
             document.getElementById('checkout-notes').value = '';
             document.getElementById('checkout-delivery').value = 'Ambil Sendiri di Toko';
+            document.getElementById('checkout-payment').value = 'Transfer Bank / QRIS';
             document.getElementById('checkout-modal').classList.remove('hidden');
             setTimeout(() => document.getElementById('checkout-modal-content').classList.remove('translate-y-full'), 50);
         }
@@ -885,7 +893,7 @@
                     let selectedVar = p.variants[window.selectedVariantIndex || 0];
                     if (selectedVar.stock === 0) return window.showToastMessage('Maaf, stok varian ini sudah Sold Out.');
                     cartItem.price = selectedVar.price;
-                    cartItem.variantName = selectedVar.name;
+                    cartItem.variantName = (selectedVar.color ? 'Warna: ' + selectedVar.color : '') + (selectedVar.color && selectedVar.size ? ' | ' : '') + (selectedVar.size ? 'Ukuran: ' + selectedVar.size : '');
                     cartItem.variantIndex = window.selectedVariantIndex || 0;
                 } else {
                     if(p.stock === 0) return window.showToastMessage('Maaf, produk ini sudah Sold Out.');
@@ -1119,14 +1127,22 @@ ${ (p.isFlashSale === 'true' || p.isFlashSale === true) && p.flashSaleEnd ? `
                 displayStock = selVar.stock;
                 
                 variantHtml = `
-                    <div class="mb-6">
-                        <h4 class="text-[11px] text-gray-500 font-bold uppercase tracking-wider mb-3">Pilih Varian</h4>
+                    <div class="mb-6 space-y-3">
+                        <h4 class="text-[11px] text-gray-500 font-bold uppercase tracking-wider">Pilih Varian (Warna & Ukuran)</h4>
                         <div class="flex flex-wrap gap-2">
-                            ${p.variants.map((v, idx) => `
-                                <button onclick="window.selectedVariantIndex=${idx}; window.render();" class="px-4 py-2 rounded-xl text-xs font-bold transition-all border-2 ${idx === (window.selectedVariantIndex||0) ? 'border-purple-600 bg-purple-50 text-purple-700 shadow-sm' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'}">
-                                    ${v.name}
-                                </button>
-                            `).join('')}
+                            ${p.variants.map((v, idx) => {
+                                let labelText = '';
+                                if(v.color) labelText += 'Warna: ' + v.color;
+                                if(v.color && v.size) labelText += ' | ';
+                                if(v.size) labelText += 'Ukuran: ' + v.size;
+                                if(!labelText) labelText = 'Varian ' + (idx + 1);
+
+                                return `
+                                    <button onclick="window.selectedVariantIndex=${idx}; window.render();" class="px-4 py-2.5 rounded-xl text-xs font-bold transition-all border-2 ${idx === (window.selectedVariantIndex||0) ? 'border-purple-600 bg-purple-50 text-purple-700 shadow-sm' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'}">
+                                        ${labelText}
+                                    </button>
+                                `;
+                            }).join('')}
                         </div>
                     </div>
                 `;
@@ -2189,11 +2205,11 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                             
                             <div class="flex items-center gap-2 px-4 py-3 bg-purple-50/50 rounded-2xl border border-purple-100/50">
                                 <input type="checkbox" id="use-variants" onchange="window.toggleVariantMode(this.checked)" class="w-4 h-4 text-purple-600 rounded border-gray-300 focus:ring-purple-600" ${window.editingProductData && window.editingProductData.hasVariants ? 'checked' : ''}>
-                                <label for="use-variants" class="text-xs font-black text-gray-700">Aktifkan Varian (Ukuran/Gram/Warna)</label>
+                                <label for="use-variants" class="text-xs font-black text-gray-700">Aktifkan Varian Warna & Ukuran Terpisah</label>
                             </div>
 
                             <div id="variant-section" class="${window.editingProductData && window.editingProductData.hasVariants ? '' : 'hidden'} space-y-3 border border-gray-200 rounded-2xl p-4 bg-white shadow-sm">
-                                <label class="text-[10px] text-gray-500 font-bold uppercase tracking-wide block">Kelola Varian Harga & Stok</label>
+                                <label class="text-[10px] text-gray-500 font-bold uppercase tracking-wide block">Kelola Varian (Warna, Ukuran, Harga & Stok)</label>
                                 <div id="variant-list-container" class="space-y-2"></div>
                                 <button onclick="window.addVariantItem()" class="w-full bg-purple-50 text-purple-700 font-extrabold text-xs py-3 rounded-xl border border-purple-100 hover:bg-purple-100 transition-colors shadow-sm">+ Tambah Varian Lain</button>
                             </div>
@@ -2359,6 +2375,7 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
             if(!window.currentCheckoutStoreId) return;
             const storeOwnerId = window.currentCheckoutStoreId;
             const deliveryMethod = document.getElementById('checkout-delivery').value;
+            const paymentMethod = document.getElementById('checkout-payment').value;
             const notes = document.getElementById('checkout-notes').value.trim();
 
             if(!window.userId) {
@@ -2372,12 +2389,12 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
             
             const totalAmount = storeItems.reduce((s,i) => s + i.price, 0);
             const firstItem = storeItems[0];
-            const orderId = 'ORD-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            const orderId = 'SUQ-' + Math.floor(100000 + Math.random() * 900000);
             
             const order = { 
                 items: storeItems, totalAmount: totalAmount, status: 'Dikemas', 
                 timestamp: Date.now(), storeOwnerId: storeOwnerId,
-                delivery: deliveryMethod, notes: notes
+                delivery: deliveryMethod, payment: paymentMethod, notes: notes
             };
             
             await setDoc(doc(db, 'artifacts', appId, 'users', window.userId, 'orders', orderId), order);
@@ -2404,17 +2421,34 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
             let waLink = null;
             const phone = firstItem.storePhone || '';
             if(phone) {
-                let text = `Halo *${firstItem.storeName || 'SUQNA Seller'}*,\nSaya ingin memesan dari etalase Anda:\n\n`;
-                storeItems.forEach(item => { text += `- ${item.name} ${item.variantName ? `(${item.variantName})` : ''} (Rp ${item.price.toLocaleString('id-ID')})\n`; });
-                text += `\n*Total Belanja: Rp ${totalAmount.toLocaleString('id-ID')}*\n`;
-                text += `\n🚚 *Metode Pengiriman:* ${deliveryMethod}`;
-                if(notes) text += `\n📝 *Catatan:* ${notes}`;
-                
                 const buyerName = window.userProfile.name || (window.userEmail ? window.userEmail.split('@')[0] : 'Pembeli');
-                const buyerAddress = window.userProfile.address || '(Pembeli belum mengisi alamat lengkap)';
-                text += `\n\n📦 *Data Pembeli:*\nNama: ${buyerName}\nAlamat: ${buyerAddress}\n`;
+                const buyerAddress = window.userProfile.address || '(Alamat belum diatur di profil)';
+
+                let text = `📦 *STRUK PESANAN RESMI - SUQNA*\n`;
+                text += `----------------------------------------\n`;
+                text += `🆔 *No. Pesanan:* ${orderId}\n`;
+                text += `📅 *Waktu:* ${new Date().toLocaleString('id-ID')}\n`;
+                text += `----------------------------------------\n\n`;
+                text += `👤 *DATA PEMBELI*\n`;
+                text += `• Nama: *${buyerName}*\n`;
+                text += `• Alamat: ${buyerAddress}\n\n`;
+                text += `🛒 *DETAIL PRODUK*\n`;
                 
-                text += `\nMohon informasi ketersediaannya ya. Terima kasih!`;
+                storeItems.forEach((item, index) => {
+                    text += `${index + 1}. *${item.name}*\n`;
+                    if(item.variantName) text += `   - Varian: ${item.variantName}\n`;
+                    text += `   - Harga: Rp ${item.price.toLocaleString('id-ID')}\n`;
+                });
+
+                text += `\n----------------------------------------\n`;
+                text += `🚚 *Pengiriman:* ${deliveryMethod}\n`;
+                text += `💳 *Pembayaran:* ${paymentMethod}\n`;
+                if(notes) text += `📝 *Catatan:* ${notes}\n`;
+                text += `----------------------------------------\n`;
+                text += `💰 *TOTAL TAGIHAN: Rp ${totalAmount.toLocaleString('id-ID')}*\n`;
+                text += `----------------------------------------\n\n`;
+                text += `Halo *${firstItem.storeName || 'Penjual'}*, saya ingin memproses pesanan di atas melalui platform SUQNA. Mohon konfirmasi ketersediaan dan total pembayarannya. Terima kasih! 🙏`;
+
                 let cleanPhone = phone.replace(/\D/g, '');
                 if(cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.substring(1); 
                 waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
@@ -2422,7 +2456,7 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
 
             window.cart = window.cart.filter(i => i.ownerId !== storeOwnerId);
             window.closeCheckoutModal();
-            window.showModal('Pesanan Dibuat', `Pesanan untuk ${firstItem.storeName} berhasil dibuat. Silakan lanjut chat ke WhatsApp penjual.`, waLink);
+            window.showModal('Pesanan Dibuat 🎉', `Struk pesanan berhasil dibuat dengan ID: ${orderId}. Silakan lanjutkan pengiriman struk ke WhatsApp penjual.`, waLink);
             window.navigate('account');
         }
 
@@ -2440,8 +2474,8 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
             const galleryInput = document.getElementById('new-prod-gallery') ? document.getElementById('new-prod-gallery').value : '';
             const videoInput = document.getElementById('new-prod-video') ? document.getElementById('new-prod-video').value : '';
 
-    window.tempGalleryArray = galleryInput ? galleryInput.split(',').map(s => s.trim()).filter(s => s !== '') : [];
-    window.tempVideoUrl = videoInput ? videoInput.trim() : '';
+            window.tempGalleryArray = galleryInput ? galleryInput.split(',').map(s => s.trim()).filter(s => s !== '') : [];
+            window.tempVideoUrl = videoInput ? videoInput.trim() : '';
             
             const useVariants = document.getElementById('use-variants') ? document.getElementById('use-variants').checked : false;
             let price = 0, stock = 0;
@@ -2449,10 +2483,10 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
             let originalPrice = 0;
 
             if (useVariants) {
-                finalVariants = window.tempVariants.filter(v => v.name.trim() !== '');
-                if (finalVariants.length === 0) return window.showToastMessage('Isi minimal 1 varian!');
-                price = Math.min(...finalVariants.map(v => v.price));
-                stock = finalVariants.reduce((sum, v) => sum + v.stock, 0);
+                finalVariants = window.tempVariants.filter(v => (v.color || v.size));
+                if (finalVariants.length === 0) return window.showToastMessage('Isi minimal 1 varian (warna atau ukuran)!');
+                price = Math.min(...finalVariants.map(v => v.price || 0));
+                stock = finalVariants.reduce((sum, v) => sum + (v.stock || 0), 0);
             } else {
                 price = parseInt(document.getElementById('new-prod-price').value) || 0;
                 const origInput = document.getElementById('new-prod-original-price');
@@ -2463,28 +2497,28 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
             
             if(name && price > 0 && subcat) {
                 const finalImgUrl = window.tempProductImg || (window.editingProductData ? window.editingProductData.imgUrl : `https://placehold.co/400x400/8b5cf6/ffffff?text=${name.substring(0,2).toUpperCase()}`);
-        const isFlashSaleVal = document.getElementById('new-prod-is-flashsale') ? document.getElementById('new-prod-is-flashsale').value : 'false';
-        const flashSaleEndVal = document.getElementById('new-prod-flashsale-end') ? document.getElementById('new-prod-flashsale-end').value : '';
+                const isFlashSaleVal = document.getElementById('new-prod-is-flashsale') ? document.getElementById('new-prod-is-flashsale').value : 'false';
+                const flashSaleEndVal = document.getElementById('new-prod-flashsale-end') ? document.getElementById('new-prod-flashsale-end').value : '';
 
-const p = {
-        name: name, 
-        price: price, 
-        originalPrice: originalPrice, 
-        stock: stock, 
-        category: subcat, 
-        description: desc,
-        storeName: window.storeProfile.name, 
-        storePhone: window.storeProfile.phone || '',
-        ownerId: window.userId, 
-        imgUrl: finalImgUrl,
-        gallery: window.tempGalleryArray || [finalImgUrl],
-        videoUrl: window.tempVideoUrl || '',
-        hasVariants: useVariants, 
-        variants: finalVariants,
-        timestamp: window.editingProductData ? window.editingProductData.timestamp : Date.now(),
-        isFlashSale: isFlashSaleVal,
-        flashSaleEnd: flashSaleEndVal
-    };
+                const p = {
+                    name: name, 
+                    price: price, 
+                    originalPrice: originalPrice, 
+                    stock: stock, 
+                    category: subcat, 
+                    description: desc,
+                    storeName: window.storeProfile.name, 
+                    storePhone: window.storeProfile.phone || '',
+                    ownerId: window.userId, 
+                    imgUrl: finalImgUrl,
+                    gallery: window.tempGalleryArray || [finalImgUrl],
+                    videoUrl: window.tempVideoUrl || '',
+                    hasVariants: useVariants, 
+                    variants: finalVariants,
+                    timestamp: window.editingProductData ? window.editingProductData.timestamp : Date.now(),
+                    isFlashSale: isFlashSaleVal,
+                    flashSaleEnd: flashSaleEndVal
+                };
                 if (window.editingProductData) {
                     await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', window.editingProductData.id), p);
                     window.showToastMessage('Barang Diperbarui');
@@ -2539,7 +2573,7 @@ const p = {
             if(!window.tempBannerImg || !tag || !title) return window.showToastMessage('Isi gambar, label promo, dan judul!');
 
             try {
-const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, timestamp: Date.now(), order: orderNumber };                
+                const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, timestamp: Date.now(), order: orderNumber };                
                 if (window.editingBannerId) {
                     await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'banners', window.editingBannerId), b);
                     window.showToastMessage('Banner Berhasil Diperbarui!');
@@ -2566,21 +2600,17 @@ const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, 
 
             window.editingBannerId = id; 
             window.tempBannerImg = b.img;
-            
             window.render();
             
             setTimeout(() => {
                 const tagInput = document.getElementById('new-banner-tag');
                 if (tagInput) tagInput.value = b.tag;
-                
                 const colorInput = document.getElementById('new-banner-color');
                 if (colorInput) colorInput.value = b.tagColor;
-                
                 const titleInput = document.getElementById('new-banner-title');
                 if (titleInput) titleInput.value = b.title;
 
                 window.showToastMessage('Mode Edit Aktif.');
-                
                 const formElement = document.getElementById('form-tambah-banner');
                 if (formElement) formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 100);
@@ -2594,9 +2624,7 @@ const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, 
                     try { 
                         await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'banners', id)); 
                         window.showToastMessage('Banner berhasil dihapus!'); 
-                    } catch(e) { 
-                        console.error(e); 
-                    }
+                    } catch(e) { console.error(e); }
                 }
             );
         }
@@ -2864,40 +2892,40 @@ const b = { tag: tag, tagColor: color, title: title, img: window.tempBannerImg, 
             if(!window.isAdmin) return;
             window.showToastMessage('Menyuntikkan data...');
             try {
-const arr = [
-                { 
-                    name: "Mini Gold 0.1 Gram", price: 145000, originalPrice: 155000, stock: 50, category: "Logam Mulia & Emas", description: "Emas batangan murni 24 Karat.", 
-                    imgUrl: "https://images.unsplash.com/photo-1610375461246-83df859d849d?w=500&q=80",
-                    gallery: [
-                        "https://images.unsplash.com/photo-1610375461246-83df859d849d?w=500&q=80",
-                        "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?w=500&q=80",
-                        "https://images.unsplash.com/photo-1574844391264-b04e6c382103?w=500&q=80"
-                    ],
-                    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
-                    isDummy: true
-                },
-                { 
-                    name: "Kopi Susu Gula Aren Premium", price: 75000, originalPrice: 85000, stock: 20, category: "Minuman Segar", description: "Kopi literan segar, simpan di kulkas.", 
-                    imgUrl: "https://images.unsplash.com/photo-1559525839-b184a4d698c7?w=500&q=80",
-                    gallery: [
-                        "https://images.unsplash.com/photo-1559525839-b184a4d698c7?w=500&q=80",
-                        "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&q=80",
-                        "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=500&q=80"
-                    ],
-                    videoUrl: "",
-                    isDummy: true
-                },
-                { 
-                    name: "Baju Koko Kurta Modern", price: 120000, originalPrice: 150000, stock: 30, category: "Fashion & Busana", description: "Bahan Katun Toyobo asli, adem.", 
-                    imgUrl: "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=500&q=80",
-                    gallery: [
-                        "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=500&q=80",
-                        "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=500&q=80"
-                    ],
-                    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
-                    isDummy: true
-                }
-            ];
+                const arr = [
+                    { 
+                        name: "Mini Gold 0.1 Gram", price: 145000, originalPrice: 155000, stock: 50, category: "Logam Mulia & Emas", description: "Emas batangan murni 24 Karat.", 
+                        imgUrl: "https://images.unsplash.com/photo-1610375461246-83df859d849d?w=500&q=80",
+                        gallery: [
+                            "https://images.unsplash.com/photo-1610375461246-83df859d849d?w=500&q=80",
+                            "https://images.unsplash.com/photo-1622398925373-3f91b1e275f5?w=500&q=80",
+                            "https://images.unsplash.com/photo-1574844391264-b04e6c382103?w=500&q=80"
+                        ],
+                        videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+                        isDummy: true
+                    },
+                    { 
+                        name: "Kopi Susu Gula Aren Premium", price: 75000, originalPrice: 85000, stock: 20, category: "Minuman Segar", description: "Kopi literan segar, simpan di kulkas.", 
+                        imgUrl: "https://images.unsplash.com/photo-1559525839-b184a4d698c7?w=500&q=80",
+                        gallery: [
+                            "https://images.unsplash.com/photo-1559525839-b184a4d698c7?w=500&q=80",
+                            "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&q=80",
+                            "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=500&q=80"
+                        ],
+                        videoUrl: "",
+                        isDummy: true
+                    },
+                    { 
+                        name: "Baju Koko Kurta Modern", price: 120000, originalPrice: 150000, stock: 30, category: "Fashion & Busana", description: "Bahan Katun Toyobo asli, adem.", 
+                        imgUrl: "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=500&q=80",
+                        gallery: [
+                            "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=500&q=80",
+                            "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=500&q=80"
+                        ],
+                        videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
+                        isDummy: true
+                    }
+                ];
                 for(let i=0; i<arr.length; i++) {
                     let d = arr[i];
                     let p = { ...d, storeName: window.storeProfile.name || "Toko SUQNA", storePhone: window.storeProfile.phone || "", ownerId: window.userId, hasVariants: false, variants: [], timestamp: Date.now() - (i*1000) };
@@ -2914,7 +2942,6 @@ const arr = [
             window.showToastMessage('Menghapus data dummy dari server Firebase...');
             
             try {
-                // Deteksi mana saja yang merupakan produk dummy
                 const dummyProducts = window.products.filter(p => 
                     p.isDummy === true || 
                     p.name === "Mini Gold 0.1 Gram" || 
@@ -2922,7 +2949,6 @@ const arr = [
                     p.name === "Baju Koko Kurta Modern"
                 );
                 
-                // Tembak perintah hapus langsung ke database Firebase
                 for (let dp of dummyProducts) {
                     await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', dp.id));
                 }
@@ -3005,7 +3031,6 @@ const arr = [
             if (window.deferredPrompt) {
                 window.deferredPrompt.prompt();
                 const { outcome } = await window.deferredPrompt.userChoice;
-                console.log(`Pengguna memilih ${outcome} pada prompt instalasi`);
                 window.deferredPrompt = null;
             }
         });
