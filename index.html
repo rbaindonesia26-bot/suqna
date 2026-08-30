@@ -1106,6 +1106,10 @@
             const avgRating = prodReviews.length > 0 ? (prodReviews.reduce((sum, r) => sum + r.rating, 0) / prodReviews.length).toFixed(1) : 0;
             const ratingHtml = prodReviews.length > 0 ? `<div class="flex items-center gap-1 bg-amber-50 px-1.5 py-0.5 rounded text-[9px] font-bold text-amber-600 border border-amber-100 shadow-sm"><i data-lucide="star" class="w-2.5 h-2.5 fill-amber-500 text-amber-500"></i> ${avgRating}</div>` : '';
             const isOutOfStock = p.stock === 0;
+            // --- TAMBAHAN LOGIKA WAKTU FLASH SALE ---
+            const waktuSekarang = new Date().getTime();
+            const batasWaktu = p.flashSaleEnd ? new Date(p.flashSaleEnd).getTime() : 0;
+            const isFlashAktif = (p.isFlashSale === 'true' || p.isFlashSale === true) && batasWaktu > waktuSekarang;
             
             const adminDeleteBtn = window.isAdmin ? `<button onclick="event.stopPropagation(); window.deleteProductAdmin('${p.id}')" class="absolute top-2 right-2 bg-red-500 text-white w-7 h-7 rounded-full flex items-center justify-center shadow-lg border-2 border-white hover:bg-red-600 transition-colors z-20 tooltip" title="Admin Hapus Barang"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>` : '';
 
@@ -1116,9 +1120,9 @@
                     ${adminDeleteBtn}${isOutOfStock ? `<div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center"><div class="bg-red-500/90 text-white font-black text-xs px-3 py-1 rounded-full shadow-lg transform -rotate-12">SOLD OUT</div></div>` : ''}
                     <div class="h-36 sm:h-44 bg-gray-50 relative w-full overflow-hidden group">
                         <img src="${p.imgUrl}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"/>
-                        ${ (p.isFlashSale === 'true' || p.isFlashSale === true) && p.flashSaleEnd ? `
-                        <div class="absolute top-0 right-0 animate-pulse bg-gradient-to-l from-red-600 to-red-700 text-white text-[9px] sm:text-[10px] font-black px-2.5 py-1 rounded-bl-xl shadow-md z-10 flex items-center gap-1 border-b border-l border-red-500 tracking-wider">
-                            ⚡ FLASH SALE
+                        ${ isFlashAktif ? `
+                        <div class="absolute top-0 right-0 bg-gradient-to-l from-red-600 to-red-800 text-white text-[9px] sm:text-[10px] font-black px-2.5 py-1 rounded-bl-xl shadow-lg z-10 flex items-center gap-1 border-b border-l border-red-400 tracking-wider">
+                            ⚡ <span class="flashsale-timer font-mono drop-shadow-md" data-endtime="${p.flashSaleEnd}">...</span>
                         </div>
                         ` : '' }
                         <div class="absolute top-2 left-2 bg-amber-500/90 text-white text-[8px] font-black px-2 py-0.5 rounded-full uppercase shadow-sm flex items-center gap-1 border border-amber-300">
@@ -1320,6 +1324,10 @@
             }
 
             const isOutOfStock = displayStock === 0;
+            // --- TAMBAHAN LOGIKA WAKTU FLASH SALE ---
+            const waktuSekarang = new Date().getTime();
+            const batasWaktu = p.flashSaleEnd ? new Date(p.flashSaleEnd).getTime() : 0;
+            const isFlashAktif = (p.isFlashSale === 'true' || p.isFlashSale === true) && batasWaktu > waktuSekarang;
             const prodReviews = window.reviews.filter(r => r.productId === p.id);
             const avgRating = prodReviews.length > 0 ? (prodReviews.reduce((sum, r) => sum + r.rating, 0) / prodReviews.length).toFixed(1) : 0;
 
@@ -1669,7 +1677,14 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                     </div>
                 `;
             }
-
+// --- LOGIKA PENYARING FLASH SALE ---
+const waktuSekarang = new Date().getTime();
+const flashSaleProducts = realProducts.filter(p => {
+    const batasWaktu = p.flashSaleEnd ? new Date(p.flashSaleEnd).getTime() : 0;
+    return (p.isFlashSale === 'true' || p.isFlashSale === true) && batasWaktu > waktuSekarang && (p.stock > 0 || p.stock === undefined);
+}).sort((a,b) => {
+    return new Date(a.flashSaleEnd).getTime() - new Date(b.flashSaleEnd).getTime();
+});
             const topRatedProducts = realProducts.filter(p => {
                 const prodReviews = window.reviews.filter(r => r.productId === p.id);
                 if (prodReviews.length === 0) return false;
@@ -1689,7 +1704,25 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
             const forYouProducts = realProducts.slice().sort(() => 0.5 - Math.random());
 
             let html = '';
-            
+            // --- PANGGUNG KHUSUS FLASH SALE DI BERANDA ---
+if (flashSaleProducts.length > 0) {
+    html += `
+        <div class="mt-6 pt-6 border-t-8 border-gray-50 bg-gradient-to-b from-red-50 to-transparent w-full border-b border-red-100/50 pb-2">
+            <div class="max-w-7xl mx-auto w-full">
+                <div class="px-5 flex justify-between items-end mb-4">
+                    <div>
+                        <h2 class="font-black text-red-600 text-lg md:text-xl flex items-center gap-1.5 animate-pulse"><i data-lucide="zap" class="w-6 h-6 fill-red-500"></i> KEJAR DISKON (FLASH SALE)</h2>
+                        <p class="text-[11px] md:text-xs text-gray-500 font-medium mt-0.5">Waktu terbatas! Segera checkout sebelum kehabisan.</p>
+                    </div>
+                    <span onclick="window.lihatKategori('terbaru')" class="text-sm md:text-base font-bold text-red-500 cursor-pointer hover:text-red-700 transition-colors">Lihat ></span>
+                </div>
+                <div class="flex gap-4 overflow-x-auto hide-scroll pb-5 px-5 snap-x snap-mandatory">
+                    ${flashSaleProducts.map(p => window.buildHorizontalProductCard(p, false)).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+}
             if (topRatedProducts.length > 0) {
                 html += `
                     <div class="mt-6 pt-6 border-t-8 border-gray-50 bg-gradient-to-b from-amber-50/30 to-transparent w-full">
@@ -2430,11 +2463,11 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                             <input type="file" id="prod-img-upload" class="hidden" accept="image/*" onchange="window.handleImageBase64(event, (url) => { window.tempProductImg = url; const img = document.getElementById('new-prod-preview'); img.src = url; img.classList.remove('hidden'); })">
 <div class="space-y-1 mt-3">
     <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Link Foto Tambahan (Galeri) - Pisahkan dengan koma</label>
-    <input type="text" id="new-prod-gallery" value="${window.editingProductData && window.editingProductData.gallery ? window.editingProductData.gallery.join(', ') : ''}" placeholder="https://foto1.jpg, https://foto2.jpg" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 font-medium text-xs text-gray-800 outline-none">
+    <input type="text" id="new-prod-gallery" placeholder="https://foto1.jpg, https://foto2.jpg" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 font-medium text-xs text-gray-800 outline-none">
 </div>
 <div class="space-y-1 mt-2">
     <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Link Video Pendek (Opsional - MP4)</label>
-    <input type="text" id="new-prod-video" value="${window.editingProductData && window.editingProductData.videoUrl ? window.editingProductData.videoUrl : ''}" placeholder="https://link-video.mp4" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 font-medium text-xs text-gray-800 outline-none">
+    <input type="text" id="new-prod-video" placeholder="https://link-video.mp4" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 font-medium text-xs text-gray-800 outline-none">
 </div>
                             <div class="space-y-1">
                                 <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Nama Barang</label>
@@ -2657,30 +2690,35 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                 const buyerName = window.userProfile.name || (window.userEmail ? window.userEmail.split('@')[0] : 'Pembeli');
                 const buyerAddress = window.userProfile.address || '(Alamat belum diatur di profil)';
 
-                let text = `📦 *STRUK PESANAN RESMI - SUQNA*\n`;
-                text += `----------------------------------------\n`;
-                text += `🆔 *No. Pesanan:* ${orderId}\n`;
-                text += `📅 *Waktu:* ${new Date().toLocaleString('id-ID')}\n`;
-                text += `----------------------------------------\n\n`;
-                text += `👤 *DATA PEMBELI*\n`;
-                text += `• Nama: *${buyerName}*\n`;
-                text += `• Alamat: ${buyerAddress}\n\n`;
-                text += `🛒 *DETAIL PRODUK*\n`;
+            let text = `✨ *INVOICE PEMBELIAN - SUQNA* ✨\n`;
+                text += `━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                text += `🏪 *Toko Tujuan:* ${firstItem.storeName || 'Penjual'}\n`;
+                text += `🆔 *Order ID:* ${orderId}\n`;
+                text += `📅 *Tanggal:* ${new Date().toLocaleString('id-ID')}\n`;
+                text += `━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+                text += `👤 *INFO PEMBELI*\n`;
+                text += `▪️ *Nama:* ${buyerName}\n`;
+                text += `▪️ *Alamat:* ${buyerAddress}\n\n`;
+                text += `🛒 *DETAIL PESANAN*\n`;
                 
                 storeItems.forEach((item, index) => {
-                    text += `${index + 1}. *${item.name}*\n`;
-                    if(item.variantName) text += `   - Varian: ${item.variantName}\n`;
-                    text += `   - Harga: Rp ${item.price.toLocaleString('id-ID')}\n`;
+                    // Deteksi jika barang ini adalah barang Flash Sale
+                    const isFlash = (item.isFlashSale === 'true' || item.isFlashSale === true) ? '⚡' : '🔸';
+                    
+                    text += `${isFlash} *${item.name}*\n`;
+                    if(item.variantName) text += `   ╰ Varian: _${item.variantName}_\n`;
+                    text += `   ╰ Harga: Rp ${item.price.toLocaleString('id-ID')}\n`;
                 });
 
-                text += `\n----------------------------------------\n`;
+                text += `\n━━━━━━━━━━━━━━━━━━━━━━━\n`;
                 text += `🚚 *Pengiriman:* ${deliveryMethod}\n`;
                 text += `💳 *Pembayaran:* ${paymentMethod}\n`;
-                if(notes) text += `📝 *Catatan:* ${notes}\n`;
-                text += `----------------------------------------\n`;
-                text += `💰 *TOTAL TAGIHAN: Rp ${totalAmount.toLocaleString('id-ID')}*\n`;
-                text += `----------------------------------------\n\n`;
-                text += `Halo *${firstItem.storeName || 'Penjual'}*, saya ingin memproses pesanan di atas melalui platform SUQNA. Mohon konfirmasi ketersediaan dan total pembayarannya. Terima kasih! 🙏`;
+                if(notes) text += `📝 *Catatan:* _${notes}_\n`;
+                text += `━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                text += `💰 *TOTAL BAYAR: Rp ${totalAmount.toLocaleString('id-ID')}*\n`;
+                text += `━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+                text += `Assalamu'alaikum Admin *${firstItem.storeName || 'Penjual'}*,\n\nSaya bermaksud memproses pesanan di atas melalui aplikasi *SUQNA*. Mohon konfirmasi ketersediaan produk dan instruksi pembayaran selanjutnya.\n\nTerima kasih banyak! 🙏\n\n`;
+                text += `🌐 _Dibuat otomatis oleh Aplikasi SUQNA_`;
 
                 let cleanPhone = phone.replace(/\D/g, '');
                 if(cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.substring(1); 
