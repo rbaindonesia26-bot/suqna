@@ -2430,11 +2430,11 @@ ${ p.isFlashSale === 'true' && p.flashSaleEnd ? `
                             <input type="file" id="prod-img-upload" class="hidden" accept="image/*" onchange="window.handleImageBase64(event, (url) => { window.tempProductImg = url; const img = document.getElementById('new-prod-preview'); img.src = url; img.classList.remove('hidden'); })">
 <div class="space-y-1 mt-3">
     <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Link Foto Tambahan (Galeri) - Pisahkan dengan koma</label>
-    <input type="text" id="new-prod-gallery" placeholder="https://foto1.jpg, https://foto2.jpg" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 font-medium text-xs text-gray-800 outline-none">
+    <input type="text" id="new-prod-gallery" value="${window.editingProductData && window.editingProductData.gallery ? window.editingProductData.gallery.join(', ') : ''}" placeholder="https://foto1.jpg, https://foto2.jpg" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 font-medium text-xs text-gray-800 outline-none">
 </div>
 <div class="space-y-1 mt-2">
     <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Link Video Pendek (Opsional - MP4)</label>
-    <input type="text" id="new-prod-video" placeholder="https://link-video.mp4" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 font-medium text-xs text-gray-800 outline-none">
+    <input type="text" id="new-prod-video" value="${window.editingProductData && window.editingProductData.videoUrl ? window.editingProductData.videoUrl : ''}" placeholder="https://link-video.mp4" class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 font-medium text-xs text-gray-800 outline-none">
 </div>
                             <div class="space-y-1">
                                 <label class="text-[10px] text-gray-500 font-bold ml-1 uppercase tracking-wide">Nama Barang</label>
