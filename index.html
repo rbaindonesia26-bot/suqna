@@ -2722,7 +2722,16 @@ if (flashSaleProducts.length > 0) {
 
                 let cleanPhone = phone.replace(/\D/g, '');
                 if(cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.substring(1); 
-                waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
+                
+                // --- LOGIKA PINTAR PENDETEKSI PERANGKAT (ANTI ERROR WA BUSINESS) ---
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                if (isMobile) {
+                    // Jika di HP, paksa buka aplikasi langsung (Mendukung WA Biasa & WA Business)
+                    waLink = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(text)}`;
+                } else {
+                    // Jika di Laptop/PC, arahkan langsung ke WhatsApp Web
+                    waLink = `https://web.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(text)}`;
+                }
             }
 
             window.cart = window.cart.filter(i => i.ownerId !== storeOwnerId);
