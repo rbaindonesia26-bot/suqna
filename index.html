@@ -576,7 +576,9 @@
         window.openHelpWA = function() {
             const waNumber = "6281234040580"; 
             const message = "Halo Admin SUQNA, saya butuh bantuan mengenai aplikasi.";
-            window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, '_blank');
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const waUrl = isMobile ? `whatsapp://send?phone=${waNumber}&text=${encodeURIComponent(message)}` : `https://web.whatsapp.com/send?phone=${waNumber}&text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
         }
 
         window.openFloatingChat = function() {
@@ -599,7 +601,9 @@
 
             let cleanPhone = phone.replace(/\D/g, '');
             if(cleanPhone.startsWith('0')) cleanPhone = '62' + cleanPhone.substring(1); 
-            window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`, '_blank');
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const waUrl = isMobile ? `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(text)}` : `https://web.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(text)}`;
+            window.open(waUrl, '_blank');
         }
 
         window.defaultBanners = [];        
@@ -2583,7 +2587,8 @@ if (flashSaleProducts.length > 0) {
                 ? '⚡ SEDANG FLASH SALE! Promo Spesial ' + p.name + ' di SUQNA! Cek sekarang sebelum kehabisan.' 
                 : 'Cek ' + p.name + ' di SUQNA! Pasar Kita, Untuk Semua.';
 
-            const waLink = `https://wa.me/?text=${encodeURIComponent(pesanTeks + ' ' + shareUrl)}`;
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const waLink = isMobile ? `whatsapp://send?text=${encodeURIComponent(pesanTeks + ' ' + shareUrl)}` : `https://web.whatsapp.com/send?text=${encodeURIComponent(pesanTeks + ' ' + shareUrl)}`;
             
             document.getElementById('share-wa-link').href = waLink;
             window.currentShareUrl = shareUrl;
@@ -2613,7 +2618,9 @@ if (flashSaleProducts.length > 0) {
             if (p) shareUrl += '?product=' + p.id; 
             
             window.currentShareUrl = shareUrl;
-            const waLink = `https://wa.me/?text=${encodeURIComponent('Kunjungi toko ' + storeName + ' di SUQNA! Belanja aman tanpa biaya admin. ' + shareUrl)}`;
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const shareText = 'Kunjungi toko ' + storeName + ' di SUQNA! Belanja aman dan nyaman. ' + shareUrl;
+            const waLink = isMobile ? `whatsapp://send?text=${encodeURIComponent(shareText)}` : `https://web.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
             document.getElementById('share-wa-link').href = waLink;
             document.getElementById('share-modal').classList.remove('hidden');
         }
@@ -2958,8 +2965,9 @@ if (flashSaleProducts.length > 0) {
             const promoSultan = (v.title + " " + v.mainText).replace(/<br>/gi, ' '); 
             
             const pesan = `Halo Admin SUQNA! Saya *${userName}* mau mengklaim promo *${promoSultan}*. Apakah kuotanya masih tersedia?`;
-            const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(pesan)}`;
-
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            const waLink = isMobile ? `whatsapp://send?phone=${waNumber}&text=${encodeURIComponent(pesan)}` : `https://web.whatsapp.com/send?phone=${waNumber}&text=${encodeURIComponent(pesan)}`;
+            
             try {
                 await setDoc(doc(db, 'artifacts', appId, 'users', window.userId, 'claims', v.id), {
                     voucherId: v.id,
